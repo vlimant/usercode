@@ -4,8 +4,10 @@
 
 <use name=SimDataFormats/Track>
 <use name=SimDataFormats/HepMCProduct>
+<use name=hepmc> 
 
-<flags SEAL_PLUGIN_NAME="RecoTrackerTTbarWithMuon">
+<flags EDM_PLUGIN=1>
+
 <export>
    <lib name=RecoTrackerTTbarWithMuon>
    <use name=FWCore/Framework>
@@ -13,5 +15,6 @@
    <use name=FWCore/ParameterSet>
 <use name=SimDataFormats/Track>
 <use name=SimDataFormats/HepMCProduct>
+<use name=hepmc> 
 
 </export>

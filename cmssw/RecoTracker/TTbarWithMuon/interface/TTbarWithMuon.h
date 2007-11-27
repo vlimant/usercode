@@ -33,8 +33,6 @@
 #include <SimDataFormats/Track/interface/SimTrackContainer.h>
 #include <SimDataFormats/Vertex/interface/SimVertexContainer.h>
 
-#include <CLHEP/Vector/LorentzVector.h>
-
 #include <SimDataFormats/Track/interface/SimTrack.h>
 #include <SimDataFormats/Vertex/interface/SimVertex.h>
 

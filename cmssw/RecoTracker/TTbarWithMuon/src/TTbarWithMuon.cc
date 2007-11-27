@@ -19,9 +19,8 @@
 
 
 #include <RecoTracker/TTbarWithMuon/interface/TTbarWithMuon.h>
-#include <FWCore/MessageLogger/interface/MessageLogger.h>
-#include <Geometry/Vector/interface/GlobalVector.h>
 
+#include <FWCore/MessageLogger/interface/MessageLogger.h>
 
 #include <SimDataFormats/HepMCProduct/interface/HepMCProduct.h>
 #include <iostream>
@@ -76,15 +75,18 @@ TTbarWithMuon::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
        
        if (abs(ipdg) == 13) //mu
 	 {
-	   if (part->mother()){
+	   if (!part->production_vertex()) continue;
+	   if (part->production_vertex()->particles_in_size()==0) continue;
+	   const HepMC::GenParticle * mother = *(part->production_vertex()->particles_in_const_begin());
+	   if (mother){
 
-	     if (abs(part->mother()->pdg_id()) ==24 && W_decay)// from W decay 
+	     if (abs(mother->pdg_id()) ==24 && W_decay)// from W decay 
 	       { edm::LogInfo("TTbarWithMuon::filter(...)")<<" W decaying into mu";return true;}
 
 	     if (B_decay.size()!=0){/* from b decay */
 	       for (std::vector<int>::iterator B_pdg_it=B_decay.begin();B_pdg_it!=B_decay.end();++B_pdg_it)
-		 if (abs(part->mother()->pdg_id())==(*B_pdg_it))
-		   { edm::LogInfo("TTbarWithMuon::filter(...)")<<" b-quark meson ("<<part->mother()->pdg_id()<<") decaying into mu";return true;}}
+		 if (abs(mother->pdg_id())==(*B_pdg_it))
+		   { edm::LogInfo("TTbarWithMuon::filter(...)")<<" b-quark meson ("<<mother->pdg_id()<<") decaying into mu";return true;}}
 	   }}
      }
 
