@@ -1,0 +1,15 @@
+// Put here the modules you want the cfg file to use,
+// then include this file in your cfg file.
+// i.e. in WhatWentWrongInL3Muon.cfg replace 'module demo = WhatWentWrongInL3Muon {} '
+// with 'include "anlyzerDir/WhatWentWrongInL3Muon/data/WhatWentWrongInL3Muon.cfi" '.
+// (Remember that filenames are case sensitive.)
+
+include "SimTracker/TrackAssociation/data/TrackAssociatorByPosition.cff"
+es_module TrackAssociatorByPositionDR = TrackAssociatorByPosition from "SimTracker/TrackAssociation/data/TrackAssociatorByPosition.cfi"
+replace TrackAssociatorByPositionDR.ComponentName = "TrackAssociatorByPositionDR"
+replace TrackAssociatorByPositionDR.method = "posdr"
+replace TrackAssociatorByPositionDR.QCut = 0.1
+replace TrackAssociatorByPositionDR.QminCut = 0.3
+replace TrackAssociatorByPositionDR.MinIfNoMatch = true
+
+include "RecoMuon/WhatWentWrongInL3Muon/data/whatwentwronginl3muon.cfi"

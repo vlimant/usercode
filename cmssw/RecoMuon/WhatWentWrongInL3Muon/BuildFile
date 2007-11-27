@@ -1,0 +1,30 @@
+<use name=FWCore/Framework>
+<use name=FWCore/PluginManager>
+<use name=FWCore/ParameterSet>
+
+<use name=root>
+<use name=DataFormats/MuonReco>
+<use name=MagneticField/Engine>
+<use name=MagneticField/Records>
+<use name=TrackingTools/TrajectoryState>
+<use name=DQMServices/Core>
+<use name=DQMServices/Daemon>
+
+<use name=Geometry/Records>
+<use name=Geometry/TrackerGeometryBuilder>
+<use name=TrackingTools/Records>
+<use name=TrackingTools/GeomPropagators>
+<use name=SimTracker/TrackAssociation>
+<use name=SimTracker/Records>
+<use name=SimDataFormats/TrackingAnalysis>
+
+<use name=DataFormats/GeometrySurface>
+<use name=Geometry/CommonDetUnit>
+
+<flags EDM_PLUGIN=1>
+<export>
+   <lib name=RecoMuonWhatWentWrongInL3Muon>
+   <use name=FWCore/Framework>
+   <use name=FWCore/PluginManager>
+   <use name=FWCore/ParameterSet>
+</export>
