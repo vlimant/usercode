@@ -1,7 +1,9 @@
 module whatWentWrongInL3Muon = WhatWentWrongInL3Muon {
+	string rootFileName = "whatWentWrongInL3Muon"
 	InputTag L2Label = L2Muons:UpdatedAtVtx
 	VInputTag L3Labels = { L3Muons }
-	InputTag trackingParticleLabel = trackingParticles
+	InputTag trackingParticleLabel = trackingtruthprod
 	string associator = "TrackAssociatorByPositionDR"
 	string propagator = "SteppingHelixPropagatorAny"
+	bool tellMe = true
 }
