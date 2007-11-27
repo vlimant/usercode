@@ -1,0 +1,24 @@
+<use name=FWCore/Framework>
+<use name=Foundation/PluginManager>
+<use name=FWCore/ParameterSet>
+
+<use name=RecoTracker/MeasurementDet>
+<use name=RecoTracker/Record>
+<use name=MagneticField/Engine>
+<use name=MagneticField/Records>
+<use name=TrackingTools/GeomPropagators>
+<use name=TrackingTools/Records>
+<use name=TrackingTools/KalmanUpdators>
+<use name=RecoTracker/TkNavigation>
+<use name=DataFormats/TrackReco>
+<use name=TrackingTools/TrajectoryState>
+<use name=TrackingTools/DetLayers>
+<use name=FWCore/MessageLogger>
+
+<flags SEAL_PLUGIN_NAME="RecoTrackerLayerCollectorAnalyzer">
+<export>
+   <lib name=RecoTrackerLayerCollectorAnalyzer>
+   <use name=FWCore/Framework>
+   <use name=Foundation/PluginManager>
+   <use name=FWCore/ParameterSet>
+</export>
