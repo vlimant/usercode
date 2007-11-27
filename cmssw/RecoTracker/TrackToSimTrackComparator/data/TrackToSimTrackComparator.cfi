@@ -1,6 +1,6 @@
 module trackToSimTrackComparator = TrackToSimTrackComparator {
 	InputTag trackLabel = standAloneMuons:UpdatedAtVtx
-	InputTag trackingParticleLabel = trackingParticles
+	InputTag trackingParticleLabel = trackingtruthprod
 	string associatorName = "TrackAssociatorByPosition"
 
 	string plotFileName ="trackToSimTrackComparator.root"

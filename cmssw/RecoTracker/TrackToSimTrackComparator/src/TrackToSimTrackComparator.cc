@@ -54,7 +54,7 @@
 #include "TFile.h"
 #include "TH1F.h"
 #include "TH2F.h"
-
+#include "TDirectory.h"
 
 
 //
@@ -121,7 +121,7 @@ TrackToSimTrackComparator::TrackToSimTrackComparator(const edm::ParameterSet& iC
   doWithPerigee=true;
   doWithExtrapolator=false;
   doWithLocal=false;
-  doWithPlane=true;
+  doWithPlane=false;
 
 }
 
@@ -415,16 +415,31 @@ TrackToSimTrackComparator::analyze(const edm::Event& iEvent, const edm::EventSet
 
 
 TH1 * TrackToSimTrackComparator::get(const char * hname){
+  thePlotFile->cd();
+  TDirectory::TContext context(thePlotFile);
   TH1* h = (TH1*) thePlotFile->Get(hname);
-  if (!h){edm::LogError(theCategory)<<"could not get: "<<hname<<" from the histogram file. expect troubles. like a seg fault.";}
+  if (!h){
+    edm::LogError(theCategory)<<"\n\n\n\n\n################################################################################\n"
+			      <<"################################################################################\n"
+			      <<"################################################################################\n"
+			      <<"could not get: "<<hname<<" from the histogram file. expect troubles. like a seg fault."
+			      <<"################################################################################\n"
+			      <<"gDirectory: "<<gDirectory->GetName() <<"\n"
+			      <<"################################################################################\n"
+			      <<"################################################################################";
+    thePlotFile->ls();
+  }
   return h;}
 
 // ------------ method called once each job just before starting event loop  ------------
 void 
 TrackToSimTrackComparator::beginJob(const edm::EventSetup& setup)
 {
-  thePlotFile = TFile::Open(thePlotFileName.c_str(),"recreate");
+  thePlotFile = new TFile(thePlotFileName.c_str(),"recreate");
   thePlotFile->cd();
+
+  TDirectory::TContext context(thePlotFile);
+
   //book histograms in this section
   //you will get them back from their name
   TH1 * h;
@@ -434,11 +449,11 @@ TrackToSimTrackComparator::beginJob(const edm::EventSetup& setup)
   // and so on
 
   h = new TH1D("h_fts_origin_state_x","x distribution for fts origin_state of SimTrack",100,-.006,.006);
-  h->SetXTitle("x");
+  h->SetXTitle("x [cm]");
   h = new TH1D("h_fts_origin_state_y","y distribution for fts origin_state of SimTrack",100,-.006,.006);
-  h->SetXTitle("y");
+  h->SetXTitle("y [cm]");
   h = new TH1D("h_fts_origin_state_z","z distribution for fts origin_state of SimTrack",100,-.006,.006);
-  h->SetXTitle("z");
+  h->SetXTitle("z [cm]");
 
 
   if (doWithPerigee){
@@ -562,6 +577,8 @@ TrackToSimTrackComparator::beginJob(const edm::EventSetup& setup)
   //histogram booked
 
 
+  edm::LogInfo(theCategory)<<" histograms book.";
+  thePlotFile->ls();
 
 }
 
