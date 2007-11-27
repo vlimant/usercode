@@ -1,0 +1,22 @@
+include "RecoMuon/TrackingTools/data/MuonUpdatorAtVertex.cff"
+
+PSet SeedGeneratorParameters = {
+    
+    string ComponentName = "TSGFromPropagation"
+    
+    using MuonUpdatorAtVertex
+
+    string Propagator = "SmartPropagatorAnyOpposite"
+
+    double MaxChi2 = 30.0
+
+    untracked int32 MaxSeeds = 4
+
+    untracked double ErrorReset = 100.0
+
+    untracked bool ApplyVertexConstraint = true
+
+    untracked bool SkipFirstLayer = true 
+
+} 
+

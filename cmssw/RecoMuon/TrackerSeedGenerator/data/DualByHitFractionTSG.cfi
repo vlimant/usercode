@@ -1,0 +1,14 @@
+PSet SeedGeneratorParameters = {
+  string ComponentName = "DualByHitFractionTSG" 
+  double fraction = 0.5
+  double recHitMax = 20
+  vPSet TSGsPSet =   {
+	# lower than hit fraction
+	# better to go with pixel pairs
+	{ using pixelPairs },
+	# higher than the hit fraction
+	# faster to go with hit-less seeding
+	{ using forRSIOpxl }
+   }
+}
+

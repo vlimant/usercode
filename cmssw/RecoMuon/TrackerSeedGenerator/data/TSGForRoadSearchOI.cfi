@@ -1,0 +1,15 @@
+PSet SeedGeneratorParameters = {
+
+    string ComponentName = "TSGForRoadSearch" 
+               #category: MuonRSSeedGeneratorAlgorithm
+                #0 old code inside-out
+                #1 new code inside-out
+                #2 new code outside-out
+		#3 old code outside-in
+    uint32 option = 3
+    bool copyMuonRecHit = false
+    bool manySeeds = false
+    double maxChi2 = 40.0
+    string propagatorName = "SteppingHelixPropagatorAlong"
+    string propagatorCompatibleName = "SteppingHelixPropagatorAny"
+}
