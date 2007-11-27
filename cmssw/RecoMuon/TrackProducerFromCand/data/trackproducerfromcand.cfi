@@ -1,0 +1,12 @@
+module demo = TrackProducerFromCand {
+	InputTag sourceTag = l1extraParticles
+	string instanceName = ""
+
+	#empty PSet means you don't assign any error matrix
+	PSet errorMatrix_Assigner = {
+#		string action = "use"
+#		string rootFileName = "errorMatrix_L1.root"
+	}
+	
+}
+

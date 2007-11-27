@@ -1,0 +1,5 @@
+# field
+include "MagneticField/Engine/data/volumeBasedMagneticField.cfi"
+
+# producer
+include "RecoMuon/TrackProducerFromCand/data/trackproducerfromcand.cfi" 
