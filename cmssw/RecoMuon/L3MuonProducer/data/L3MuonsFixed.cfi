@@ -1,0 +1,83 @@
+module L3MuonsFixed = L3MuonProducer {
+
+    InputTag MuonCollectionLabel = L2Muons:UpdatedAtVtx
+    bool MuonTrajectoryAvailable = true
+    
+    using MuonServiceProxy
+    
+    using MuonTrackLoaderForL3    
+
+
+    PSet L3TrajBuilderParameters = {
+	untracked bool performMuonIntegrityMonitor = false
+	bool RegionalSeedFlag = true
+	#0 regular
+	#1 according to error matrix && isPrecise
+	#1 default region size && !isPrecise
+	untracked bool SeedOption = 1
+	bool isPrecise = true
+	double Nsigma = 1.0
+
+	bool TkTrajectoryAvailable = false
+	string TrackRecHitBuilder = "WithTrackAngle"
+	#0 tracker only
+	#1 tracker and muon 
+	#2 tracker + first muon hits
+	#3 tracker + selected muon hits
+	#4 combined
+	#5 new combined
+	int32 MuonHitsOption = 1
+	int32 Direction = 0 
+	double PtCut = 1.0 
+	double Chi2ProbabilityCut = 30.0
+	int32 HitThreshold = 1 
+	double Chi2CutDT = 10.
+	double Chi2CutCSC = 150. 
+	double Chi2CutRPC = 1.
+	string TkTrackBuilder = "muonCkfTrajectoryBuilder"
+#	string TkTrackBuilder = "muonRSTrajectoryBuilder"
+	string KFFitter = "L3MuKFFitter"
+	
+	string StateOnTrackerBoundOutPropagator = "SmartPropagator"
+	string TrackerPropagator = "SteppingHelixPropagatorAny"
+
+	PSet GlobalMuonTrackMatcher = {
+	    untracked bool performMuonIntegrityMonitor = false
+	    double Chi2Cut = 300.0
+	    double MinP = 2.5
+	    double MinPt = 1.0
+	    double DeltaEtaCut = 0.2
+	    double DeltaPhiCut = 0.2
+	}
+
+	PSet TrackTransformer = {
+	    string Fitter = "KFFitterForRefitInsideOut"
+	    string Smoother = "KFSmootherForRefitInsideOut"
+	    string TrackerRecHitBuilder = "WithTrackAngle"
+	    string MuonRecHitBuilder = "MuonRecHitBuilder"
+	    string RefitDirection = "insideOut"
+	}	
+	
+	PSet RefitterParameters = {
+	    string AlongMomentumPropagator = "SmartPropagatorAny"
+	    string OppositeToMomentumPropagator = "SmartPropagatorAnyOpposite"
+	}		
+	
+	#include "RecoMuon/TrackerSeedGenerator/data/TrackerSeedGeneratorBC.cfi"
+      include  "RecoMuon/TrackerSeedGenerator/data/TSGFromPixelPairs.cfi"
+      #include  "RecoMuon/TrackerSeedGenerator/data/TSGFromPropagation.cfi"
+      #include  "RecoMuon/TrackerSeedGenerator/data/TSGFromPixelTriplets.cfi"
+      #include  "RecoMuon/TrackerSeedGenerator/data/TSGForRoadSearchIO.cfi"
+      #include  "RecoMuon/TrackerSeedGenerator/data/TSGForRoadSearchOI.cfi"
+
+	
+	
+	PSet RegionBuilderParameters = {
+		#untracked uint32 SeedOption =0 #regular
+		untracked uint32 SeedOption =1 #error matrix based
+		bool isPrecise = false #true: then Nsigma matters
+		double Nsigma = 0.0 
+	}	
+
+    }
+}

@@ -1,0 +1,17 @@
+include "RecoMuon/GlobalTrackFinder/data/MuonCkfTrajectoryBuilderESProducer.cff"
+es_module muonCkfTrajectoryBuilder_OI_OD = MuonCkfTrajectoryBuilder from "RecoMuon/GlobalTrackFinder/data/MuonCkfTrajectoryBuilderESProducer.cfi"
+replace muonCkfTrajectoryBuilder_OI_OD.ComponentName = "muonCkfTrajectoryBuilder_OI_OD"
+replace muonCkfTrajectoryBuilder_OI_OD.minimumNumberOfHits = 5
+replace muonCkfTrajectoryBuilder_OI_OD.maxNumberOfHits = -1
+replace muonCkfTrajectoryBuilder_OI_OD.maxLostHit = 2
+replace muonCkfTrajectoryBuilder_OI_OD.maxConsecLostHit = 2
+replace muonCkfTrajectoryBuilder_OI_OD.useSeedLayer = false
+
+include "measurementTrackerOnDemand.cfi"
+replace muonCkfTrajectoryBuilder_OI_OD.measurementTracker = "MeasurementTrackerOnDemand"
+
+module L3MuonsTSGRSod = L3MuonsTSGRS from "RecoMuon/L3MuonProducer/data/L3MuonsTSGRS.cfi"
+module L3MuonsTSGPod = L3MuonsTSGP from "RecoMuon/L3MuonProducer/data/L3MuonsTSGP.cfi"
+
+replace L3MuonsTSGRSod.L3TrajBuilderParameters.TkTrackBuilder = "muonCkfTrajectoryBuilder_OI_OD"
+replace L3MuonsTSGPod.L3TrajBuilderParameters.TkTrackBuilder = "muonCkfTrajectoryBuilder_OI_OD"

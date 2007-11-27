@@ -1,0 +1,31 @@
+#
+# Regional Tk reconstruction for L3MuonAltProducer
+#
+
+# Seeds
+module regionalPixelForMuIsoSeeds = regionalPixelFromTrkSeeds from "RecoTracker/TkSeedGenerator/data/RegionalPixelFromTrkSeeds.cfi"
+
+# Track candidates
+include "RecoTracker/CkfPattern/data/CkfTrajectoryBuilderESProducer.cff"
+
+module ckfTrackForMuIsoCandidates =  ckfTrackCandidates from "RecoTracker/CkfPattern/data/CkfTrackCandidates.cfi"    
+replace ckfTrackForMuIsoCandidates.SeedProducer  = "regionalPixelForMuIsoSeeds"
+
+# Fitted tracks
+include "RecoTracker/TrackProducer/data/CTFFinalFitWithMaterial.cff"
+
+module ctfWithMaterialForMuIsoTracks = ctfWithMaterialTracks from "RecoTracker/TrackProducer/data/CTFFinalFitWithMaterial.cfi"
+replace ctfWithMaterialForMuIsoTracks.src = "ckfTrackForMuIsoCandidates"
+
+# Final sequence
+sequence regionalTrackingForMuIso = {
+                          regionalPixelForMuIsoSeeds
+                        , ckfTrackForMuIsoCandidates
+                        , ctfWithMaterialForMuIsoTracks
+}
+
+# Produce L3Muons (<reco:TrackCollection>)
+include "TrackingTools/TransientTrack/data/TransientTrackBuilder.cfi"
+include "RecoMuon/L3MuonProducer/data/L3MuonAlts.cfi"
+
+sequence L3muonAltReco = { regionalTrackingForMuIso, L3Muons }

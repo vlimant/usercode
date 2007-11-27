@@ -1,0 +1,65 @@
+# magnetic field
+include "MagneticField/Engine/data/volumeBasedMagneticField.cfi"
+
+# geometry
+include "Geometry/CMSCommonData/data/cmsIdealGeometryXML.cff"
+
+include "Geometry/CommonDetUnit/data/globalTrackingGeometry.cfi"
+
+include "RecoMuon/DetLayers/data/muonDetLayerGeometry.cfi"
+include "RecoTracker/GeometryESProducer/data/TrackerRecoGeometryESProducer.cfi"
+
+include "RecoLocalTracker/SiStripRecHitConverter/data/StripCPEfromTrackAngle.cfi"
+include "RecoLocalTracker/SiPixelRecHits/data/PixelCPEParmError.cfi"
+include "RecoTracker/TransientTrackingRecHit/data/TransientTrackingRecHitBuilder.cfi"
+include "RecoTracker/TransientTrackingRecHit/data/TransientTrackingRecHitBuilderWithoutRefit.cfi"
+
+include "RecoMuon/GlobalTrackFinder/data/MuonCkfTrajectoryBuilderESProducer.cff"
+include "RecoMuon/GlobalTrackFinder/data/MuonRSTrajectoryBuilderESProducer.cff"
+
+es_module Chi2EstimatorForL3Refit = Chi2MeasurementEstimatorESProducer
+{
+  string ComponentName = "Chi2EstimatorForL3Refit"
+  double MaxChi2 = 100000.
+  double nSigma = 3.
+}
+
+es_module L3MuKFFitter = KFTrajectoryFitterESProducer
+{
+    string ComponentName = "L3MuKFFitter"
+    
+    string Propagator = "SmartPropagatorAny"
+    string Updator = "KFUpdator"
+    string Estimator = "Chi2EstimatorForL3Refit"
+}
+
+es_module L3MuKFSmoother = KFTrajectorySmootherESProducer
+{
+    string ComponentName = "L3MuKFSmoother"
+    
+    string Propagator = "SmartPropagatorOpposite"
+    string Updator = "KFUpdator"
+    string Estimator = "Chi2EstimatorForL3Refit"
+}
+
+include "RecoTracker/TkSeedingLayers/data/PixelLayerPairs.cfi"
+include "RecoTracker/TkSeedingLayers/data/PixelLayerTriplets.cfi"
+
+include "RecoMuon/TrackingTools/data/MuonServiceProxy.cff"
+
+include "RecoMuon/TrackingTools/data/MuonTrackLoader.cff"
+
+include "TrackingTools/TrackRefitter/data/TracksToTrajectories.cff"
+
+
+
+include "RecoMuon/L3MuonProducer/data/L3Muons-IOpxl.cff"
+include "RecoMuon/L3MuonProducer/data/L3Muons-IOnopxl.cff"
+include "RecoMuon/L3MuonProducer/data/L3Muons-OI.cff"
+
+#on demand version
+include "RecoMuon/L3MuonProducer/data/L3Muons-IOpxl-OD.cff"
+include "RecoMuon/L3MuonProducer/data/L3Muons-OI-OD.cff"
+
+#very smart version
+include "RecoMuon/L3MuonProducer/data/L3MuonsSmart.cff"

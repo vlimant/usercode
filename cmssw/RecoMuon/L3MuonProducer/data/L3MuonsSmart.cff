@@ -1,0 +1,30 @@
+include "RecoMuon/TrackerSeedGenerator/data/TSGConfiguration.cff"
+
+#need to define a trajectory builder that will work for everyone at once.
+
+include "RecoMuon/GlobalTrackFinder/data/MuonCkfTrajectoryBuilderESProducer.cff"
+es_module muonCkfTrajectoryBuilder_smart = MuonCkfTrajectoryBuilder from "RecoMuon/GlobalTrackFinder/data/MuonCkfTrajectoryBuilderESProducer.cfi"
+replace muonCkfTrajectoryBuilder_smart.ComponentName = "muonCkfTrajectoryBuilder_smart"
+replace muonCkfTrajectoryBuilder_smart.minimumNumberOfHits = 5
+replace muonCkfTrajectoryBuilder_smart.maxNumberOfHits = 7
+replace muonCkfTrajectoryBuilder_smart.maxLostHit = 2
+replace muonCkfTrajectoryBuilder_smart.maxConsecLostHit = 2
+replace muonCkfTrajectoryBuilder_smart.useSeedLayer = true
+replace muonCkfTrajectoryBuilder_smart.rescaleErrorIfFail = 4.0
+
+
+include "RecoMuon/L3MuonProducer/data/L3MuonsSmart.cfi"
+
+#replace L3MuonsSmart.L3TrajBuilderParameters.SeedGeneratorParameters.barrelTSG = { using pixelPair }
+#replace L3MuonsSmart.L3TrajBuilderParameters.SeedGeneratorParameters.endcapTSG = { using forRSIOpxl }
+
+replace L3MuonsSmart.L3TrajBuilderParameters.SeedGeneratorParameters.barrelTSG = { using dualHitDT }
+replace L3MuonsSmart.L3TrajBuilderParameters.SeedGeneratorParameters.endcapTSG = { using dualHitCSC }
+
+##final configuration
+replace L3MuonsSmart.L3TrajBuilderParameters.SeedGeneratorParameters.barrelTSG.lowFractionTSG = { using pixelPair }
+replace L3MuonsSmart.L3TrajBuilderParameters.SeedGeneratorParameters.barrelTSG.highFractionTSG = { using forRSIOpxl }
+replace L3MuonsSmart.L3TrajBuilderParameters.SeedGeneratorParameters.endcapTSG.lowFractionTSG = { using fromPropagation }
+replace L3MuonsSmart.L3TrajBuilderParameters.SeedGeneratorParameters.endcapTSG.highFractionTSG = { using forRSOI }
+
+replace L3MuonsSmart.L3TrajBuilderParameters.TkTrackBuilder = "muonCkfTrajectoryBuilder_smart"

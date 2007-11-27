@@ -1,0 +1,3 @@
+module L3MuonCandidates = L3MuonCandidateProducer {
+    InputTag InputObjects = L3Muons
+}
