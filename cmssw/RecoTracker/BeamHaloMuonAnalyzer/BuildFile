@@ -1,0 +1,30 @@
+<use name=FWCore/Framework>
+<use name=Foundation/PluginManager>
+<use name=FWCore/ParameterSet>
+
+<use name=DataFormats/TrackReco>
+<use name=DataFormats/TrajectorySeed>
+<use name=FWCore/MessageLogger>
+<use name=SimDataFormats/Track>
+<use name=SimDataFormats/Vertex>
+<use name=TrackingTools/TrajectoryState>
+<use name=RecoMuon/L3MuonAnalyzer>
+<use name=DataFormats/TrackerRecHit2D>
+
+<flags SEAL_PLUGIN_NAME="RecoTrackerBeamHaloMuonAnalyzer">
+<export>
+   <lib name=RecoTrackerBeamHaloMuonAnalyzer>
+   <use name=FWCore/Framework>
+   <use name=Foundation/PluginManager>
+   <use name=FWCore/ParameterSet>
+
+<use name=DataFormats/TrackReco>
+<use name=DataFormats/TrajectorySeed>
+<use name=FWCore/MessageLogger>
+<use name=SimDataFormats/Track>
+<use name=SimDataFormats/Vertex>
+<use name=TrackingTools/TrajectoryState>
+<use name=RecoMuon/L3MuonAnalyzer>
+<use name=DataFormats/TrackerRecHit2D>
+
+</export>
