@@ -1,0 +1,20 @@
+module L3MuonsTSGRSpxl = L3MuonProducer {
+
+    InputTag MuonCollectionLabel = hltL2Muons:UpdatedAtVtx
+    bool MuonTrajectoryAvailable = true
+    
+    using MuonServiceProxy
+    
+    using MuonTrackLoaderForL3
+
+    PSet L3TrajBuilderParameters = {
+	using GlobalTrajectoryBuilderCommon
+	
+	bool TkTrajectoryAvailable = false
+	string KFFitter = "L3MuKFFitter"
+	
+	string TkTrackBuilder = "muonCkfTrajectoryBuilder"
+
+	include  "RecoMuon/TrackerSeedGenerator/data/TSGForRoadSearchIOpxl.cfi"
+    }
+}

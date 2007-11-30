@@ -1,0 +1,41 @@
+
+
+### Pixel Clusterizer and RecHit producer modules
+include "RecoLocalTracker/SiPixelClusterizer/data/SiPixelClusterizer.cfi"
+include "RecoLocalTracker/SiPixelRecHits/data/SiPixelRecHits.cfi"
+
+
+### strip on demande clusterisation
+include "CalibTracker/SiStripLorentzAngle/data/SiStripLAFakeESSource.cfi"
+
+# cabling of the tracker
+include "CondCore/DBCommon/data/CondDBSetup.cfi" 
+#include "EventFilter/SiStripRawToDigi/data/SiStripFrontierCabling.cfi"
+include "CalibTracker/SiStripConnectivity/data/SiStripConnectivity.cfi"
+include "CalibTracker/SiStripConnectivity/data/SiStripRegionConnectivity.cfi"
+
+#digi to raw (siStrip only)
+include "HLTrigger/Configuration/data/rawToDigi/SiStripDigiToRaw.cff"
+
+# raw to clusters
+include "EventFilter/SiStripRawToDigi/data/SiStripRawToClusters.cfi"
+include "RecoTracker/MeasurementDet/data/MeasurementTrackerSiStripRefGetterProducer.cfi"
+
+#be sure to call "define" on the proper measurementTracker: the default one
+replace measurementTrackerSiStripRefGetterProducer.measurementTrackerName = ""
+
+#correct the default MeasurementTracker
+include "RecoTracker/MeasurementDet/data/MeasurementTrackerESProducer.cfi"
+replace MeasurementTracker.stripClusterProducer = "measurementTrackerSiStripRefGetterProducer"
+replace MeasurementTracker.OnDemand = true
+replace MeasurementTracker.Regional = true
+
+include "RecoTracker/MeasurementDet/test/MeasurementTrackerUpdator.cfi"
+replace measurementTrackerUpdator.measurementTrackerName = ""
+
+sequence localTracker = { SiStripDigiToRaw, 
+	SiStripRawToClustersFacility, measurementTrackerSiStripRefGetterProducer, 
+	siPixelClusters, siPixelRecHits,
+	measurementTrackerUpdator } 
+
+

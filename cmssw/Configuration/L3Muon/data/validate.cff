@@ -1,0 +1,82 @@
+    # Track Associators
+    include "SimTracker/TrackAssociation/data/TrackAssociatorByChi2.cfi"
+    include "SimTracker/TrackAssociation/data/TrackAssociatorByHits.cfi"
+#    include "SimTracker/TrackAssociation/data/TrackAssociatorByHitFraction.cfi"
+    include "SimTracker/TrackAssociation/data/TrackAssociatorByPosition.cfi"
+
+    # Tracking Truth, if needed
+    #include "SimGeneral/TrackingAnalysis/data/trackingParticles.cfi"
+    #include "SimGeneral/TrackingAnalysis/data/trackingtruth.cfi"
+    #replace trackingtruth.HepMCDataLabels = {"source"}
+    #include "SimGeneral/TrackingAnalysis/data/trackingParticles.cfi"
+
+    # Filters
+    include "Validation/RecoTrack/data/cuts.cff"
+	# select only muon tracking particles
+	replace cutsTPEffic.pdgId = {13, -13}
+	replace cutsTPFake.pdgId = {13, -13}
+	
+replace cutsTPEffic.src = trackingtruthprod
+replace cutsTPFake.src = trackingtruthprod
+
+## multitrack validator on L3Muons and L2Muons
+
+    # Track Validator
+    include "Validation/RecoTrack/data/MultiTrackValidator.cff"
+
+	include "SimTracker/TrackAssociation/data/TrackAssociatorByPosition.cff"
+	replace TrackAssociatorByPosition.method = "posdr"
+	replace TrackAssociatorByPosition.QCut = 0.1
+	replace TrackAssociatorByPosition.QminCut = 0.3
+	replace TrackAssociatorByPosition.MinIfNoMatch = true
+    
+    replace multiTrackValidator.associators= { "TrackAssociatorByPosition" }
+
+sequence mTrackValidator = { cutsTPEffic, cutsTPFake, multiTrackValidator }
+
+## multitrack validator for tracker leg of the L3Muons (fake oriented)
+
+    module multiTkTrackValidator = multiTrackValidator from "Validation/RecoTrack/data/MultiTrackValidator.cfi"
+#    replace multiTkTrackValidator.out = "validationPlots_Tk.root"
+
+    replace multiTkTrackValidator.associators = {"TrackAssociatorByHits" }
+#    replace multiTkTrackValidator.associators = {"TrackAssociatorByHitFraction" }
+
+## detailled validator on L3 output/ L2 input
+
+    include "RecoMuon/WhatWentWrongInL3Muon/data/whatwentwronginl3muon.cff"
+    replace whatWentWrongInL3Muon.L2Label = standAloneMuons:UpdatedAtVtx
+
+#include "RecoMuon/L3MuonAnalyzer/data/L3MuonAnalyzer.cff"
+#replace l3MuonAnalyzer.l3muonLabel = L3MuonsTSGRSpxlod
+#replace l3MuonAnalyzer.rootFileName = "l3MuonsTSGRSpxlod.root"
+
+#sequence l3Validator = { l3MuonAnalyzer, whatWentWrongInL3Muon }
+sequence l3Validator = { whatWentWrongInL3Muon }
+
+
+#sequence validate = { mTrackValidator }
+#sequence validate = { mTrackValidator,  l3Validator }
+#sequence validate = { mTrackValidator, multiTkTrackValidator, l3Validator }
+
+# make the DQM base validation silent
+    replace multiTrackValidator.out = ""
+    replace multiTkTrackValidator.out = ""
+    replace whatWentWrongInL3Muon.rootFileName = ""
+
+#module printValidate = DQMRootFile {string DQMRootFileName = "dqmRootFile.root"}
+#sequence validate = { mTrackValidator, multiTkTrackValidator, l3Validator, printValidate }
+
+    module dqmSaver = DQMFileSaver {
+        untracked string fileName = "dqmRootFile"
+        untracked string environment = "Online"
+        untracked int32 prescaleLS = -1
+        untracked int32 prescaleEvt = -1
+        untracked int32 prescaleTime = -1
+        untracked bool saveAtRunEnd = false
+	untracked bool saveAtJobEnd = true
+    }
+
+sequence validate = { mTrackValidator, multiTkTrackValidator, l3Validator, dqmSaver }
+
+

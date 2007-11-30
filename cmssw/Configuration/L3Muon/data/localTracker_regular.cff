@@ -1,0 +1,11 @@
+include "RecoTracker/MeasurementDet/data/MeasurementTrackerESProducer.cfi"
+replace MeasurementTracker.stripClusterProducer = "siStripClusters"
+replace MeasurementTracker.OnDemand = false
+replace MeasurementTracker.Regional = false
+
+include "RecoTracker/MeasurementDet/test/MeasurementTrackerUpdator.cfi"
+replace measurementTrackerUpdator.measurementTrackerName = ""
+
+sequence localTracker = { doLocalTracker,
+	measurementTrackerUpdator }
+

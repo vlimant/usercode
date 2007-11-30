@@ -1,0 +1,55 @@
+#include "Configuration/StandardSequences/data/FakeConditions.cff"
+
+
+#include "L1Trigger/Configuration/data/CaloTriggerPrimitives.cff"
+include "Configuration/ReleaseValidation/data/Services.cff"
+include "Configuration/StandardSequences/data/Simulation.cff"
+include "Configuration/StandardSequences/data/MixingNoPileUp.cff"
+
+include "HLTrigger/Configuration/data/common/HLTSetupCommon.cff"
+//include "HLTrigger/Configuration/data/common/HLTSetupFromRaw.cff"
+include "HLTrigger/Configuration/data/common/HLTSetupFromDigis.cff"
+//include "HLTrigger/Configuration/data/rawToDigi/DigiToRaw.cff"
+
+include "Configuration/StandardSequences/data/L1Emulator.cff"
+include "Configuration/StandardSequences/data/L1Extra.cff"
+
+replace l1extraParticles.produceCaloParticles = false
+
+#sequence hltBegin =  { caloTriggerPrimitives, L1Emulator, L1Extra }
+#sequence hltBegin =  { mix, calDigi, L1Emulator, L1Extra }
+
+sequence hltBegin = { L1MuonEmulator, l1extraParticles }
+
+## L2 seeds from L1 input
+module MuonSeed = L2MuonSeeds from "RecoMuon/L2MuonSeedGenerator/data/L2MuonSeeds.cfi"
+
+## L2 reconstruction
+include "RecoMuon/L2MuonProducer/data/L2Muons.cff"
+module L2MuonsForL3 = L2Muons from "RecoMuon/L2MuonProducer/data/L2Muons.cfi"
+replace L2MuonsForL3.InputObjects = MuonSeed
+
+module L2MuonsForL3CheckAfter = trackToSimTrackComparator from "RecoTracker/TrackToSimTrackComparator/data/TrackToSimTrackComparator.cfi"
+replace L2MuonsForL3CheckAfter.trackLabel = L2MuonsForL3
+replace L2MuonsForL3CheckAfter.plotDirectoryName = "reL2_after"
+
+
+module L2MuonsForL3VtxCheckAfter = trackToSimTrackComparator from "RecoTracker/TrackToSimTrackComparator/data/TrackToSimTrackComparator.cfi"
+replace L2MuonsForL3VtxCheckAfter.trackLabel = L2MuonsForL3:UpdatedAtVtx
+replace L2MuonsForL3VtxCheckAfter.plotDirectoryName = "reL2vtx_after"
+
+
+
+    sequence muonReco = {  hltBegin, doLocalMuon, MuonSeed, L2MuonsForL3, L2MuonsForL3CheckAfter, L2MuonsForL3VtxCheckAfter }
+
+
+## rescale the l3 error matrix
+replace L3MuonsTSGRS.L3TrajBuilderParameters.SeedGeneratorParameters.errorMatrixPset = {
+	string action = "use"
+	string rootFileName = "errorMatrix_R120Z180.root"
+}
+
+replace L3MuonsTSGRSpxl.L3TrajBuilderParameters.SeedGeneratorParameters.errorMatrixPset = {
+	string action = "use"
+	string rootFileName = "errorMatrix_Ratio_F1L2.root"
+}

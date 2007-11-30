@@ -1,0 +1,20 @@
+es_module muonCkfTrajectoryFilter_OI = muonCkfTrajectoryFilter from "RecoMuon/L3TrackFinder/data/MuonCkfTrajectoryBuilderESProducer.cff"
+replace muonCkfTrajectoryFilter_OI.ComponentName = "muonCkfTrajectoryFilter_OI"
+replace muonCkfTrajectoryFilter_OI.filterPset.minimumNumberOfHits = 5
+replace muonCkfTrajectoryFilter_OI.filterPset.maxNumberOfHits = -1
+replace muonCkfTrajectoryFilter_OI.filterPset.maxLostHits = 2
+replace muonCkfTrajectoryFilter_OI.filterPset.maxConsecLostHits = 2
+replace muonCkfTrajectoryFilter_OI.filterPset.minPt = 5.0
+
+include "RecoMuon/L3TrackFinder/data/MuonCkfTrajectoryBuilderESProducer.cff"
+es_module muonCkfTrajectoryBuilder_OI = MuonCkfTrajectoryBuilder from "RecoMuon/L3TrackFinder/data/MuonCkfTrajectoryBuilderESProducer.cfi"
+replace muonCkfTrajectoryBuilder_OI.ComponentName = "muonCkfTrajectoryBuilder_OI"
+replace muonCkfTrajectoryBuilder_OI.trajectoryFilterName = "muonCkfTrajectoryFilter_OI"
+replace muonCkfTrajectoryBuilder_OI.useSeedLayer = false
+replace muonCkfTrajectoryBuilder_OI.rescaleErrorIfFail = 4.0
+
+include "Configuration/L3Muon/data/L3MuonsTSGRS.cfi"
+include "Configuration/L3Muon/data/L3MuonsTSGP.cfi"
+
+replace L3MuonsTSGRS.L3TrajBuilderParameters.TkTrackBuilder = "muonCkfTrajectoryBuilder_OI"
+replace L3MuonsTSGP.L3TrajBuilderParameters.TkTrackBuilder = "muonCkfTrajectoryBuilder_OI"

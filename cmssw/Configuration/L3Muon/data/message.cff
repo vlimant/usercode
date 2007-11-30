@@ -1,0 +1,75 @@
+service = MessageLogger { 
+	untracked vstring destinations = { "detailedInfo"
+#                                     		, "critical"
+#                                     		, "cerr"
+						, "debug" 
+#						, "debugLayer"
+					}
+#	untracked PSet critical     = { untracked string threshold = "ERROR" 
+#					untracked string extension = ".txt"   }
+	untracked PSet detailedInfo = { untracked string threshold = "INFO" 
+					untracked string extension = ".txt"   
+					untracked PSet GlobalMuonTrajectoryBuilder = { untracked int32 limit = 0 }
+					untracked PSet CSC  = { untracked int32 limit = 0 }
+					untracked PSet Muon  = { untracked int32 limit = 0 }
+	untracked PSet makeTrajsFromSeeds =  { untracked int32 limit = 0 } 
+	untracked PSet RecoMuon =  { untracked int32 limit = 0 }
+ } 
+#    	untracked PSet cerr  = { 	untracked string threshold = "WARNING"
+#					untracked string extension = ".txt"  }
+				
+	untracked vstring categories	= { 
+#						"TrackProducer" ,"TrackingTools" ,"TrackFitters" ,
+						"CkfPattern", "LayerMeasurements"
+#						 "MuonRSSeedGeneratorAlgorithm", "MuonRSTrajectoryBuilder",
+#						"StartingLayerFinder", "LayerCollector",
+#						"L3MuonAssociationMaker", "MuonProducer",
+#						"MuonRSSeedGenerator", 
+#						"TrackAssociator", "TkNavigation"
+#						"L3MuonAnalyzer"
+,						"TSGFromPropagation", "TSGForRoadSearch"
+#					,	"TkDetLayers", "TkNavigation"
+					,	"GlobalMuonTrajectoryBuilder", "RecoMuon"
+						, "TrackFitters"
+					,"JR"
+					}	
+#	untracked vstring debugModules   = { "*" }
+	untracked PSet debugLayer= {	untracked string threshold = "DEBUG" 
+					untracked PSet INFO            = { untracked int32 limit = 0 }
+                                       	untracked PSet DEBUG           = { untracked int32 limit = 0 }
+					untracked PSet TkDetLayers = { untracked int32 limit = 10000000}
+					untracked PSet CkfPattern  = { untracked int32 limit = 0}
+					untracked PSet TSGFromPropagation =  { untracked int32 limit = 0}
+					untracked PSet TSGForRoadSearch = { untracked int32 limit = 0} 
+				}
+
+	untracked PSet debug	={	untracked string threshold = "DEBUG" 
+					untracked PSet INFO            = { untracked int32 limit = 0 }
+                                       	untracked PSet DEBUG           = { untracked int32 limit = 0 }
+#			               	untracked PSet TrackProducer = { untracked int32 limit = 10000000}
+#					untracked PSet TrackingTools = { untracked int32 limit = 10000000}  
+#					untracked PSet TrackFitters  = { untracked int32 limit = 10000000}
+#					untracked PSet CkfPattern  = { untracked int32 limit = 10000000}
+#					untracked PSet LayerMeasurements = { untracked int32 limit = 10000000}
+#					untracked PSet MuonRSSeedGeneratorAlgorithm = { untracked int32 limit = 10000000}
+#					untracked PSet MuonRSTrajectoryBuilder = { untracked int32 limit = 10000000}
+#					untracked PSet StartingLayerFinder = { untracked int32 limit = 10000000}
+#					untracked PSet LayerCollector = { untracked int32 limit = 10000000}
+#					untracked PSet MuonProducer = { untracked int32 limit = 10000000}
+#					untracked PSet L3MuonAssociationMaker = { untracked int32 limit = 10000000}
+#					untracked PSet MuonRSSeedGenerator = { untracked int32 limit = 10000000}
+#					untracked PSet TrackAssociator = { untracked int32 limit = 10000000}
+#					untracked PSet TkNavigation = { untracked int32 limit = 10000000}
+#					untracked PSet L3MuonAnalyzer = { untracked int32 limit = 10000000}
+#					untracked PSet TSGFromPropagation =  { untracked int32 limit = 10000000} 
+#					untracked PSet TSGForRoadSearch = { untracked int32 limit = 10000000} 
+#					untracked PSet TkDetLayers = { untracked int32 limit = 1000000000}
+#					untracked PSet TkNavigation = { untracked int32 limit = 1000000000}
+#					untracked PSet GlobalMuonTrajectoryBuilder = { untracked int32 limit = 1000000000}
+#					untracked PSet RecoMuon = { untracked int32 limit = 1000000000}
+#					untracked PSet TrackFitters = { untracked int32 limit = 1000000000}
+					untracked PSet JR = { untracked int32 limit = 1000000000}
+				}
+
+	} 
+

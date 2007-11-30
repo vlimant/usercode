@@ -1,0 +1,18 @@
+
+replace PoolSource.fileNames = {
+'rfio:/castor/cern.ch/user/v/vlimant/muGun/170pre7/simulation-4mu-flatpt-0-200_CMSSW170pre7-1000-0.root',
+'rfio:/castor/cern.ch/user/v/vlimant/muGun/170pre7/simulation-4mu-flatpt-0-200_CMSSW170pre7-1000-1.root',
+'rfio:/castor/cern.ch/user/v/vlimant/muGun/170pre7/simulation-4mu-flatpt-0-200_CMSSW170pre7-1000-2.root',
+'rfio:/castor/cern.ch/user/v/vlimant/muGun/170pre7/simulation-4mu-flatpt-0-200_CMSSW170pre7-1000-3.root',
+'rfio:/castor/cern.ch/user/v/vlimant/muGun/170pre7/simulation-4mu-flatpt-0-200_CMSSW170pre7-1000-4.root',
+'rfio:/castor/cern.ch/user/v/vlimant/muGun/170pre7/simulation-4mu-flatpt-0-200_CMSSW170pre7-1000-5.root',
+'rfio:/castor/cern.ch/user/v/vlimant/muGun/170pre7/simulation-4mu-flatpt-0-200_CMSSW170pre7-1000-6.root',
+'rfio:/castor/cern.ch/user/v/vlimant/muGun/170pre7/simulation-4mu-flatpt-0-200_CMSSW170pre7-1000-7.root',
+'rfio:/castor/cern.ch/user/v/vlimant/muGun/170pre7/simulation-4mu-flatpt-0-200_CMSSW170pre7-1000-8.root',
+'rfio:/castor/cern.ch/user/v/vlimant/muGun/170pre7/simulation-4mu-flatpt-0-200_CMSSW170pre7-1000-9.root'
+}
+
+
+
+module preScaler = Prescaler{ int32 prescaleFactor = 1 }
+sequence filter = { preScaler }

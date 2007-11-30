@@ -1,0 +1,15 @@
+###include the official configuration
+# defines L3Muons module
+include "RecoMuon/L3MuonProducer/data/L3Muons.cff"
+
+# defines the L3MuonsBase and L3MuonTSGRSpxl
+include "Configuration/L3Muon/data/L3Muons-IOpxl.cff"
+
+# defines the L3MuonsTSGRS and L3MuonsTSGP
+include "Configuration/L3Muon/data/L3Muons-OI.cff"
+
+
+
+# not used yet
+#include "Configuration/L3Muon/data/L3MuonsSmart.cff"
+#include "Configuration/L3Muon/data/L3Muons-IOnopxl.cff"

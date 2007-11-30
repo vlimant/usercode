@@ -1,0 +1,18 @@
+include "TrackingTools/TrajectoryFiltering/data/TrajectoryFilter.cff"
+
+es_module HLTTrajectoryFilter  = TrajectoryFilterESProducer {
+	string ComponentName = "HLTTrajectoryFilter"
+	PSet filterPset = {
+		string ComponentType = "CompositeTrajectoryFilter"
+		VPSet filters ={
+			{ using ckfBaseTrajectoryFilter },
+			{ 	
+				#everything above 10 GeV will be stopped
+				string ComponentType = "ThresholdPtTrajectoryFilter"
+				double thresholdPt = 10.0
+				double nSigmaThresholdPt = 5.0
+				int32 minHitsThresholdPt = 5
+			}
+		}
+	}
+}

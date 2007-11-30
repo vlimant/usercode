@@ -1,0 +1,11 @@
+
+replace PoolSource.fileNames = {
+'/store/mc/2007/11/20/RelVal-RelValSingleMuPlusPt10-1195558826/0000/5093DF9D-4A99-DC11-84FD-003048561206.root',
+'/store/mc/2007/11/20/RelVal-RelValSingleMuPlusPt10-1195558826/0000/F439AB24-6497-DC11-BA02-001617C3B5F4.root',
+'/store/mc/2007/11/20/RelVal-RelValSingleMuPlusPt10-1195558826/0000/F47C46F9-2898-DC11-A6A5-001617C3B6DC.root'
+}
+
+
+
+module preScaler = Prescaler{ int32 prescaleFactor = 1 }
+sequence filter = { preScaler }
