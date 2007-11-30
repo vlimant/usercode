@@ -13,7 +13,7 @@
 //
 // Original Author:  Jean-Roch Vlimant
 //         Created:  Fri May  4 19:07:59 CDT 2007
-// $Id$
+// $Id: TrackToSimTrackComparator.cc,v 1.2 2007/11/27 20:47:35 vlimant Exp $
 //
 //
 
@@ -51,6 +51,10 @@
 
 #include <DataFormats/GeometrySurface/interface/Plane.h>
 
+#include "DQMServices/Core/interface/DaqMonitorBEInterface.h"
+#include "DQMServices/Daemon/interface/MonitorDaemon.h"
+#include "FWCore/ServiceRegistry/interface/Service.h"
+
 #include "TFile.h"
 #include "TH1F.h"
 #include "TH2F.h"
@@ -73,6 +77,9 @@ class TrackToSimTrackComparator : public edm::EDAnalyzer {
   virtual void endJob() ;
 
   TH1* get(const char * hname);
+  TH1F * book1D(TString name, 
+		TString title, 
+		int nchX, double lowX, double highX);
 
   // ----------member data ---------------------------
   edm::InputTag theTrackLabel;
@@ -80,19 +87,20 @@ class TrackToSimTrackComparator : public edm::EDAnalyzer {
 
   //name of the associator
   std::string theAssocLabel;
-   //add this for track association
+  //add this for track association
   edm::ESHandle<TrackAssociatorBase> theAssociator;
 
   edm::ESHandle<MagneticField> theField;
 
-  std::string thePlotFileName;
-  TFile * thePlotFile;
+  std::string thePlotDirectoryName;
   std::string theCategory;
 
   bool doWithExtrapolator;
   bool doWithPerigee;
   bool doWithLocal;
   bool doWithPlane;
+
+  std::map<std::string, TH1*> whoIsWhat;
 };
 
 //
@@ -111,7 +119,7 @@ TrackToSimTrackComparator::TrackToSimTrackComparator(const edm::ParameterSet& iC
   theCategory = "TrackToSimTrackComparator";
 
    //now do what ever initialization is needed
-  thePlotFileName = iConfig.getParameter<std::string>("plotFileName");
+  thePlotDirectoryName = iConfig.getParameter<std::string>("plotDirectoryName");
 
   theAssocLabel = iConfig.getParameter<std::string>("associatorName");
 
@@ -413,46 +421,54 @@ TrackToSimTrackComparator::analyze(const edm::Event& iEvent, const edm::EventSet
    }//both reference are not empty
 }
 
-
-TH1 * TrackToSimTrackComparator::get(const char * hname){
-  thePlotFile->cd();
-  TDirectory::TContext context(thePlotFile);
-  TH1* h = (TH1*) thePlotFile->Get(hname);
-  if (!h){
+TH1* TrackToSimTrackComparator::get(const char * hname){
+  std::map<std::string, TH1*>::iterator f = whoIsWhat.find(hname);
+  if (f!=whoIsWhat.end()){
+    return f->second;}
+  else {
     edm::LogError(theCategory)<<"\n\n\n\n\n################################################################################\n"
 			      <<"################################################################################\n"
 			      <<"################################################################################\n"
-			      <<"could not get: "<<hname<<" from the histogram file. expect troubles. like a seg fault."
-			      <<"################################################################################\n"
-			      <<"gDirectory: "<<gDirectory->GetName() <<"\n"
-			      <<"################################################################################\n"
-			      <<"################################################################################";
-    thePlotFile->ls();
+			      <<"could not get: "<<hname<<". expect troubles. like a seg fault."
+			      <<"################################################################################\n";
+    return 0;
   }
-  return h;}
+}
+
+
+TH1F * TrackToSimTrackComparator::book1D(TString n, 
+					 TString t, 
+					 int nchX, double lowX, double highX)
+{
+  std::string name(n);
+  std::string title(t);
+  MonitorElement * me = edm::Service<DaqMonitorBEInterface>()->book1D(name, title, nchX, lowX, highX);
+  TH1F * h=dynamic_cast<TH1F*>(&(**((MonitorElementRootH2 *)me)));
+  whoIsWhat[name]=h;
+  return h;
+}
+
+
 
 // ------------ method called once each job just before starting event loop  ------------
 void 
 TrackToSimTrackComparator::beginJob(const edm::EventSetup& setup)
 {
-  thePlotFile = new TFile(thePlotFileName.c_str(),"recreate");
-  thePlotFile->cd();
-
-  TDirectory::TContext context(thePlotFile);
+  edm::Service<DaqMonitorBEInterface>()->setCurrentFolder(thePlotDirectoryName);
 
   //book histograms in this section
   //you will get them back from their name
   TH1 * h;
  
-  h= new TH1D("h_track_pT","reco::Track transverse momentum",200,0,200);
+  h= book1D("h_track_pT","reco::Track transverse momentum",200,0,200);
   h->SetXTitle("track p_{T} [GeV]");
   // and so on
 
-  h = new TH1D("h_fts_origin_state_x","x distribution for fts origin_state of SimTrack",100,-.006,.006);
+  h= book1D("h_fts_origin_state_x","x distribution for fts origin_state of SimTrack",100,-.006,.006);
   h->SetXTitle("x [cm]");
-  h = new TH1D("h_fts_origin_state_y","y distribution for fts origin_state of SimTrack",100,-.006,.006);
+  h= book1D("h_fts_origin_state_y","y distribution for fts origin_state of SimTrack",100,-.006,.006);
   h->SetXTitle("y [cm]");
-  h = new TH1D("h_fts_origin_state_z","z distribution for fts origin_state of SimTrack",100,-.006,.006);
+  h= book1D("h_fts_origin_state_z","z distribution for fts origin_state of SimTrack",100,-.006,.006);
   h->SetXTitle("z [cm]");
 
 
@@ -468,23 +484,23 @@ TrackToSimTrackComparator::beginJob(const edm::EventSetup& setup)
     const double perigee_residual_max[5] ={0.003, 0.1, 0.5, .2, 5};
 
     for (uint ih=0;ih!=5;++ih) {
-      h= new TH1D("h_perigee_sim_"+perigee_tags[ih],perigee_vars[ih]+" distribution for SimTrack",perigee_n[ih],perigee_min[ih],perigee_max[ih]);
+      h= book1D("h_perigee_sim_"+perigee_tags[ih],perigee_vars[ih]+" distribution for SimTrack",perigee_n[ih],perigee_min[ih],perigee_max[ih]);
       h->SetXTitle(perigee_vars[ih]+" "+perigee_units[ih]);
-      h= new TH1D("h_perigee_track_"+perigee_tags[ih],perigee_vars[ih]+" distribution for Track",perigee_n[ih],perigee_min[ih],perigee_max[ih]);
+      h= book1D("h_perigee_track_"+perigee_tags[ih],perigee_vars[ih]+" distribution for Track",perigee_n[ih],perigee_min[ih],perigee_max[ih]);
       h->SetXTitle(perigee_vars[ih]+" "+perigee_units[ih]);
       //difference
 
 
 
       //difference/error
-      h= new TH1D("h_perigee_pull_"+perigee_tags[ih],perigee_vars[ih]+" pull",perigee_n[ih],-6,6);
+      h= book1D("h_perigee_pull_"+perigee_tags[ih],perigee_vars[ih]+" pull",perigee_n[ih],-6,6);
       h->SetXTitle("#frac{#Delta_{gen-reco}}{#sigma}("+perigee_vars[ih]+") [100%]");
       //error
-      h = new TH1D("h_perigee_sigma_"+perigee_tags[ih],perigee_vars[ih]+" sigma",perigee_n[ih],perigee_min[ih],perigee_max[ih]);
+      h= book1D("h_perigee_sigma_"+perigee_tags[ih],perigee_vars[ih]+" sigma",perigee_n[ih],perigee_min[ih],perigee_max[ih]);
       h->SetXTitle("#sigma("+perigee_vars[ih]+") "+perigee_units[ih]);
 
 
-      h= new TH1D("h_perigee_residual_"+perigee_tags[ih],perigee_vars[ih]+" residual",perigee_n[ih],perigee_residual_min[ih],perigee_residual_max[ih]);
+      h= book1D("h_perigee_residual_"+perigee_tags[ih],perigee_vars[ih]+" residual",perigee_n[ih],perigee_residual_min[ih],perigee_residual_max[ih]);
       h->SetXTitle("#Delta_{gen-reco}("+perigee_vars[ih]+") "+perigee_units[ih]);
 
     }
@@ -499,18 +515,18 @@ TrackToSimTrackComparator::beginJob(const edm::EventSetup& setup)
     const double local_min[5] = { -100, -TMath::Pi()/2., -TMath::Pi()/2., -10, -30 } ;
     const double local_max[5] = { 100, TMath::Pi()/2., TMath::Pi()/2., 10, 30 } ;
     for (uint ihist=0;ihist!=5;++ihist) {
-      h= new TH1D("hist_local_sim_"+local_tags[ihist],local_vars[ihist]+" distribution for SimTrack",local_n[ihist],local_min[ihist],local_max[ihist]);
+      h= book1D("hist_local_sim_"+local_tags[ihist],local_vars[ihist]+" distribution for SimTrack",local_n[ihist],local_min[ihist],local_max[ihist]);
       h->SetXTitle(local_vars[ihist]+" "+local_units[ihist]);
-      h= new TH1D("hist_local_track_"+local_tags[ihist],local_vars[ihist]+" distribution for Track",local_n[ihist],local_min[ihist],local_max[ihist]);
+      h= book1D("hist_local_track_"+local_tags[ihist],local_vars[ihist]+" distribution for Track",local_n[ihist],local_min[ihist],local_max[ihist]);
       h->SetXTitle(local_vars[ihist]+" "+local_units[ihist]);
       //difference
-      h= new TH1D("hist_local_residual_"+local_tags[ihist],local_vars[ihist]+" residual",local_n[ihist],local_min[ihist],local_max[ihist]);
+      h= book1D("hist_local_residual_"+local_tags[ihist],local_vars[ihist]+" residual",local_n[ihist],local_min[ihist],local_max[ihist]);
       h->SetXTitle("#Delta_{gen-reco}("+local_vars[ihist]+") "+local_units[ihist]);
       //difference/error
-      h= new TH1D("hist_local_pull_"+local_tags[ihist],local_vars[ihist]+" pull",local_n[ihist],local_min[ihist],local_max[ihist]);
+      h= book1D("hist_local_pull_"+local_tags[ihist],local_vars[ihist]+" pull",local_n[ihist],local_min[ihist],local_max[ihist]);
       h->SetXTitle("#frac{#Delta_{gen-reco}}{#sigma}("+local_vars[ihist]+") [100%]");
       //error
-      h= new TH1D("hist_local_sigma_"+local_tags[ihist],local_vars[ihist]+" sigma",local_n[ihist],local_min[ihist],local_max[ihist]);
+      h= book1D("hist_local_sigma_"+local_tags[ihist],local_vars[ihist]+" sigma",local_n[ihist],local_min[ihist],local_max[ihist]);
       h->SetXTitle("#sigma("+local_vars[ihist]+") "+local_units[ihist]);
 
     }
@@ -529,18 +545,18 @@ TrackToSimTrackComparator::beginJob(const edm::EventSetup& setup)
     const double global_FTS_pull_max[6] = { 6, 6, 6, 6, 6, 6 } ;
     
     for (uint ihist=0;ihist!=6;++ihist) {
-      h= new TH1D("hist_global_FTS_sim_"+global_FTS_tags[ihist],global_FTS_vars[ihist]+" distribution for SimTrack",global_FTS_n[ihist],global_FTS_min[ihist],global_FTS_max[ihist]);
+      h= book1D("hist_global_FTS_sim_"+global_FTS_tags[ihist],global_FTS_vars[ihist]+" distribution for SimTrack",global_FTS_n[ihist],global_FTS_min[ihist],global_FTS_max[ihist]);
       h->SetXTitle(global_FTS_vars[ihist]+" "+global_FTS_units[ihist]);
-      h= new TH1D("hist_global_FTS_track_"+global_FTS_tags[ihist],global_FTS_vars[ihist]+" distribution for Track",global_FTS_n[ihist],global_FTS_min[ihist],global_FTS_max[ihist]);
+      h= book1D("hist_global_FTS_track_"+global_FTS_tags[ihist],global_FTS_vars[ihist]+" distribution for Track",global_FTS_n[ihist],global_FTS_min[ihist],global_FTS_max[ihist]);
       h->SetXTitle(global_FTS_vars[ihist]+" "+global_FTS_units[ihist]);
       //difference
-      h= new TH1D("hist_global_FTS_residual_"+global_FTS_tags[ihist],global_FTS_vars[ihist]+" residual",global_FTS_n[ihist],global_FTS_min[ihist],global_FTS_max[ihist]);
+      h= book1D("hist_global_FTS_residual_"+global_FTS_tags[ihist],global_FTS_vars[ihist]+" residual",global_FTS_n[ihist],global_FTS_min[ihist],global_FTS_max[ihist]);
       h->SetXTitle("#Delta_{gen-reco}("+global_FTS_vars[ihist]+") "+global_FTS_units[ihist]);
       //difference/error
-      h= new TH1D("hist_global_FTS_pull_"+global_FTS_tags[ihist],global_FTS_vars[ihist]+" pull",global_FTS_n[ihist],global_FTS_pull_min[ihist],global_FTS_pull_max[ihist]);
+      h= book1D("hist_global_FTS_pull_"+global_FTS_tags[ihist],global_FTS_vars[ihist]+" pull",global_FTS_n[ihist],global_FTS_pull_min[ihist],global_FTS_pull_max[ihist]);
       h->SetXTitle("#frac{#Delta_{gen-reco}}{#sigma}("+global_FTS_vars[ihist]+") [100%]");
       //error
-      h= new TH1D("hist_global_FTS_sigma_"+global_FTS_tags[ihist],global_FTS_vars[ihist]+" sigma",global_FTS_n[ihist],0.,global_FTS_max[ihist]);
+      h= book1D("hist_global_FTS_sigma_"+global_FTS_tags[ihist],global_FTS_vars[ihist]+" sigma",global_FTS_n[ihist],0.,global_FTS_max[ihist]);
       h->SetXTitle("#sigma("+global_FTS_vars[ihist]+") "+global_FTS_units[ihist]);
       
     }
@@ -558,18 +574,18 @@ TrackToSimTrackComparator::beginJob(const edm::EventSetup& setup)
     const double local_TSOS_pull_max[5] = {6, 6, 6, 6, 6 } ;
 
     for (uint ihist=0;ihist!=5;++ihist) {
-      h= new TH1D("hist_local_TSOS_sim_"+local_TSOS_tags[ihist],local_TSOS_vars[ihist]+" distribution for SimTrack",local_TSOS_n[ihist],local_TSOS_min[ihist],local_TSOS_max[ihist]);
+      h= book1D("hist_local_TSOS_sim_"+local_TSOS_tags[ihist],local_TSOS_vars[ihist]+" distribution for SimTrack",local_TSOS_n[ihist],local_TSOS_min[ihist],local_TSOS_max[ihist]);
       h->SetXTitle(local_TSOS_vars[ihist]+" "+local_TSOS_units[ihist]);
-      h= new TH1D("hist_local_TSOS_track_"+local_TSOS_tags[ihist],local_TSOS_vars[ihist]+" distribution for Track",local_TSOS_n[ihist],local_TSOS_min[ihist],local_TSOS_max[ihist]);
+      h= book1D("hist_local_TSOS_track_"+local_TSOS_tags[ihist],local_TSOS_vars[ihist]+" distribution for Track",local_TSOS_n[ihist],local_TSOS_min[ihist],local_TSOS_max[ihist]);
       h->SetXTitle(local_TSOS_vars[ihist]+" "+local_TSOS_units[ihist]);
       //difference
-      h= new TH1D("hist_local_TSOS_residual_"+local_TSOS_tags[ihist],local_TSOS_vars[ihist]+" residual",local_TSOS_n[ihist],local_TSOS_min[ihist],local_TSOS_max[ihist]);
+      h= book1D("hist_local_TSOS_residual_"+local_TSOS_tags[ihist],local_TSOS_vars[ihist]+" residual",local_TSOS_n[ihist],local_TSOS_min[ihist],local_TSOS_max[ihist]);
       h->SetXTitle("#Delta_{gen-reco}("+local_TSOS_vars[ihist]+") "+local_TSOS_units[ihist]);
       //difference/error
-      h= new TH1D("hist_local_TSOS_pull_"+local_TSOS_tags[ihist],local_TSOS_vars[ihist]+" pull",local_TSOS_n[ihist],local_TSOS_pull_min[ihist],local_TSOS_pull_max[ihist]);
+      h= book1D("hist_local_TSOS_pull_"+local_TSOS_tags[ihist],local_TSOS_vars[ihist]+" pull",local_TSOS_n[ihist],local_TSOS_pull_min[ihist],local_TSOS_pull_max[ihist]);
       h->SetXTitle("#frac{#Delta_{gen-reco}}{#sigma}("+local_TSOS_vars[ihist]+") [100%]");
       //error
-      h= new TH1D("hist_local_TSOS_sigma_"+local_TSOS_tags[ihist],local_TSOS_vars[ihist]+" sigma",local_TSOS_n[ihist],0.,local_TSOS_max[ihist]);
+      h= book1D("hist_local_TSOS_sigma_"+local_TSOS_tags[ihist],local_TSOS_vars[ihist]+" sigma",local_TSOS_n[ihist],0.,local_TSOS_max[ihist]);
       h->SetXTitle("#sigma("+local_TSOS_vars[ihist]+") "+local_TSOS_units[ihist]);
 
     }
@@ -578,15 +594,12 @@ TrackToSimTrackComparator::beginJob(const edm::EventSetup& setup)
 
 
   edm::LogInfo(theCategory)<<" histograms book.";
-  thePlotFile->ls();
 
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
 void 
 TrackToSimTrackComparator::endJob() {
-  thePlotFile->Write();  
-  thePlotFile->Close();
 }
 
 //define this as a plug-in

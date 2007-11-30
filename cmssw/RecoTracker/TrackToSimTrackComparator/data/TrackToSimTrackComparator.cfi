@@ -3,5 +3,5 @@ module trackToSimTrackComparator = TrackToSimTrackComparator {
 	InputTag trackingParticleLabel = trackingtruthprod
 	string associatorName = "TrackAssociatorByPosition"
 
-	string plotFileName ="trackToSimTrackComparator.root"
+	string plotDirectoryName ="trackToSimTrackComparator.root"
 }

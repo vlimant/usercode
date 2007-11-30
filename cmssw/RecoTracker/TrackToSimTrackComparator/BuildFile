@@ -12,6 +12,7 @@
 <use name=Foundation/PluginManager>
 <use name=FWCore/ParameterSet>
 
+<use name=DQMServices/Core>
 <use name=root>
 
 <flags EDM_PLUGIN=1>
@@ -33,6 +34,7 @@
 <use name=Foundation/PluginManager>
 <use name=FWCore/ParameterSet>
 
+<use name=DQMServices/Core>
 <use name=root>
 
 </export>
