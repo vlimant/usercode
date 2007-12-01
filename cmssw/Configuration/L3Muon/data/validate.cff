@@ -45,7 +45,7 @@ sequence mTrackValidator = { cutsTPEffic, cutsTPFake, multiTrackValidator }
 ## detailled validator on L3 output/ L2 input
 
     include "RecoMuon/WhatWentWrongInL3Muon/data/whatwentwronginl3muon.cff"
-    replace whatWentWrongInL3Muon.L2Label = standAloneMuons:UpdatedAtVtx
+    replace whatWentWrongInL3Muon.L2Label = L2MuonsForL3:UpdatedAtVtx
 
 #include "RecoMuon/L3MuonAnalyzer/data/L3MuonAnalyzer.cff"
 #replace l3MuonAnalyzer.l3muonLabel = L3MuonsTSGRSpxlod
