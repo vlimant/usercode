@@ -32,7 +32,11 @@ WhatWentWrongInL3Muon::~WhatWentWrongInL3Muon()
 
 void WhatWentWrongInL3Muon::one(nodePlotter & node1, reco::TrackRef & refL2, FreeTrajectoryState & l2State){
   node1.element("nRecHit")->Fill(refL2->recHitsSize());
-  node1.element("nRecHit_2D")->Fill(l2State.momentum().perp(), l2State.momentum().eta(), refL2->recHitsSize()); 
+  //  node1.element("nRecHit_2D")->Fill(l2State.momentum().perp(), l2State.momentum().eta(), refL2->recHitsSize()); 
+  node1.element("nRecHit_eta")->Fill(l2State.momentum().eta(), refL2->recHitsSize()); 
+  node1.element("nRecHit_pt")->Fill(l2State.momentum().perp(), refL2->recHitsSize()); 
+  node1.element("nRecHit_p_eta")->Fill(l2State.momentum().eta(), refL2->recHitsSize()); 
+  node1.element("nRecHit_p_pt")->Fill(l2State.momentum().perp(), refL2->recHitsSize()); 
   node1.element("px")->Fill(l2State.momentum().x());
   node1.element("py")->Fill(l2State.momentum().y());
   node1.element("pz")->Fill(l2State.momentum().z());
@@ -265,7 +269,11 @@ WhatWentWrongInL3Muon::beginJob(const edm::EventSetup&)
 	theDQM->setCurrentFolder(node3.fullName());
 	edm::LogVerbatim(category)<<node3.fullName();
 	node3.registerElement(theDQM->book1D("nRecHit","number of muon rechits", 100, 0, 100));
-	node3.registerElement(theDQM->bookProfile2D("nRecHit_2D","number of muon rechits versus eta and pt", 500,0,500, 50,-5,5, 100, 0, 100));
+	//	node3.registerElement(theDQM->bookProfile2D("nRecHit_2D","number of muon rechits versus eta and pt", 500,0,500, 50,-5,5, 100, 0, 100));
+	node3.registerElement(theDQM->bookProfile("nRecHit_p_eta","number of muon rechits versus eta",50,-5,5, 100, 0, 100));
+	node3.registerElement(theDQM->bookProfile("nRecHit_p_pt","number of muon rechits versus pt", 500,0,500, 100, 0, 100));
+	node3.registerElement(theDQM->book2D("nRecHit_eta","number of muon rechits versus eta",50,-5,5, 100, 0, 100));
+	node3.registerElement(theDQM->book2D("nRecHit_pt","number of muon rechits versus pt", 500,0,500, 100, 0, 100));
 	node3.registerElement(theDQM->book1D("px","p_{x} in GeV",300,-300,300));
 	node3.registerElement(theDQM->book1D("py","p_{y} in GeV",300,-300,300));
 	node3.registerElement(theDQM->book1D("pz","p_{z} in GeV",300,-300,300));
