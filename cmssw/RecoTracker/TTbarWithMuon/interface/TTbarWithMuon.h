@@ -13,7 +13,7 @@
 //
 // Original Author:  Jean-Roch Vlimant
 //         Created:  Thu Nov  9 15:04:53 CST 2006
-// $Id$
+// $Id: TTbarWithMuon.h,v 1.2 2007/11/27 19:09:23 vlimant Exp $
 //
 //
 
@@ -56,5 +56,7 @@ class TTbarWithMuon : public edm::EDFilter {
   edm::InputTag HEPsourceLabel;
   std::vector<int> B_decay;
   bool W_decay;
+
+  std::map<int,int> counts;
 };
 

@@ -13,7 +13,7 @@
 //
 // Original Author:  Jean-Roch Vlimant
 //         Created:  Thu Nov  9 15:04:53 CST 2006
-// $Id$
+// $Id: TTbarWithMuon.cc,v 1.2 2007/11/27 19:09:24 vlimant Exp $
 //
 //
 
@@ -52,6 +52,7 @@ TTbarWithMuon::~TTbarWithMuon()
 bool
 TTbarWithMuon::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
+
    using namespace edm;
    using namespace std;
    //purpose:
@@ -80,6 +81,9 @@ TTbarWithMuon::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	   const HepMC::GenParticle * mother = *(part->production_vertex()->particles_in_const_begin());
 	   if (mother){
 
+	     //count each occurence.
+	     counts[mother->pdg_id()]++;
+
 	     if (abs(mother->pdg_id()) ==24 && W_decay)// from W decay 
 	       { edm::LogInfo("TTbarWithMuon::filter(...)")<<" W decaying into mu";return true;}
 
@@ -102,6 +106,13 @@ TTbarWithMuon::beginJob(const edm::EventSetup&)
 // ------------ method called once each job just after ending the event loop  ------------
 void 
 TTbarWithMuon::endJob() {
+  
+  edm::LogVerbatim("TTbarWithMuon")<<"TTbarWithMuon::endJob()  summary.";
+  edm::LogVerbatim("TTbarWithMuon")<<"--------------------------------------------------";
+  for (std::map<int, int>::iterator it=counts.begin(); it!=counts.end();++it){
+    edm::LogVerbatim("TTbarWithMuon")<<"particle: "<<"cannot retrieve"<<" with id: "<<it->first<<" was mother of a muon: "<<it->second<<" times.";
+  }
+  edm::LogVerbatim("TTbarWithMuon")<<"--------------------------------------------------";
 }
 
 //define this as a plug-in
