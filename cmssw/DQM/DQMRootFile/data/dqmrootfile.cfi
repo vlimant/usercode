@@ -1,9 +1,4 @@
-// Put here the modules you want the cfg file to use,
-// then include this file in your cfg file.
-// i.e. in DQMRootFile.cfg replace 'module demo = DQMRootFile {} '
-// with 'include "anlyzerDir/DQMRootFile/data/DQMRootFile.cfi" '.
-// (Remember that filenames are case sensitive.)
 
-module demo = DQMRootFile {
-
+module saver = DQMRootFile {
+	string DQMRootFileName = "DQM_dqmRootFile.root"
 }
