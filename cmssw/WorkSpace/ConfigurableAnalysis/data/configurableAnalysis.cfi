@@ -1,0 +1,99 @@
+module configurableAnalysis = ConfigurableAnalysis{
+
+	PSet Selections={
+		PSet filters={
+			PSet triggers={
+			 string selector="HLTEventSelector"
+			 InputTag triggerResults=TriggerResults::HLT
+			 vstring pathNames = { "HLT1MuonIso", "HLT2MuonIso" }
+			}
+	
+			PSet leadingMuon={}
+			PSet jets={
+			 string selector="JetEventSelector"
+			 InputTag src=selectedLayer1Jets
+			 vdouble minEt = { 50., 50., 50. }
+			 vdouble maxEta = { 3., 3., 3. }
+			 vdouble maxEMFraction = { 999., 999., 999. }
+			}
+			PSet MET={
+			 string selector = "METEventSelector"
+ 			 InputTag src = selectedLayer1METs
+			 double minMET = 130.
+			}
+			
+			PSet leadingJet={
+			 string selector="JetEventSelector"
+			 InputTag src=selectedLayer1Jets
+			 vdouble minEt = { 440., 0., 0. }
+			 vdouble maxEta = { 1.9., 3., 3. }
+			 vdouble maxEMFraction = { 999., 999., 999. }
+			}
+
+			PSet secondJet={
+			 string selector="JetEventSelector"
+			 InputTag src=selectedLayer1Jets
+			 vdouble minEt = { 0., 440., 0. }
+			 vdouble maxEta = { 0., 1.5., 3. }
+			 vdouble maxEMFraction = { 999., 999., 999. }
+			}
+
+			PSet thirdJet={
+			 string selector="JetEventSelector"
+			 InputTag src=selectedLayer1Jets
+			 vdouble minEt = { 0., 0., 50. }
+			 vdouble maxEta = { 3., 3., 3. }
+			 vdouble maxEMFraction = { 999., 999., 999. }
+			}
+
+			PSet dPhiJ1J2={}
+			PSet dPhiJ1MET={}
+			PSet dPhiJ2MET={}
+		}
+		PSet selections={
+			PSet preSelection={
+				vstring filterOrder = { "triggers", "leadingMuon", "jets"}
+				bool ntuplize=false
+				bool makeFinalPlots=false
+				bool makeCumulativePlots=false
+				bool makeAllButOnePlots=false
+				bool makeSummaryTable=false
+			}
+			PSet finalSelection={
+				vstring filterOrder = {
+						"leadingJet",
+						"secondJet",
+						"thirdJet",
+						"dPhiJ1J2",
+						"dPhiJ1MET",
+						"dPhiJ2MET"}
+				bool ntuplize=false
+				bool makeFinalPlots=false
+				bool makeCumulativePlots=false
+				bool makeAllButOnePlots=false
+				bool makeSummaryTable=false
+			}
+			PSet fullSelection={
+				vstring filterOrder={ "preSelection", "finalSelection" }
+				bool ntuplize=true
+				bool makeFinalPlots=true
+				bool makeCumulativePlots=true
+				bool makeAllButOnePlots=true
+				bool makeSummaryTable=true
+			}
+		}
+	}//Selections
+
+	vstring flows={ "fullSelection" }
+
+	PSet Plotter={ #harry's the first name
+		//already existing tool
+		//...
+	}
+
+	PSet Ntupler={
+		//already existing tools
+		//define the variables and leaves you want to plot
+		//...
+	}
+}
