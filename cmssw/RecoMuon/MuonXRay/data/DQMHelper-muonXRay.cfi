@@ -1,0 +1,55 @@
+
+PSet DQMHelper = {
+ # don't specify the directory if you don't want to
+ # string directory="AssociatedMuonXRay/@module_label"
+ PSet H1s = {
+	PSet h_parent_id={
+		string title="Name of parent particle from tight association"
+		uint32 nBins=16
+		double Min=-0.5
+		double Max=15.5
+	}
+	PSet h_num_sim= {
+		string title="number of sim muons."
+		uint32 nBins=21
+		double Min=-0.5
+		double Max=20.5
+ 	}
+	PSet h_mu_sim_pt={
+		string title="muon p_{T}^{sim}"
+		PSet xAxis={using pTbinning
+			string Label="muon p_{T}^{sim} [GeV]"}
+	}
+	PSet h_mu_sim_Aeta={
+		string title="muon |#eta^{sim}|"
+		PSet xAxis={using Aetabinning
+			string Label="muon |#eta^{sim}|"}
+	}
+	PSet h_mu_sim_eta={
+		string title="muon #eta^{sim}"
+		PSet xAxis={using etabinning
+			string Label="muon #eta^{sim}"}
+	}
+	PSet h_sim_vertex_position={
+		string title="production vertex position"
+		uint32 nBins=200
+		double Min=0
+		double Max=400
+		string Label="d(origin, decay_{vertex}) [cm]"
+	}
+	PSet h_mu_sim_pt_tricky={
+		string title="pt of sim muons for tricky events"
+		PSet xAxis={using pTbinning
+			string Label="muon p_{T}^{sim} [GeV]"}
+	}
+	PSet h_mu_sim_eta_tricky={
+		string title="|#eta|^{sim} of muon for tricky events"
+		PSet xAxis={using etabinning
+			string Label="muon |#eta|^{sim}"}
+	}
+ }
+ PSet H2s = {}
+# PSet sH1s = {}
+# PSet P1s = {}
+
+}

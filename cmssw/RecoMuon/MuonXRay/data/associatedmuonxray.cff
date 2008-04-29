@@ -1,0 +1,32 @@
+
+## need to redo the tracking particles
+include "SimGeneral/TrackingAnalysis/data/trackingParticles.cfi"
+#allow decays in flight to be there
+replace trackingParticles.vertexDistanceCut = 1000
+
+##tracking particles
+module tpForL3Muon = cutsTPEffic from "Validation/RecoTrack/data/cutsTPEffic.cfi"
+#only muons
+replace tpForL3Muon.pdgId = {13,-13}
+#allows decays in flight
+replace tpForL3Muon.tip = 10000
+replace tpForL3Muon.lip = 10000
+replace tpForL3Muon.src = trackingParticles
+
+## associator
+es_module AssociatorByDeltaR0pt1 = TrackAssociatorByPosition from "SimTracker/TrackAssociation/data/TrackAssociatorByPosition.cfi"
+replace AssociatorByDeltaR.method = "posdr"
+replace AssociatorByDeltaR.QCut = 0.1
+replace AssociatorByDeltaR.ComponentName = "AssociatorByDeltaR0.1"
+
+es_module AssociatorByDeltaR0pt2 = TrackAssociatorByPosition from "SimTracker/TrackAssociation/data/TrackAssociatorByPosition.cfi"
+replace AssociatorByDeltaR.method = "posdr"
+replace AssociatorByDeltaR.QCut = 0.2
+replace AssociatorByDeltaR.ComponentName = "AssociatorByDeltaR0.2"
+
+
+module associatedmuonxray = AssociatedMuonXRay {
+ InputTag trackLabel = hltL3Muons
+ InputTag trackingParticleLabel = tpForL3Muon
+ string associatorName = "AssociatorByDeltaR0.1"
+}

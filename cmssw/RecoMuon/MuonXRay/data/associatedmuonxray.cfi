@@ -1,0 +1,8 @@
+module associatedmuonxray = AssociatedMuonXRay {
+ InputTag trackLabel = hltL3Muons
+ InputTag trackingParticleLabel = tpForL3Muon
+ string associatorName = "TrackAssociatorByPosition"
+ include "RecoMuon/MuonXRay/data/DQMHelper.cfi"
+ InputTag confirmLabel = SingleMuNoIsoL3PreFiltered
+ InputTag linkLabel = hltL3Muons
+}
