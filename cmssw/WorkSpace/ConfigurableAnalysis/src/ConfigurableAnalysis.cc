@@ -24,33 +24,36 @@
 // user include files
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/EDProducer.h"
+#include "FWCore/Framework/interface/EDFilter.h"
 
 #include "FWCore/Framework/interface/Event.h"
+#include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
 
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
 #include "Workspace/ConfigurableAnalysis/interface/Selections.h"
+#include "Workspace/ConfigurableAnalysis/interface/Plotter.h"
+#include "Workspace/ConfigurableAnalysis/interface/NTupler.h"
 
 //
 // class decleration
 //
 
-class ConfigurableAnalysis : public edm::EDProducer {
+class ConfigurableAnalysis : public edm::EDFilter {
    public:
       explicit ConfigurableAnalysis(const edm::ParameterSet&);
       ~ConfigurableAnalysis();
 
    private:
-      virtual void beginJob(const edm::EventSetup&) ;
-      virtual void produce(edm::Event&, const edm::EventSetup&);
+      virtual void beginJob(const edm::EventSetup&);
+      virtual bool filter(edm::Event&, const edm::EventSetup&);
       virtual void endJob() ;
 
   Selections * selections_;
   Plotter * plotter_;
-  Ntupler * ntupler_;
+  NTupler * ntupler_;
 
-  //  std::map<std::string, std::map<std::string, uint> > counts_;
   std::vector<std::string> flows_;
 };
 
@@ -65,26 +68,29 @@ class ConfigurableAnalysis : public edm::EDProducer {
 //
 // constructors and destructor
 //
-ConfigurableAnalysis::ConfigurableAnalysis(const edm::ParameterSet& iConfig)
+ConfigurableAnalysis::ConfigurableAnalysis(const edm::ParameterSet& iConfig) :
+  selections_(0), plotter_(0), ntupler_(0)
 {
+  VariableHelperInstance::init(iConfig.getParameter<edm::ParameterSet>("Variables"));
+
   //configure the tools
-  //  retriever_->configure(iConfig);
   selections_ = new Selections(iConfig.getParameter<edm::ParameterSet>("Selections"));
-  plotter_ = new Plotter(iConfig.getParameter<edm::ParameterSet>("Plotter"));
+  if (!iConfig.getParameter<edm::ParameterSet>("Plotter").empty())
+    plotter_ = new Plotter(iConfig.getParameter<edm::ParameterSet>("Plotter"));
 
-  ntupler_ = new Ntupler(iConfig.getParameter<edm::ParameterSet>("Ntupler"));
-  //register the configurable ntuple
-  //  ntupler_->registerleaves(this);
-
-  flows_ = iConfig.getParameter<std::vector<std::string> >("flows");
+  if (!iConfig.getParameter<edm::ParameterSet>("Ntupler").empty())
+    ntupler_ = new CombinedNTupler(iConfig.getParameter<edm::ParameterSet>("Ntupler"));
   
-  //dummy output
-  produces<double>();
+  flows_ = iConfig.getParameter<std::vector<std::string> >("flows");
+
+  //vector of passed selections
+  produces<std::vector<bool> >();
+  ntupler_->registerleaves(this);
 }
 
 ConfigurableAnalysis::~ConfigurableAnalysis()
 {
-
+  
 }
 
 
@@ -93,66 +99,90 @@ ConfigurableAnalysis::~ConfigurableAnalysis()
 //
 
 // ------------ method called to produce the data  ------------
-void
-ConfigurableAnalysis::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
+bool ConfigurableAnalysis::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
+//void ConfigurableAnalysis::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
-   using namespace edm;
+  using namespace edm;
 
-   // loop the requested selections
-   for (Selections::iterator selection=selections_->begin(); selection!=selections_->end();++selection){
-     //was this flow of filter actually asked for
-     if (find(flows_.begin(), flows_.end(), selection->name())==flows_.end()) continue;
+  //will the filter pass or not.
+  bool majorGlobalAccept=false;
 
-     //make a specific direction in the plotter
-     plotter_->setDir(selection->name());
+  VariableHelperInstance::get().update(iEvent,iSetup);
 
-     // apply individual filters on the event
-     std::map<std::string, bool> accept=selection->accept(iEvent);
+  std::auto_ptr<std::vector<bool> > passedProduct(new std::vector<bool>(flows_.size(),false));
+  bool filledOnce=false;  
 
-     //loop the filters to make cumulative and allButOne job
-     bool globalAccept=true;
-     std::string separator="";
-     std::string cumulative="";
-     std::string allButOne="allBut_";
-     for (Selection::iterator filterIt=selection->begin(); filterIt!=selection->end();++filterIt){
-       Filter & filter=(**filterIt);
-       bool lastCut=((filterIt+1)==selection->end());
+  // loop the requested selections
+  for (Selections::iterator selection=selections_->begin(); selection!=selections_->end();++selection){
+    //was this flow of filter actually asked for
+    bool skip=true;
+    uint iFlow=0;
+    for (;iFlow!=flows_.size();++iFlow){if (flows_[iFlow]==selection->name()){skip=false; break;}}
+    if (skip) continue;
 
-       if (accept[filter.name()]){
-	 //increment the directory name
-	 cumulative+=separator+filter.name(); separator="_";
-	 if ((selection->makeCumulativePlots() && !lastCut) || (selection->makeFinalPlots() && lastCut)){
-	   plotter_->fill(cumulative,iEvent);
-	 }
-       }
-       else{
-	 globalAccept=false;
-	 // did all the others filter fire
-	 bool goodForAllButThisOne=true;
-	 for (std::map<std::string,bool>::iterator decision=accept.begin(); decision!=accept.end();++decision){
-	   if (decision->first==filter.name()) continue;
-	   if (!decision->second) {
-	     goodForAllButThisOne=false;
-	     break;}
-	 }
-	 if (goodForAllButThisOne && selection->makeAllButOnePlots()){
-	   plotter_->fill(allButOne+filter.name(),iEvent);
-	 }
-	 //do not global accept the event
-	 globalAccept=false;
-       }
-     }
-     if (globalAccept){
-       //make the ntuple and put it in the event
-       ntupler_->fill(selection->name(),iEvent);
-     }
-   }//loop the different filter order/number: loop the Selections
+    //make a specific direction in the plotter
+    if (plotter_) plotter_->setDir(selection->name());
+    
+    // apply individual filters on the event
+    std::map<std::string, bool> accept=selection->accept(iEvent);
+    
+    bool globalAccept=true;
+    std::string separator="";
+    std::string cumulative="";
+    std::string allButOne="allBut_";
+    std::string fullAccept="fullAccept_";
 
-   
-   //forget about this event.
-   //   retriever_->clear();
-   std::auto_ptr<double> dummy(new double(3));
-   iEvent.put(dummy);
+    std::string fullContent="fullContent_";
+    if (selection->makeContentPlots() && plotter_)
+      plotter_->fill(fullContent,iEvent);
+
+    //loop the filters to make cumulative and allButOne job
+    for (Selection::iterator filterIt=selection->begin(); filterIt!=selection->end();++filterIt){
+      Filter & filter=(**filterIt);
+      //      bool lastCut=((filterIt+1)==selection->end());
+
+      //increment the directory name
+      cumulative+=separator+filter.name(); separator="_";
+
+      if (accept[filter.name()]){
+	//	if (globalAccept && selection->makeCumulativePlots() && !lastCut)
+	if (globalAccept && selection->makeCumulativePlots() && plotter_)
+	  plotter_->fill(cumulative,iEvent);
+      }
+      else{
+	globalAccept=false;
+	// did all the others filter fire
+	bool goodForAllButThisOne=true;
+	for (std::map<std::string,bool>::iterator decision=accept.begin(); decision!=accept.end();++decision){
+	  if (decision->first==filter.name()) continue;
+	  if (!decision->second) {
+	    goodForAllButThisOne=false;
+	    break;}
+	}
+	if (goodForAllButThisOne && selection->makeAllButOnePlots() && plotter_){
+	  plotter_->fill(allButOne+filter.name(),iEvent);
+	}
+      }
+      
+    }// loop over the filters in this selection
+
+    if (globalAccept){
+      (*passedProduct)[iFlow]=true;
+      majorGlobalAccept=true;
+      //make final plots only if no cumulative plots
+      if (selection->makeFinalPlots() && !selection->makeCumulativePlots() && plotter_)
+	plotter_->fill(fullAccept,iEvent);
+
+      //make the ntuple and put it in the event
+      if (selection->ntuplize() && !filledOnce && ntupler_){
+	ntupler_->fill(iEvent);
+	filledOnce=true;}
+    }
+    
+  }//loop the different filter order/number: loop the Selections
+
+  iEvent.put(passedProduct);
+  return majorGlobalAccept;
 }
    
 
@@ -165,9 +195,6 @@ ConfigurableAnalysis::beginJob(const edm::EventSetup&)
 // ------------ method called once each job just after ending the event loop  ------------
 void 
 ConfigurableAnalysis::endJob() {
-  //write out histograms
-  plotter_->write();
-
   //print summary tables
   selections_->print();
 }

@@ -2,6 +2,9 @@
 #define Selections_H
 
 #include "Workspace/EventSelectors/interface/EventSelectorFactory.h"
+#include <cstdlib>
+#include <iomanip>
+#include <sstream>
 
 class Filter {
  public:
@@ -9,15 +12,29 @@ class Filter {
   Filter(std::string name, edm::ParameterSet& iConfig) : 
     name_(name),inverted_(false), selector_(0)
   {
+    dump_=iConfig.dump();
+    //    std::cout<<"constructing filter: "<<name_<<std::endl;
     if (!iConfig.empty()){
       const std::string d("name");
       iConfig.addUntrackedParameter<std::string>(d,name);
       std::string componentName = iConfig.getParameter<std::string>("selector");
       selector_ = EventSelectorFactory::get()->create(componentName, iConfig);
+      if (iConfig.exists("description"))
+	description_=iConfig.getParameter<std::vector<std::string> >("description");
+      else
+	description_=selector_->description();
     }
   }
  
   const std::string & name() {return name_;}
+  const std::string & dump() { return dump_;}
+  const std::vector<std::string> description() { return description_;}
+  const std::string descriptionText() { 
+    std::string text;
+    for (uint i=0;i!=description_.size();++i) text+=description_[i]+"\n";
+    text+=dump()+"\n";
+    return text;}
+
   bool accept(edm::Event& iEvent) {
     bool decision=false;
     if (selector_)
@@ -29,10 +46,12 @@ class Filter {
   }
   void setInverted() {    inverted_=true; }
 
- private:
+ protected:
   std::string name_;
+  std::vector<std::string> description_;
   bool inverted_;//too allow !filter
   SusyEventSelector * selector_;
+  std::string dump_;
 };
 
 //forward declaration for friendship
@@ -46,12 +65,17 @@ class Selection {
   Selection(std::string name, const edm::ParameterSet& iConfig) :
     name_(name), 
     ntuplize_(iConfig.getParameter<bool>("ntuplize")),
+    makeContentPlots_(iConfig.getParameter<bool>("makeContentPlots")),
     makeFinalPlots_(iConfig.getParameter<bool>("makeFinalPlots")),
     makeCumulativePlots_(iConfig.getParameter<bool>("makeCumulativePlots")),
     makeAllButOnePlots_(iConfig.getParameter<bool>("makeAllButOnePlots")),
     nSeen_(0),
     makeSummaryTable_(iConfig.getParameter<bool>("makeSummaryTable"))
   {
+    if (iConfig.exists("nMonitor"))
+      nMonitor_=iConfig.getParameter<uint>("nMonitor");
+    else
+      nMonitor_=0;
   }
 
   const std::string & name() {return name_;}
@@ -60,6 +84,10 @@ class Selection {
 
   std::map<std::string, bool> accept(edm::Event& iEvent){
     nSeen_++;
+    if (nMonitor_!=0 && nSeen_%nMonitor_==0){
+      if (nSeen_==nMonitor_) print();
+      else print(false);
+    }
     std::map<std::string, bool> ret;
     bool global=true;
     for (iterator filter=begin(); filter!=end();++filter){
@@ -76,25 +104,53 @@ class Selection {
   }
 
   //print to LogVerbatim("Selections|<name()>")
-  void print(){
+  void print(bool description=true){
     if (!makeSummaryTable_) return;
-    const std::string category ="Selections|"+name();
-    edm::LogInfo(category)<<"   Summary table for selection: "<<name()<<" with: "<<nSeen_<<" events run.";
-    std::cout<<"   Summary table for selection: "<<name()<<" with: "<<nSeen_<<" events run."<<std::endl;
+    //    const std::string category ="Selections|"+name();
+    const std::string category ="Selections";
+    std::stringstream summary;
+    summary<<"   Summary table for selection: "<<name()<<" with: "<<nSeen_<<" events run."<<std::endl;
     if (nSeen_==0) return;
+    if (description){
+      for (iterator filter=begin(); filter!=end();++filter){
+	const std::string & fName=(*filter)->name();
+	summary<<"filter: "<<std::right<<std::setw(10)<<fName<<"\n"
+	       <<(*filter)->descriptionText()<<"\n";
+      }
+    }
+    summary<<" filter stand-alone pass: "<<std::endl;
+    summary<<std::right<<std::setw(20)<<"total read"<<": "
+	   <<std::right<<std::setw(10)<<nSeen_<<std::endl;
     for (iterator filter=begin(); filter!=end();++filter){
       const std::string & fName=(*filter)->name();
       const Count & count=counts_[fName];
-      edm::LogVerbatim(category)<<fName<<" has: "<<count.nPass_<<" passed events. "<<(float)(count.nPass_/count.nSeen_)*100.<<" [%]";
-      std::cout<<fName<<" has: "<<count.nPass_<<" passed events. "<<(float)(count.nPass_/count.nSeen_)*100.<<" [%]"<<std::endl;
-      std::cout<<fName<<" has: "<<count.nCumulative_<<" cumulative passed events. "<<(float)(count.nCumulative_/count.nSeen_)*100.<<" [%]"<<std::endl;
+      summary<<std::right<<std::setw(20)<<fName<<": "
+	     <<std::right<<std::setw(10)<<count.nPass_<<" passed events. "
+	     <<std::right<<std::setw(10)<<std::setprecision (5)<<(count.nPass_/(float)count.nSeen_)*100.<<" [%]"<<std::endl;
     }
-    edm::LogVerbatim(category)<<"-------------------------------------";
-    std::cout<<"-------------------------------------"<<std::endl;
+    summary<<" filter cumulative pass:"<<std::endl;
+    summary<<std::right<<std::setw(20)<<"total read"<<": "
+	   <<std::right<<std::setw(10)<<nSeen_<<std::endl;
+    uint lastCount=nSeen_;
+    for (iterator filter=begin(); filter!=end();++filter){
+      const std::string & fName=(*filter)->name();
+      const Count & count=counts_[fName];
+      summary<<std::right<<std::setw(20)<<fName<<": "
+	     <<std::right<<std::setw(10)<<count.nCumulative_<<" passed events. "
+	     <<std::right<<std::setw(10)<<std::setprecision (5)<<(count.nCumulative_/(float)count.nSeen_)*100.<<" [%]";
+      if (lastCount!=0)
+	summary<<" (to previous count) "<<std::right<<std::setw(10)<<std::setprecision (5)<<(count.nCumulative_/(float)lastCount)*100.<<" [%]"
+	       <<std::endl;
+      lastCount = count.nCumulative_;
+    }
+    summary<<"-------------------------------------\n";
+    edm::LogVerbatim(category)<<summary.str();
+    std::cout<<summary.str();
   };
 
 
   bool ntuplize() {return ntuplize_;}
+  bool makeContentPlots() { return makeContentPlots_;}
   bool makeFinalPlots() { return makeFinalPlots_;}
   bool makeCumulativePlots() { return makeCumulativePlots_;}
   bool makeAllButOnePlots() { return makeAllButOnePlots_;}
@@ -105,11 +161,14 @@ class Selection {
   std::vector<Filter*> filters_;
   //some options
   bool ntuplize_;
+  bool makeContentPlots_;
   bool makeFinalPlots_;
   bool makeCumulativePlots_;
   bool makeAllButOnePlots_;
 
   uint nSeen_;
+  uint nMonitor_;
+
   struct Count{
     uint nPass_;
     uint nSeen_;
@@ -150,7 +209,7 @@ class Selections {
 
 
     //watch out of recursive dependency
-    uint nestedDepth=0; //FIXME not taken care of
+    //    uint nestedDepth=0; //FIXME not taken care of
 
     //resolving dependencies
     for (std::map<std::string, std::vector<std::string> >::iterator sIt= selectionFilters.begin();sIt!=selectionFilters.end();++sIt)
@@ -251,6 +310,7 @@ class Retriever {
  * placeholder for common plotting tools
  *
  */
+/*
 class Plotter{
  public:
   Plotter(const edm::ParameterSet& iConfig){};
@@ -266,22 +326,6 @@ class Plotter{
  private:
   
 };
-
-
-/*
- * Description:
- * placeholder for common ntuplizer tools
- *
- */
-class Ntupler{
- public:
-  Ntupler(const edm::ParameterSet& iConfig){};
-
-  void registerleaves(edm::EDProducer * producer, std::string selectionName){
-    //produces<double>("leafName");
-  }
-  void fill(std::string selectionName, const edm::Event& iEvent){};
- private:
-};
+*/
 
 #endif

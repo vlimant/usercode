@@ -1,99 +1,411 @@
+block eTaxis={
+	uint32 nBins=600
+	double Min=0
+	double Max=1200}
+block jet={
+	string method="JetExpressionVariable"
+	InputTag src=selectedLayer1Jets}
+block jet1={
+	using jet
+	uint32 index=0}
+block jet2={
+	using jet
+	uint32 index=1}	
+block muon1={
+	string method="MuonExpressionVariable"
+	InputTag src=selectedLayer1Muons
+	uint32 index=0}
+
 module configurableAnalysis = ConfigurableAnalysis{
+	PSet Variables={
+	     	PSet MHT={
+	     	 string method = "CalculateMHT"
+		 InputTag jetSrc = selectedLayer1Jets
+		 InputTag metSrc = selectedLayer1METs
+	     	}
+	     	PSet MHT2={
+	     	 string method = "Power"
+		 double power=2.
+		 string var="MHT"
+	     	}
+		PSet met={
+		 string method = "METExpressionVariable"
+		 InputTag src=selectedLayer1METs
+		 uint32 index=0
+		 string expr="et"
+		}
+	     	PSet jet1Pt={
+      		 string method = "JetExpressionVariable"
+      		 InputTag src=selectedLayer1Jets
+      		 uint32 index=0
+      		 string expr="et"
+	     	}
+	     	PSet jet2Pt={
+      		 string method = "JetExpressionVariable"
+      		 InputTag src=selectedLayer1Jets
+      		 uint32 index=1
+      		 string expr="et"
+	     	}
+	     	PSet jet3Pt={
+      	 	 string method = "JetExpressionVariable"
+      		 InputTag src=selectedLayer1Jets
+      		 uint32 index=2
+      		 string expr="et"
+	     	}
+		#PSet pIDSplit={
+		# string method="ProcessIdSplitter"
+		# double lumi=1000.
+		# string weightLabel="csa07EventWeightProducer"
+		# uint32 maxID=70
+		#}
+	     	PSet j2pTSplit={
+		 string method="VarSplitter"
+		 string var="jet2Pt"
+		 bool useUnderFlow=false
+		 bool useOverFlow=true
+		 vdouble slots={0, 10, 40, 50, 100, 200, 500, 1000}
+		 string labelsFormat="Jet_{2} p_{T} [%2.f , %2.f]"
+	     	}		
+	     	PSet muon1CIso={
+		 using muon1
+		 string expr="caloIso"
+#		 string expr="getIsolationR03.emEt"
+	     	}
+		PSet muon1CIsoSplit={
+		 string method="VarSplitter"
+                 string var="muon1CIso"
+                 bool useUnderFlow=false
+                 bool useOverFlow=true
+		 vdouble slots={-10, -5, 0, 1, 2, 4, 6, 10}
+	 	 string labelsFormat="#mu_{iso}^{calo} [%2.f , %2.f]"
+		}
+	     	PSet muon1TIso={
+		 using muon1
+		 string expr="trackIso"
+		}
+	     	PSet muon1Pt={
+		 using muon1
+		 string expr="pt"
+		}
+	     	PSet jet1jet2CosDphi={
+		 string method="JetJetCosDphiVariable"
+		 InputTag srcLhs=selectedLayer1Jets
+		 uint32 indexLhs=0
+		 InputTag srcRhs=selectedLayer1Jets
+		 uint32 indexRhs=1
+	     	}
+	     	PSet jet1METCosDphi={
+		 string method="JetMETCosDphiVariable"
+		 InputTag srcLhs=selectedLayer1Jets
+		 uint32 indexLhs=0
+		 InputTag srcRhs=selectedLayer1METs
+		 uint32 indexRhs=0
+	     	}
+	     	PSet jet2METCosDphi={
+		 string method="JetMETCosDphiVariable"
+		 InputTag srcLhs=selectedLayer1Jets
+		 uint32 indexLhs=1
+		 InputTag srcRhs=selectedLayer1METs
+		 uint32 indexRhs=0
+	     	}
+	}#PSet Variables
 
 	PSet Selections={
 		PSet filters={
-			PSet triggers={
-			 string selector="HLTEventSelector"
-			 InputTag triggerResults=TriggerResults::HLT
-			 vstring pathNames = { "HLT1MuonIso", "HLT2MuonIso" }
-			}
-	
-			PSet leadingMuon={}
-			PSet jets={
-			 string selector="JetEventSelector"
-			 InputTag src=selectedLayer1Jets
-			 vdouble minEt = { 50., 50., 50. }
-			 vdouble maxEta = { 3., 3., 3. }
-			 vdouble maxEMFraction = { 999., 999., 999. }
-			}
-			PSet MET={
-			 string selector = "METEventSelector"
- 			 InputTag src = selectedLayer1METs
-			 double minMET = 130.
-			}
-			
-			PSet leadingJet={
-			 string selector="JetEventSelector"
-			 InputTag src=selectedLayer1Jets
-			 vdouble minEt = { 440., 0., 0. }
-			 vdouble maxEta = { 1.9., 3., 3. }
-			 vdouble maxEMFraction = { 999., 999., 999. }
-			}
+		 PSet triggers={
+		  string selector="HLTEventSelector"
+		  InputTag triggerResults=TriggerResults::HLT
+		  vstring pathNames = { "HLT1MuonIso", "HLT2MuonIso" }
+		 }
+		 PSet leadingMuon={
+		  string selector="MuonSEventSelector"
+		  InputTag src=selectedLayer1Muons
+		  vstring cut = { "pt > 30.0 & abs(eta) < 3.0" }
+		 }
+		 PSet leadingMuonIso={
+		  string selector="MuonSEventSelector"
+		  InputTag src=selectedLayer1Muons
+		  vstring cut = { "caloIso < 10.0" }
+		 }
+		 PSet jets={
+		  string selector="JetSEventSelector"
+		  InputTag src=selectedLayer1Jets
+		  vstring cut = { "et > 50.0 & abs(eta) < 3.0", "et > 50.0 & abs(eta) < 3.0", "et > 50.0 & abs(eta) < 3.0" }
+		 }
+		 PSet MET={
+		  string selector="VariableEventSelector"
+		  string var = "met"
+		  double min =130.0
+		 }
+		 PSet leadingJet={
+		  string selector="JetSEventSelector"
+		  InputTag src=selectedLayer1Jets
+		  vstring cut = { "et > 440.0 & abs(eta) < 1.9" , "-" , "-" }
+		 }
+		 PSet secondJet={
+		  string selector="JetSEventSelector"
+ 		  InputTag src=selectedLayer1Jets
+		  vstring cut = { "-", "et > 440.0 & abs(eta) < 1.5" , "-" }
+		 }
+		 PSet thirdJet={
+		  string selector="JetSEventSelector"
+		  InputTag src=selectedLayer1Jets
+		  vstring cut = { "-", "-", "et > 50.0 & abs(eta) < 3.0" }
+		 }
+		 PSet dPhiJ1J2={
+		  string selector="VariableEventSelector"
+		  string var ="jet1jet2CosDphi"
+		  double min=-1
+		  double max=0.2
+		 }
+		 PSet dPhiJ1MET={
+		  string selector="VariableEventSelector"
+		  string var = "jet1METCosDphi"
+		  double min = -0.95
+		  double max = 0.3
+		 }
+		 PSet dPhiJ2MET={
+		  string selector="VariableEventSelector"
+		  string var = "jet2METCosDphi"
+		  double min = -1
+		  double max = 0.85
+		 }
+		}#PSet filters
 
-			PSet secondJet={
-			 string selector="JetEventSelector"
-			 InputTag src=selectedLayer1Jets
-			 vdouble minEt = { 0., 440., 0. }
-			 vdouble maxEta = { 0., 1.5., 3. }
-			 vdouble maxEMFraction = { 999., 999., 999. }
-			}
-
-			PSet thirdJet={
-			 string selector="JetEventSelector"
-			 InputTag src=selectedLayer1Jets
-			 vdouble minEt = { 0., 0., 50. }
-			 vdouble maxEta = { 3., 3., 3. }
-			 vdouble maxEMFraction = { 999., 999., 999. }
-			}
-
-			PSet dPhiJ1J2={}
-			PSet dPhiJ1MET={}
-			PSet dPhiJ2MET={}
-		}
 		PSet selections={
-			PSet preSelection={
-				vstring filterOrder = { "triggers", "leadingMuon", "jets"}
+			PSet triggerSelection={
+				vstring filterOrder = { "triggers" }
 				bool ntuplize=false
+				bool makeContentPlots=false
 				bool makeFinalPlots=false
 				bool makeCumulativePlots=false
 				bool makeAllButOnePlots=false
 				bool makeSummaryTable=false
+				uint32 nMonitor=1000
+			}		
+			PSet preSelection={
+				vstring filterOrder = { "leadingMuon", "leadingMuonIso", "jets"}
+				bool ntuplize=true
+				bool makeContentPlots=false
+				bool makeFinalPlots=true
+				bool makeCumulativePlots=false
+				bool makeAllButOnePlots=false
+				bool makeSummaryTable=true
+				uint32 nMonitor=1000
 			}
 			PSet finalSelection={
-				vstring filterOrder = {
-						"leadingJet",
-						"secondJet",
-						"thirdJet",
-						"dPhiJ1J2",
-						"dPhiJ1MET",
-						"dPhiJ2MET"}
+				vstring filterOrder = {"leadingJet", "secondJet", "dPhiJ1J2", "dPhiJ1MET", "dPhiJ2MET", "MET"}
 				bool ntuplize=false
+				bool makeContentPlots=false
 				bool makeFinalPlots=false
 				bool makeCumulativePlots=false
 				bool makeAllButOnePlots=false
 				bool makeSummaryTable=false
+				uint32 nMonitor=1000
 			}
 			PSet fullSelection={
-				vstring filterOrder={ "preSelection", "finalSelection" }
+				vstring filterOrder={ "preSelection", "finalSelection", "triggerSelection" }
 				bool ntuplize=true
+				bool makeContentPlots=true
 				bool makeFinalPlots=true
 				bool makeCumulativePlots=true
 				bool makeAllButOnePlots=true
 				bool makeSummaryTable=true
+				uint32 nMonitor=1000
 			}
-		}
-	}//Selections
+		}#PSet selections
+	}#PSet Selections
 
-	vstring flows={ "fullSelection" }
+	vstring flows={ "fullSelection" , "preSelection" }
 
 	PSet Plotter={ #harry's the first name
-		//already existing tool
-		//...
-	}
+	PSet TH1s ={
+		PSet hMET={
+			string title="Missing E_{T} (index 0)"
+			PSet xAxis={
+				string var="met"
+				string Label="missing E_{T} [GeV]"
+				using eTaxis
+			}
+		}
+		PSet hHT={
+			#string splitter="pIDSplit"
+			string title="H_{T}"
+			PSet xAxis={
+				string var="MHT"
+				string Label="H_{T} [GeV]"
+				using eTaxis
+			}
+		}
+		PSet hMu1pT={
+			vstring splitters={ "j2pTSplit" }
+			string title="Muon_{1} p_{T}"
+			PSet xAxis={
+				string var="muon1Pt"
+				string Label="leading muon p_{T} [GeV]"
+				using eTaxis
+			}
+		}
+		PSet hMu1CIso={
+			string title="Muon_{1} calorimeter isolation"
+			PSet xAxis={
+				string var="muon1CIso"
+				string Label="leading muon calo. iso. [GeV]"
+				uint32 nBins=100
+				double Min=-20
+				double Max=20				
+			}
+		}
+		PSet hMu1TIso={
+			string title="Muon_{1} tracker isolation"
+			PSet xAxis={
+				string var="muon1TIso"
+				string Label="leading muon track iso. [GeV]"
+				uint32 nBins=100
+				double Min=-20
+				double Max=20				
+			}
+		}
+		PSet hJet1pT={
+			string title="Jet_{1} E_{T}"
+			PSet xAxis={
+				string var="jet1Pt"
+				string Label="leading jet E_{T} [GeV]"
+				using eTaxis
+			}
+		}
+		PSet hJet2pT={
+			string title="Jet_{2} E_{T}"
+			PSet xAxis={
+				string var="jet2Pt"
+				string Label="second jet E_{T} [GeV]"
+				using eTaxis
+			}
+		}
+		PSet hJet3pT={
+			string title="Jet_{3} E_{T}"
+			PSet xAxis={
+				string var="jet3Pt"
+				string Label="third jet E_{T} [GeV]"
+				using eTaxis
+			}
+		}
+		PSet hVJet1pT={
+			string splitter="j2pTSplit"
+			string title="Jet_{1} E_{T} [GeV]"
+			PSet xAxis={
+				string var="jet1Pt"
+				string Label="leading jet E_{T} [GeV]"
+				#vdouble vBins={0,10,30,50,100,600}
+				using eTaxis
+			}
+		}
+
+	}#PSet TH1s
+	PSet TH2s ={
+/*		PSet hJet1pTvsJet2pT={
+			string title="leading versus second jet E_{T}"
+			PSet xAxis={
+				string var="jet1Pt"
+				string Label="leading jet E_{T} [GeV]"
+				using eTaxis
+			}
+			PSet yAxis={
+				string var="jet2Pt"
+				string Label="second jet E_{T} [GeV]"
+				vdouble vBins={0,10,40,50,100,600}
+			}
+		}
+*/
+		PSet hMuon1CIsovsTIso={
+			string title="muon track isolation versus calorimeter isolation"
+			PSet xAxis={
+				string var="muon1CIso"
+				string Label="leading muon calo. iso. [GeV]"
+				uint32 nBins=100
+				double Min=-20
+				double Max=20				
+			}
+			PSet yAxis={
+				string var="muon1TIso"
+				string Label="leading muon track iso. [GeV]"
+				uint32 nBins=100
+				double Min=-20
+				double Max=20				
+			}
+		}
+	}#PSet TH2s
+	PSet TProfiles={
+/*
+		PSet pfJet1pTvsJet2pT={
+			string title="leading versus second jet E_{T}"
+			string Option=""
+			PSet xAxis={
+				string var="jet1Pt"
+				string Label="leading jet E_{T} [GeV]"
+				using eTaxis
+			}
+			PSet yAxis={
+				string var="jet2Pt"
+				string Label="second jet E_{T} [GeV]"
+				vdouble vBins={0,10,40,50,100,600}
+			}
+		}
+*/
+	}#PSet TProfiles
+	}#PSet Plotter
 
 	PSet Ntupler={
-		//already existing tools
-		//define the variables and leaves you want to plot
-		//...
+		bool allVariables = true
+		vstring leaves = { "jet1Pt", "jet2Pt", "muon1Pt" }
+		PSet branchesPSet ={
+			PSet mus={
+			 string class="pat::Muon"
+			 InputTag src=selectedLayer1Muons
+			 PSet leaves={
+				string pt="pt"
+				string eta="eta"
+				string aeta="abs(eta)"
+				string cIso="caloIso"
+#				string chi2="track.chi2"
+				string charge="charge"
+#				string d0="track.d0"
+#				string d0Err="track.d0Error"
+#				string e_em="getCalEnergy.em"
+#				string e_emS9="getCalEnergy.emS9"
+#				string e_had="getCalEnergy.had"
+#				string e_hadS9="getCalEnergy.hadS9"
+#				string e_ho="getCalEnergy.ho"
+#				string e_hoS9="getCalEnergy.hoS9"
+#				string iso03_ntrk="getIsolationR03.nTracks"
+			 }
+			}
+
+			PSet jets={
+			 string class="pat::Jet"
+			 InputTag src=selectedLayer1Jets
+			 PSet leaves={
+			  string et="et"
+			  string gen_et="genJet.et"
+			  string eta="eta"
+			  string aeta="abs(eta)"
+			  string emf="1-energyFractionHadronic"
+			  string ehf="energyFractionHadronic"
+			  string emf_2="emEnergyFraction"
+			 }
+			}
+			PSet mets={
+			 string class="pat::MET"
+			 InputTag src=selectedLayer1METs
+			 PSet leaves={
+			  string et="et"
+			  string phi="phi"
+			  string ex="px"
+			  string ey="py"
+#			  string gen_et="genMET.et"
+#			  string gen_phi="genMET.phi"
+			 }
+			}
+		}
 	}
 }
