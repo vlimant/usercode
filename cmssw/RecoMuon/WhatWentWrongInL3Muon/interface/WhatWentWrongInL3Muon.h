@@ -16,7 +16,7 @@
 //
 // Original Author:  Jean-Roch Vlimant
 //         Created:  Wed Sep 12 02:24:59 CEST 2007
-// $Id$
+// $Id: WhatWentWrongInL3Muon.h,v 1.1 2007/11/27 20:36:32 vlimant Exp $
 //
 //
 
@@ -134,8 +134,8 @@ class WhatWentWrongInL3Muon : public edm::EDAnalyzer {
       virtual void analyze(const edm::Event&, const edm::EventSetup&);
       virtual void endJob() ;
 
-  void oneLocal(nodePlotter & node1, reco::RecoToSimCollection & recSimColl, reco::TrackRef & refL2, FreeTrajectoryState & l2State);
-  void one(nodePlotter & node1, reco::TrackRef & refL2, FreeTrajectoryState & l2State);
+      void oneLocal(nodePlotter & node1, reco::RecoToSimCollection & recSimColl, edm::RefToBase<reco::Track> & refL2, FreeTrajectoryState & l2State);
+      void one(nodePlotter & node1, edm::RefToBase<reco::Track> & refL2, FreeTrajectoryState & l2State);
       // ----------member data ---------------------------
   std::string category;
   

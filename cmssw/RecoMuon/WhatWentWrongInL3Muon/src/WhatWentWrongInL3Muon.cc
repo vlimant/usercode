@@ -30,7 +30,7 @@ WhatWentWrongInL3Muon::~WhatWentWrongInL3Muon()
 }
 
 
-void WhatWentWrongInL3Muon::one(nodePlotter & node1, reco::TrackRef & refL2, FreeTrajectoryState & l2State){
+void WhatWentWrongInL3Muon::one(nodePlotter & node1, edm::RefToBase<reco::Track> & refL2, FreeTrajectoryState & l2State){
   node1.element("nRecHit")->Fill(refL2->recHitsSize());
   //  node1.element("nRecHit_2D")->Fill(l2State.momentum().perp(), l2State.momentum().eta(), refL2->recHitsSize()); 
   node1.element("nRecHit_eta")->Fill(l2State.momentum().eta(), refL2->recHitsSize()); 
@@ -54,7 +54,7 @@ void WhatWentWrongInL3Muon::one(nodePlotter & node1, reco::TrackRef & refL2, Fre
 }
 
 
-void WhatWentWrongInL3Muon::oneLocal(nodePlotter & node1, reco::RecoToSimCollection & recSimColl, reco::TrackRef & refL2, FreeTrajectoryState & l2State){
+void WhatWentWrongInL3Muon::oneLocal(nodePlotter & node1, reco::RecoToSimCollection & recSimColl, edm::RefToBase<reco::Track> & refL2, FreeTrajectoryState & l2State){
   //find out about the simulated hits
   //is there a sim match
   reco::RecoToSimCollection::const_iterator ass= recSimColl.find(refL2);
@@ -140,7 +140,7 @@ WhatWentWrongInL3Muon::analyze(const edm::Event& iEvent, const edm::EventSetup& 
    TrajectoryStateTransform transformer;
    
    //open the L2 collection
-   edm::Handle<reco::TrackCollection> L2tracks;
+   edm::Handle<edm::View<reco::Track> > L2tracks;
    iEvent.getByLabel(L2Label, L2tracks);
 
    //associate
@@ -162,10 +162,11 @@ WhatWentWrongInL3Muon::analyze(const edm::Event& iEvent, const edm::EventSetup& 
      //loop L2 collection. 
      for (uint iL2=0;iL2!=L2tracks->size();iL2++){
        //   make reference to l2 track
-       reco::TrackRef refL2(L2tracks, iL2);
+       edm::RefToBase<reco::Track> reftbL2(L2tracks, iL2);
+       //       edm::LogError(category)<<"ref from view: "<<reftbL2.id()<<" "<<reftbL2.key();
 
        //get the L2 IP state
-       FreeTrajectoryState l2State = transformer.initialFreeState(*refL2, field.product());       
+       FreeTrajectoryState l2State = transformer.initialFreeState(*reftbL2, field.product());       
        if (l2State.position().mag()==0)
 	 {edm::LogError(category)<<"invalid state from l2 track initial state. skipping.\n"<<l2State;continue;}
        
@@ -173,7 +174,9 @@ WhatWentWrongInL3Muon::analyze(const edm::Event& iEvent, const edm::EventSetup& 
        uint matchingLink=0;
        //   search ref in tracklinks
        for (uint iLink=0;iLink!=pMuounlinks->size();iLink++){
-	 if ((*pMuounlinks)[iLink].standAloneTrack() == refL2){
+	 edm::RefToBase<reco::Track> ltbL2((*pMuounlinks)[iLink].standAloneTrack());	 
+	 //	 edm::LogError(category)<<"ref in muon track links: "<<ltbL2.id()<<" "<<ltbL2.key();
+	 if (ltbL2.id()==reftbL2.id() && ltbL2.key()==reftbL2.key()){
 	   //this L3muon is coming from this L2 track
 	   hasBeenReconstructed =true;
 	   matchingLink=iLink;
@@ -182,8 +185,8 @@ WhatWentWrongInL3Muon::analyze(const edm::Event& iEvent, const edm::EventSetup& 
        
        if (hasBeenReconstructed){
 	 edm::LogVerbatim(category)<<"the L2 track: "<<iL2<<" in: "<<L2Label.encode()<<" has been reconstructed in: "<< l3it->encode()<<" at index: "<<matchingLink;
-	 reco::TrackRef refL3 = (*pMuounlinks)[matchingLink].globalTrack();
-	 reco::TrackRef refTkL3 = (*pMuounlinks)[matchingLink].trackerTrack();
+	 edm::RefToBase<reco::Track>refL3((*pMuounlinks)[matchingLink].globalTrack());
+	 edm::RefToBase<reco::Track> refTkL3((*pMuounlinks)[matchingLink].trackerTrack());
 
 	 FreeTrajectoryState l3State = transformer.initialFreeState(*refL3, field.product());
 	 if (l3State.position().mag()==0)
@@ -207,9 +210,9 @@ WhatWentWrongInL3Muon::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 	 node0.element("TkL3L3pt")->Fill(l3TkState.momentum().perp(),l3State.momentum().perp());
 
 	 nodePlotter  & node1 = plotter.dir(*l3it).dir("good").dir("L2Track");
-	 one(node1,refL2,l2State);
+	 one(node1,reftbL2,l2State);
 
-	 oneLocal(node1, L2recSimColl, refL2, l2State);
+	 oneLocal(node1, L2recSimColl, reftbL2, l2State);
 
 	 nodePlotter  & node2 = plotter.dir(*l3it).dir("good").dir("L3Track");
 	 one(node2,refL3,l3State);
@@ -225,9 +228,9 @@ WhatWentWrongInL3Muon::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 				   <<l2State;
 
 	 nodePlotter  & node1 = plotter.dir(*l3it).dir("failed").dir("L2Track");
-	 one(node1,refL2,l2State);
+	 one(node1,reftbL2,l2State);
 	 
-	 oneLocal(node1, L2recSimColl, refL2, l2State);
+	 oneLocal(node1, L2recSimColl, reftbL2, l2State);
 
        }//l2 not recoed
 

@@ -1,5 +1,5 @@
 module whatWentWrongInL3Muon = WhatWentWrongInL3Muon {
-	string rootFileName = "whatWentWrongInL3Muon"
+	string rootFileName = "whatWentWrongInL3Muon.root"
 	InputTag L2Label = L2Muons:UpdatedAtVtx
 	VInputTag L3Labels = { L3Muons }
 	InputTag trackingParticleLabel = trackingtruthprod
