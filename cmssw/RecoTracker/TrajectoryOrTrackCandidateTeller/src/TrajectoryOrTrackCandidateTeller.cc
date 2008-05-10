@@ -13,7 +13,7 @@
 //
 // Original Author:  Jean-Roch Vlimant
 //         Created:  Tue Jan 29 20:05:09 CET 2008
-// $Id$
+// $Id: TrajectoryOrTrackCandidateTeller.cc,v 1.1 2008/02/15 02:53:24 vlimant Exp $
 //
 //
 
@@ -108,9 +108,8 @@ TrajectoryOrTrackCandidateTeller::analyze(const edm::Event& iEvent, const edm::E
    edm::ESHandle<TrackerGeometry> trackerGH;
    iSetup.get<TrackerDigiGeometryRecord>().get(trackerGH);
    
-
    if (!TCH.failedToGet()){
-     edm::LogWarning(category)<<"getting: "<<TCH->size()<<" TrackCandidates from: "<<inputTag;
+     edm::LogVerbatim(category)<<"getting: "<<TCH->size()<<" TrackCandidates from: "<<inputTag;
      TrajectoryStateTransform transform;
      uint iTc=0;
      for (TrackCandidateCollection::const_iterator tcIt = TCH->begin();tcIt!= TCH->end(); ++ tcIt){
@@ -119,22 +118,25 @@ TrajectoryOrTrackCandidateTeller::analyze(const edm::Event& iEvent, const edm::E
 								 &trackerGH->idToDet(DetId(tcIt->trajectoryStateOnDet().detId()))->surface(),
 								 fieldH.product());
        
-       LogVerbatim(category)<<iTc++<<"] on "<<tcIt->trajectoryStateOnDet().detId()<<" with: "<<nRh<<" recHits.\n"
-			    <<state;
+       edm::LogVerbatim(category)<<iTc++<<"] on "<<tcIt->trajectoryStateOnDet().detId()<<" with: "<<nRh<<" recHits.\n" <<state;
      }
    }
-   else {
-     edm::Handle<std::vector<Trajectory> > TH;
-     iEvent.getByLabel(inputTag, TH);
-     if (TH.failedToGet()){edm::LogError(category)<<"failed to get either TrackCandidate or Trajectory from: "<< inputTag; return;}
-     edm::LogWarning(category)<<"getting: "<<TH->size()<<" Trajectory from: "<<inputTag;
+   else{edm::LogWarning(category)<<"did not get TrackCandidate from: "<<inputTag;}
+
+   edm::Handle<std::vector<Trajectory> > TH;
+   iEvent.getByLabel(inputTag, TH);
+   if (!TH.failedToGet()){
+     edm::LogVerbatim(category)<<"getting: "<<TH->size()<<" Trajectory from: "<<inputTag;
      uint iT=0;
      for (std::vector<Trajectory>::const_iterator tIt=TH->begin();tIt!=TH->end();++tIt){
-       LogVerbatim(category)<<iT++<<"] with: "<<tIt->foundHits()<<" found hits.";
+       edm::LogVerbatim(category)<<iT++<<"] with: "<<tIt->foundHits()<<" found hits.";
      }
-       
+     
    }
+   else{edm::LogWarning(category)<<"did not get Trajectory from: "<<inputTag;} 
 
+   if (TCH.failedToGet() && TH.failedToGet())
+     {edm::LogError(category)<<"failed to get either TrackCandidate or Trajectory from: "<< inputTag; return;}
 }
 
 
