@@ -1,6 +1,4 @@
 <use name=FWCore/Framework>
 <use name=RecoMuon/TrackerSeedGenerator>
 
-<library file="*.cc" name=RecoMuonTrackerSeedGeneratorTest>
-      <flags EDM_PLUGIN=1>
-</library>
+<flags EDM_PLUGIN=1>

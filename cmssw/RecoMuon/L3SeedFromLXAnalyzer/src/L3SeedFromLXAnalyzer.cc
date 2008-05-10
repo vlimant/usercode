@@ -13,7 +13,7 @@
 //
 // Original Author:  Jean-Roch Vlimant
 //         Created:  Thu Jan 24 23:48:18 CET 2008
-// $Id$
+// $Id: L3SeedFromLXAnalyzer.cc,v 1.1 2008/02/15 02:51:00 vlimant Exp $
 //
 //
 
@@ -116,32 +116,33 @@ L3SeedFromLXAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 
   uint is=0;
   uint isMax = seedH->size();
+  edm::LogWarning(category)<<isMax<<" seeds with label: "<<source;
   for (; is!=isMax;++is){
     const L3MuonTrajectorySeed & seed = (*seedH)[is];
     const reco::TrackRef & l2 =  seed.l2Track();
     const l1extra::L1MuonParticleRef & l1 = seed.l1Particle();
-    if (l1.isNull()) {edm::LogError(category)<<"l1 reference is not valid.";}
+    if (l1.isNull()) {edm::LogVerbatim(category)<<"l1 reference is not valid.";}
     else{
-      edm::LogWarning(category)<<" l1 initial state is: "
-			       <<"x: "<<l1->vertex()
-			       <<" p: "<<l1->momentum();
+      edm::LogVerbatim(category)<<" l1 initial state is: "
+			   <<"x: "<<l1->vertex()
+			   <<" p: "<<l1->momentum();
     }
-    if (l2.isNull()){edm::LogError(category)<<"l2 reference is not valid.";}
+    if (l2.isNull()){edm::LogVerbatim(category)<<"l2 reference is not valid.";}
     else{
       FreeTrajectoryState l2state =  transformer.initialFreeState(*l2, fieldH.product());
-      edm::LogWarning(category)<<" l2 initial state is: "
-			       <<"x: "<<l2state.position()
-			       <<" p: "<<l2state.momentum();
+      edm::LogVerbatim(category)<<" l2 initial state is: "
+			   <<"x: "<<l2state.position()
+			   <<" p: "<<l2state.momentum();
     }
 
     //make the seed state a persistent state
     TrajectoryStateOnSurface seedstate = transformer.transientState(seed.startingState(),
 								    &trackerGH->idToDet(DetId(seed.startingState().detId()))->surface(),
 								    fieldH.product());
-    edm::LogWarning(category)<<" the seed state is: "
-			     <<"x: "<<seedstate.globalPosition()
-			     <<" p: "<<seedstate.globalMomentum()
-			     <<" with: "<<seed.nHits()<<" recHits.";
+    edm::LogVerbatim(category)<<" the seed state is: "
+			      <<"x: "<<seedstate.globalPosition()
+			      <<" p: "<<seedstate.globalMomentum()
+			      <<" with: "<<seed.nHits()<<" recHits.";
     /*
       TrajectorySeed::const_iterator rhi = seed.range().first;
       TrajectorySeed::const_iterator rhiEnd = seed.range().second;
@@ -149,7 +150,6 @@ L3SeedFromLXAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
       for (;rhi!=rhiEnd;++rhiEnd){
       nRH++;}
     */
-
     
   }
 }
