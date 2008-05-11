@@ -356,9 +356,13 @@ module configurableAnalysis = ConfigurableAnalysis{
 	}#PSet Plotter
 
 	PSet Ntupler={
-		bool allVariables = true
-		vstring leaves = { "jet1Pt", "jet2Pt", "muon1Pt" }
+		bool useTFileService = true
+		PSet variablesPSet ={
+			bool allVariables = true
+			vstring leaves = { "jet1Pt", "jet2Pt", "muon1Pt" }
+		}
 		PSet branchesPSet ={
+			string treeName="event"
 			PSet mus={
 			 string class="pat::Muon"
 			 InputTag src=selectedLayer1Muons
@@ -389,9 +393,8 @@ module configurableAnalysis = ConfigurableAnalysis{
 			  string gen_et="genJet.et"
 			  string eta="eta"
 			  string aeta="abs(eta)"
-			  string emf="1-energyFractionHadronic"
+			  string emf="emEnergyFraction"
 			  string ehf="energyFractionHadronic"
-			  string emf_2="emEnergyFraction"
 			 }
 			}
 			PSet mets={
