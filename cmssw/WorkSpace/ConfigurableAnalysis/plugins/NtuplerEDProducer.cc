@@ -13,7 +13,7 @@
 //
 // Original Author:  Jean-Roch Vlimant
 //         Created:  Sun May 11 21:12:46 CEST 2008
-// $Id$
+// $Id: NtuplerEDProducer.cc,v 1.1 2008/05/11 21:24:40 vlimant Exp $
 //
 //
 
@@ -30,7 +30,7 @@
 
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
-#include "Workspace/ConfigurableAnalysis/interface/NTupler.h"
+#include "Workspace/ConfigurableAnalysis/interface/StringBasedNTupler.h"
 
 //
 // class decleration

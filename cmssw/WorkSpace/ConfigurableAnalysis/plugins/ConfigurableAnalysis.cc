@@ -13,7 +13,7 @@
 //
 // Original Author:  Jean-Roch Vlimant
 //         Created:  Mon Apr 14 11:39:51 CEST 2008
-// $Id$
+// $Id: ConfigurableAnalysis.cc,v 1.1 2008/05/11 21:24:40 vlimant Exp $
 //
 //
 
@@ -34,7 +34,7 @@
 
 #include "Workspace/ConfigurableAnalysis/interface/Selections.h"
 #include "Workspace/ConfigurableAnalysis/interface/Plotter.h"
-#include "Workspace/ConfigurableAnalysis/interface/NTupler.h"
+#include "Workspace/ConfigurableAnalysis/interface/CombinedNTupler.h"
 
 //
 // class decleration
