@@ -5,6 +5,7 @@
 <use name=PhysicsTools/Utilities>
 <use name=PhysicsTools/UtilAlgos>
 <use name=PhysicsTools/HepMCCandAlgos>
+<use name=DataFormats/PatCandidates>
 <use name=root>
 
 <export>
@@ -16,5 +17,6 @@
    <use name=PhysicsTools/Utilities>
    <use name=PhysicsTools/UtilAlgos>
    <use name=PhysicsTools/HepMCCandAlgos>
+   <use name=DataFormats/PatCandidates>
    <use name=root>
 </export>
