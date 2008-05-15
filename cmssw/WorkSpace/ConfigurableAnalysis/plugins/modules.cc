@@ -24,11 +24,6 @@ DEFINE_EDM_PLUGIN(EventSelectorFactory, MuonEventSelector, "MuonEventSelector");
 DEFINE_EDM_PLUGIN(EventSelectorFactory, MuonSEventSelector, "MuonSEventSelector");
 DEFINE_EDM_PLUGIN(EventSelectorFactory, VariableEventSelector, "VariableEventSelector");
 
-#include "Workspace/ConfigurableAnalysis/interface/VariableHelper.h"
-#include "Workspace/ConfigurableAnalysis/interface/UpdaterService.h"
-DEFINE_FWK_SERVICE( UpdaterService );
-//DEFINE_FWK_SERVICE( VariableHelperService );
-
 #include "Workspace/ConfigurableAnalysis/interface/CachingVariableFactory.h"
 #include "Workspace/ConfigurableAnalysis/interface/CachingVariable.h"
 

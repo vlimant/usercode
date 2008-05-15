@@ -6,6 +6,8 @@
 #include "DataFormats/PatCandidates/interface/Electron.h"
 #include "DataFormats/PatCandidates/interface/Tau.h"
 
+#include "SimDataFormats/Track/interface/SimTrack.h"
+
 //--------------------------------------------------------------------------------
 //just define here a list of objects you would like to be able to have a branch of
 //--------------------------------------------------------------------------------
@@ -19,6 +21,7 @@ TreeBranch::value TreeBranch::branch(const edm::Event& iEvent){
   else ANOTHER_CLASS(pat::Tau);
   else ANOTHER_CLASS(reco::Muon);
   else ANOTHER_CLASS(reco::Track);
+  else ANOTHER_CLASS(SimTrack);
   else {
     edm::LogError("TreeBranch")<<branchName()<<" failed to recognized class type: "<<class_;
     return TreeBranch::value(new std::vector<double>());

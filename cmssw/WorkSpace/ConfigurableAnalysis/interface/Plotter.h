@@ -78,7 +78,7 @@ class Plotter {
     currentDir_=dir;
   }
   
-  void fill(std::string subDir, edm::Event& iEvent){
+  void fill(std::string subDir,const edm::Event& iEvent){
     //what is the current directory
     Directory & currentDirectory= directories_[currentDir_];
 
