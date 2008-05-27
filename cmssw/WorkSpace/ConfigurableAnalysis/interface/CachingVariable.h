@@ -126,7 +126,7 @@ class VarSplitter : public Splitter{
     slots_=iConfig.getParameter<std::vector<double> >("slots");
     if (useUnderFlow_){
       labels_.push_back("underflow");
-      short_labels_.push_back("_"+n"_underflow");}
+      short_labels_.push_back("_"+n+"_underflow");}
     std::vector<std::string> confLabels;
     if (iConfig.exists("labels")){
       confLabels=iConfig.getParameter<std::vector<std::string> >("labels");
