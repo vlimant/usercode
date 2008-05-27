@@ -179,13 +179,19 @@ AssociatedMuonXRay::AssociatedMuonXRay(const edm::ParameterSet& iConfig):
   wantMotherBin.splitH1ByCategory("h_mu_leading_90pt",h,"%s coming from %s");
   wantMotherBin.splitH1ByCategory("h_mu_hits",h,"%s coming from %s");
   wantMotherBin.splitH1ByCategory("h_mu_leading_Aeta",h,"%s coming from %s");
+  wantMotherBin.splitH1ByCategory("h_mu_leading_phi",h,"%s coming from %s");
+  wantMotherBin.splitH1ByCategory("h_mu_leading_d0",h,"%s coming from %s");
   wantMotherBin.splitH1ByCategory("h_mu_eta",h,"%s coming from %s");
+  wantMotherBin.splitH1ByCategory("h_mu_phi",h,"%s coming from %s");
   wantMotherBin.splitH1ByCategory("h_mu_Aeta",h,"%s coming from %s");
   wantMotherBin.splitH1ByCategory("h_mu_d0",h,"%s coming from %s");
+  wantMotherBin.splitH1ByCategory("h_mu_DpT",h,"%s coming from %s");
+  wantMotherBin.splitH1ByCategory("h_mu_relDpT",h,"%s coming from %s");
 
   wantMotherBin.splitH1ByCategory("h_mu_sim_pt",h,"%s coming from %s");
   wantMotherBin.splitH1ByCategory("h_mu_leading_sim_pt",h,"%s coming from %s");
   wantMotherBin.splitH1ByCategory("h_mu_sim_eta",h,"%s coming from %s");
+  wantMotherBin.splitH1ByCategory("h_mu_sim_phi",h,"%s coming from %s");
   wantMotherBin.splitH1ByCategory("h_mu_sim_Aeta",h,"%s coming from %s");
 
   h.HBC["h_part_sim_pt_assoc_ID"].resize(wantMotherBin.size());
@@ -288,19 +294,9 @@ AssociatedMuonXRay::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
 
      //confirm that it has triggered.
      bool isConfirmed=false;
+     //     reco::TrackRef confirmedL2Track;
      if (theConfirm){
-       /*
-               //cannot do any of that easilty in 167...
-	       std::vector<reco::RecoChargedCandidateRef> cands;
-	       triggered->getObjects(trigger::TriggerMuon,cands);
-	       std::vector<reco::RecoChargedCandidateRef>::iterator it= cands.begin();
-	       std::vector<reco::RecoChargedCandidateRef>::iterator end= cands.end();
-	       for (;ti!=end;++ti){
-	       if (ti->get<reco::TrackRef>() == ref){
-	       isConfirmed=true; break;
-	       }
-	       }
-       */
+
        reco::HLTFilterObjectWithRefs::const_iterator ti = triggered->begin();
        reco::HLTFilterObjectWithRefs::const_iterator end = triggered->end();
        reco::TrackRef refToCompareTo=ref;
@@ -310,7 +306,9 @@ AssociatedMuonXRay::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
 	 reco::MuonTrackLinksCollection::const_iterator end= links->end();
 	 for (;il!=end;++il){
 	   if (il->trackerTrack() == refToCompareTo){
-	     refToCompareTo=il->globalTrack(); break;}
+	     refToCompareTo=il->globalTrack(); 
+	     //	     confirmedL2Track=il->standAloneTrack();
+	     break;}
 	 }
        }
        
@@ -326,6 +324,14 @@ AssociatedMuonXRay::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
      if (theConfirm && !isConfirmed) continue;
      countConfirm++;
 
+     /*
+       if (confirmedL2Track.isNonnull()){
+       //you have a tracker track and the previous L2 track
+       h.e("h_mu_DpT")->Fill(ref->pt() - confirmedL2Track->pt());
+       h.e("h_mu_relDpT")->Fill(2*(ref->pt()-confirmedL2Track->pt())/(ref->pt()+confirmedL2Track->pt()));
+       }
+     */
+
      bool isLeading=false;
      if(ref->pt()>highest_pt_reco) {
        highest_pt_reco= ref->pt();
@@ -336,6 +342,7 @@ AssociatedMuonXRay::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
      h.e("h_mu_90pt")->Fill(pt90(ref,iEvent));
      h.e("h_mu_hits")->Fill(ref->recHitsSize());
      h.e("h_mu_eta")->Fill(ref->eta());
+     h.e("h_mu_phi")->Fill(ref->phi());
      h.e("h_mu_Aeta")->Fill(fabs(ref->eta()));
      h.e("h_mu_d0")->Fill(ref->d0());
      h.e("h_mu_d0_pT")->Fill(ref->pt(),ref->d0());
@@ -356,7 +363,8 @@ AssociatedMuonXRay::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
 	 h.e("h_mu_sim_pt")->Fill(trp->pt());
 	 h.e("h_mu_sim_Aeta")->Fill(fabs(trp->eta()));
 	 h.e("h_mu_sim_eta")->Fill(trp->eta());
-	 
+	 h.e("h_mu_sim_phi")->Fill(trp->phi());
+
 	 //---------------------- MOTHERHOOD --------------------------------
 	 //find the parent of tracking particle
 	 for(TrackingParticle::g4t_iterator isimtk = trp->g4Track_begin();isimtk!=trp->g4Track_end();isimtk++)
@@ -368,7 +376,7 @@ AssociatedMuonXRay::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
 		 MotherSearch mother(&*isimtk, SimTk, SimVtx, hepmc);
 
 		 //FIXME, use reco::Particle mother.mother();
-		 double pt,eta;
+		 double pt,eta,phi;
 		 int parentID;
 		 int motherBinNumber;
 		 if (mother.IsValid()){
@@ -377,6 +385,7 @@ AssociatedMuonXRay::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
 		     motherBinNumber = wantMotherBin.GetBinNum(mother.Sim_mother->type());
 		     pt=mother.simtrack->momentum().perp();
 		     eta=mother.simtrack->momentum().eta();
+		     phi=mother.simtrack->momentum().phi();
 		     if (isLeading){
 		       leading_simtrack = mother.simtrack;
 		       leading_gentrack = 0;
@@ -388,6 +397,7 @@ AssociatedMuonXRay::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
 		     motherBinNumber = wantMotherBin.GetBinNum(mother.Gen_mother->pdg_id());
 		     pt=mother.gentrack->momentum().perp();
 		     eta=mother.gentrack->momentum().eta();
+		     phi=mother.gentrack->momentum().phi();
 		     if (isLeading){
 		       leading_simtrack = 0;
 		       leading_gentrack = mother.gentrack;
@@ -400,11 +410,21 @@ AssociatedMuonXRay::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
 		   h.HBC["h_mu_90pt_assoc_ID"][motherBinNumber]->Fill(pt90(ref,iEvent));
 		   h.HBC["h_mu_hits_assoc_ID"][motherBinNumber]->Fill(ref->recHitsSize());
 		   h.HBC["h_mu_eta_assoc_ID"][motherBinNumber]->Fill(ref->eta());
+		   h.HBC["h_mu_phi_assoc_ID"][motherBinNumber]->Fill(ref->phi());
 		   h.HBC["h_mu_Aeta_assoc_ID"][motherBinNumber]->Fill(fabs(ref->eta()));
 		   h.HBC["h_mu_d0_assoc_ID"][motherBinNumber]->Fill(ref->d0());
 
+		   /*
+		     if (confirmedL2Track.isNonnull()){
+		     //you have a tracker track and the previous L2 track
+		     h.HBC["h_mu_DpT"][motherBinNumber]->Fill(ref->pt() - confirmedL2Track->pt());
+		     h.HBC["h_mu_relDpT"][motherBinNumber]->Fill(2*(ref->pt()-confirmedL2Track->pt())/(ref->pt()+confirmedL2Track->pt()));
+		     }
+		   */
+
 		   h.HBC["h_mu_sim_pt_assoc_ID"][motherBinNumber]->Fill(pt);
 		   h.HBC["h_mu_sim_eta_assoc_ID"][motherBinNumber]->Fill(eta);
+		   h.HBC["h_mu_sim_phi_assoc_ID"][motherBinNumber]->Fill(phi);
 		   h.HBC["h_mu_sim_Aeta_assoc_ID"][motherBinNumber]->Fill(fabs(eta));
 
 		   //do it once per tracking particle once it succeed
@@ -437,23 +457,27 @@ AssociatedMuonXRay::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
      h.e("h_mu_leading_pt")->Fill(leading_track->pt());   
      h.e("h_mu_leading_90pt")->Fill(pt90(leading_track,iEvent));   
      h.e("h_mu_leading_Aeta")->Fill(fabs(leading_track->eta()));
-     if (leading_simtrack){
-       h.e("h_mu_leading_sim_pt")->Fill(leading_simtrack->momentum().perp());
-       int motherBinNumber = wantMotherBin.GetBinNum(leading_simMother->type());
-       h.HBC["h_mu_leading_sim_pt_assoc_ID"][motherBinNumber]->Fill(leading_simtrack->momentum().perp());
+     h.e("h_mu_leading_phi")->Fill(leading_track->phi());
+     int motherBinNumber =0;
+     if (leading_simtrack || leading_gentrack){
+       if (leading_simtrack){
+	 h.e("h_mu_leading_sim_pt")->Fill(leading_simtrack->momentum().perp());
+	 wantMotherBin.GetBinNum(leading_simMother->type());
+	 h.HBC["h_mu_leading_sim_pt_assoc_ID"][motherBinNumber]->Fill(leading_simtrack->momentum().perp());
+       }
+       else if(leading_gentrack){
+	 h.e("h_mu_leading_sim_pt")->Fill(leading_gentrack->momentum().perp());
+	 wantMotherBin.GetBinNum(leading_genMother->pdg_id());
+	 h.HBC["h_mu_leading_sim_pt_assoc_ID"][motherBinNumber]->Fill(leading_gentrack->momentum().perp());
+       }
        h.HBC["h_mu_leading_pt_assoc_ID"][motherBinNumber]->Fill(leading_track->pt());
-       h.HBC["h_mu_leading_90pt_assoc_ID"][motherBinNumber]->Fill(pt90(leading_track,iEvent));
-     }
-     else if(leading_gentrack){
-       h.e("h_mu_leading_sim_pt")->Fill(leading_gentrack->momentum().perp());
-       int motherBinNumber = wantMotherBin.GetBinNum(leading_genMother->pdg_id());
-       h.HBC["h_mu_leading_sim_pt_assoc_ID"][motherBinNumber]->Fill(leading_gentrack->momentum().perp());
-       h.HBC["h_mu_leading_pt_assoc_ID"][motherBinNumber]->Fill(leading_track->pt());
+       h.HBC["h_mu_leading_d0_assoc_ID"][motherBinNumber]->Fill(leading_track->d0());
+       h.HBC["h_mu_leading_phi_assoc_ID"][motherBinNumber]->Fill(leading_track->phi());
        h.HBC["h_mu_leading_90pt_assoc_ID"][motherBinNumber]->Fill(pt90(leading_track,iEvent));
      }
    }
-      
-   /*
+     
+     /*
    //associate sim to reco
    reco::SimToRecoCollection simRecoColl;
    simRecoColl = theAssociator->associateSimToReco(tracks,TPtracks, &iEvent);

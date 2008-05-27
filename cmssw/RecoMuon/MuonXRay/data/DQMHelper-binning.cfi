@@ -14,3 +14,8 @@ block Aetabinning ={
 	uint32 nBins=60
 	double Min=0
 	double Max=3.0}
+
+block phibinning ={
+	uint32 nBins=400
+	double Min=-3.14159265358979312
+	double Max=3.14159265358979312}
