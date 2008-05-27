@@ -1,20 +1,3 @@
-block eTaxis={
-	uint32 nBins=600
-	double Min=0
-	double Max=1200}
-block jet={
-	string method="JetExpressionVariable"
-	InputTag src=selectedLayer1Jets}
-block jet1={
-	using jet
-	uint32 index=0}
-block jet2={
-	using jet
-	uint32 index=1}	
-block muon1={
-	string method="MuonExpressionVariable"
-	InputTag src=selectedLayer1Muons
-	uint32 index=0}
 
 module configurableAnalysis = ConfigurableAnalysis{
 	PSet Variables={
@@ -22,11 +5,6 @@ module configurableAnalysis = ConfigurableAnalysis{
 	     	 string method = "CalculateMHT"
 		 InputTag jetSrc = selectedLayer1Jets
 		 InputTag metSrc = selectedLayer1METs
-	     	}
-	     	PSet MHT2={
-	     	 string method = "Power"
-		 double power=2.
-		 string var="MHT"
 	     	}
 		PSet met={
 		 string method = "METExpressionVariable"
@@ -52,12 +30,12 @@ module configurableAnalysis = ConfigurableAnalysis{
       		 uint32 index=2
       		 string expr="et"
 	     	}
-		#PSet pIDSplit={
-		# string method="ProcessIdSplitter"
-		# double lumi=1000.
-		# string weightLabel="csa07EventWeightProducer"
-		# uint32 maxID=70
-		#}
+		PSet pIDSplit={
+		 string method="ProcessIdSplitter"
+		 double lumi=1000.
+		 string weightLabel="csaweightproducer"
+		 uint32 maxID=70
+		}
 	     	PSet j2pTSplit={
 		 string method="VarSplitter"
 		 string var="jet2Pt"
@@ -213,10 +191,22 @@ module configurableAnalysis = ConfigurableAnalysis{
 				bool makeSummaryTable=true
 				uint32 nMonitor=1000
 			}
+			PSet triggerPlusPreSelection={
+				vstring filterOrder={ "triggerSelection", "preSelection" }
+				bool ntuplize=true
+				bool makeContentPlots=true
+				bool makeFinalPlots=true
+				bool makeCumulativePlots=true
+				bool makeAllButOnePlots=true
+				bool makeSummaryTable=true
+				uint32 nMonitor=1000
+			}
 		}#PSet selections
 	}#PSet Selections
 
-	vstring flows={ "fullSelection" , "preSelection" }
+#	vstring flows={ "fullSelection", "preSelection" }
+	vstring flows={ "preSelection" }
+	bool workAsASelector = false
 
 	PSet Plotter={ #harry's the first name
 	PSet TH1s ={
@@ -229,7 +219,7 @@ module configurableAnalysis = ConfigurableAnalysis{
 			}
 		}
 		PSet hHT={
-			#string splitter="pIDSplit"
+			string splitter="pIDSplit"
 			string title="H_{T}"
 			PSet xAxis={
 				string var="MHT"
@@ -251,9 +241,7 @@ module configurableAnalysis = ConfigurableAnalysis{
 			PSet xAxis={
 				string var="muon1CIso"
 				string Label="leading muon calo. iso. [GeV]"
-				uint32 nBins=100
-				double Min=-20
-				double Max=20				
+				using isoAxis
 			}
 		}
 		PSet hMu1TIso={
@@ -261,9 +249,7 @@ module configurableAnalysis = ConfigurableAnalysis{
 			PSet xAxis={
 				string var="muon1TIso"
 				string Label="leading muon track iso. [GeV]"
-				uint32 nBins=100
-				double Min=-20
-				double Max=20				
+				using isoAxis
 			}
 		}
 		PSet hJet1pT={
@@ -322,16 +308,12 @@ module configurableAnalysis = ConfigurableAnalysis{
 			PSet xAxis={
 				string var="muon1CIso"
 				string Label="leading muon calo. iso. [GeV]"
-				uint32 nBins=100
-				double Min=-20
-				double Max=20				
+				using isoAxis
 			}
 			PSet yAxis={
 				string var="muon1TIso"
 				string Label="leading muon track iso. [GeV]"
-				uint32 nBins=100
-				double Min=-20
-				double Max=20				
+				using isoAxis
 			}
 		}
 	}#PSet TH2s
@@ -367,14 +349,14 @@ module configurableAnalysis = ConfigurableAnalysis{
 			 string class="pat::Muon"
 			 InputTag src=selectedLayer1Muons
 			 PSet leaves={
-				string pt="pt"
-				string eta="eta"
-				string aeta="abs(eta)"
+				using basicKinematicLeaves
 				string cIso="caloIso"
-#				string chi2="track.chi2"
+				string tIso="trackIso"
+				string id="leptonID"
+				string chi2="track.chi2"
 				string charge="charge"
-#				string d0="track.d0"
-#				string d0Err="track.d0Error"
+				string d0="track.d0"
+				string d0Err="track.d0Error"
 #				string e_em="getCalEnergy.em"
 #				string e_emS9="getCalEnergy.emS9"
 #				string e_had="getCalEnergy.had"
@@ -384,29 +366,64 @@ module configurableAnalysis = ConfigurableAnalysis{
 #				string iso03_ntrk="getIsolationR03.nTracks"
 			 }
 			}
-
 			PSet jets={
 			 string class="pat::Jet"
 			 InputTag src=selectedLayer1Jets
 			 PSet leaves={
-			  string et="et"
-			  string gen_et="genJet.et"
-			  string eta="eta"
-			  string aeta="abs(eta)"
-			  string emf="emEnergyFraction"
-			  string ehf="energyFractionHadronic"
+			  	using basicKinematicLeaves
+			  	string gen_et="genJet.et"
+			  	string emf="emEnergyFraction"
+			  	string ehf="energyFractionHadronic"
+				string n60="n60"
+				string n90="n90"
+				string area="towersArea"
+				string max_em="maxEInEmTowers"
+				string max_had="maxEInHadTowers"
+			 }
+			}
+			PSet els={
+			 string class="pat::Electron"
+			 InputTag src=selectedLayer1Electrons
+			 PSet leaves={
+			  	using basicKinematicLeaves
+			  	string id="leptonID"
+			  	string cIso="caloIso"
+			  	string tIso="trackIso"
+                          	string chi2="gsfTrack.chi2"
+				string class="classification"
+
+				string e="caloEnergy"
+				string e_em="(1-hadronicOverEm)*caloEnergy"
+				string e_had="hadronicOverEm*caloEnergy"
+
+				string cpx="trackMomentumAtCalo.x"
+			  	string cpy="trackMomentumAtCalo.y"
+			  	string cpz="trackMomentumAtCalo.z"
+			  	string vpx="trackMomentumAtVtx.x"
+			  	string vpy="trackMomentumAtVtx.y"
+			  	string vpz="trackMomentumAtVtx.z"
+			  	string cx="TrackPositionAtCalo.x"
+			  	string cy="TrackPositionAtCalo.y"
+			  	string cz="TrackPositionAtCalo.z"
+			  	string vx="TrackPositionAtVtx.x"
+			  	string vy="TrackPositionAtVtx.y"
+			  	string vz="TrackPositionAtVtx.z"
 			 }
 			}
 			PSet mets={
 			 string class="pat::MET"
 			 InputTag src=selectedLayer1METs
 			 PSet leaves={
-			  string et="et"
-			  string phi="phi"
-			  string ex="px"
-			  string ey="py"
-#			  string gen_et="genMET.et"
-#			  string gen_phi="genMET.phi"
+			  	string et="et"
+			  	string phi="phi"
+			  	string ex="px"
+			  	string ey="py"
+			  	string gen_et="genMET.et"
+			  	string gen_phi="genMET.phi"
+				string max_em="maxEtInEmTowers"
+				string max_had="maxEtInHadTowers"
+				string emf="emEtFraction"
+				string ehf="etFractionHadronic"
 			 }
 			}
 		}

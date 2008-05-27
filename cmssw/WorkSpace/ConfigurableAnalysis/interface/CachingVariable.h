@@ -57,6 +57,9 @@ class CachingVariable {
   const std::string & method() const { return method_;}
   const Description & description()const { return d_;}
   void addDescriptionLine(const std::string & s){ d_.addLine(s);}
+  const std::string & holderName() const { return holderName_;}
+  void setHolder(std::string hn) const { holderName_=hn;}
+
  protected:
   const edm::Event & event() const;
   const edm::EventSetup & setup() const ;
@@ -66,9 +69,10 @@ class CachingVariable {
 
   std::string method_;
   std::string name_;
+  mutable std::string holderName_;
   evalType & baseEval() const {
-    if (edm::Service<UpdaterService>()->checkOnce(name_)){
-      LogDebug("CachingVariable")<<name_<<" is checking once";
+    if (edm::Service<UpdaterService>()->checkOnce(name_+":"+holderName_)){
+      LogDebug("CachingVariable")<<name_+":"+holderName_<<" is checking once";
       cache_=eval();
     }
     return cache_;
@@ -122,7 +126,7 @@ class VarSplitter : public Splitter{
     slots_=iConfig.getParameter<std::vector<double> >("slots");
     if (useUnderFlow_){
       labels_.push_back("underflow");
-      short_labels_.push_back("underflow");}
+      short_labels_.push_back("_"+n"_underflow");}
     std::vector<std::string> confLabels;
     if (iConfig.exists("labels")){
       confLabels=iConfig.getParameter<std::vector<std::string> >("labels");
@@ -143,7 +147,7 @@ class VarSplitter : public Splitter{
     }
     if (useOverFlow_)
       { labels_.push_back("overFlow");
-	short_labels_.push_back("overFlow");}
+	short_labels_.push_back("_"+n+"_overFlow");}
     
     //check consistency
     if (labels_.size()!=maxSlots())

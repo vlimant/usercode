@@ -2,6 +2,7 @@
 #define UpdaterService_H
 
 #include "FWCore/ServiceRegistry/interface/ActivityRegistry.h"
+#include <DataFormats/Provenance/interface/ModuleDescription.h>
 
 namespace edm {
   class ParameterSet;
@@ -17,7 +18,9 @@ class UpdaterService {
   UpdaterService(const edm::ParameterSet & cfg, edm::ActivityRegistry & r );
   ~UpdaterService();
 
-  void init(const edm::EventID&, const edm::Timestamp&);
+  void init(const edm::EventID&, const edm::Timestamp&); //preEvent
+  //  void initModule(const edm::ModuleDescription&); //premodule
+
   bool checkOnce(std::string);
   bool check(std::string, std::string);
 

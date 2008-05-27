@@ -13,7 +13,7 @@
 //
 // Original Author:  Jean-Roch Vlimant
 //         Created:  Mon Apr 14 11:39:51 CEST 2008
-// $Id: ConfigurableAnalysis.cc,v 1.1 2008/05/11 21:24:40 vlimant Exp $
+// $Id$
 //
 //
 
@@ -55,6 +55,8 @@ class ConfigurableAnalysis : public edm::EDFilter {
   NTupler * ntupler_;
 
   std::vector<std::string> flows_;
+  bool workAsASelector_;
+  std::string vHelperInstance_;
 };
 
 //
@@ -71,7 +73,8 @@ class ConfigurableAnalysis : public edm::EDFilter {
 ConfigurableAnalysis::ConfigurableAnalysis(const edm::ParameterSet& iConfig) :
   selections_(0), plotter_(0), ntupler_(0)
 {
-  VariableHelperInstance::init(iConfig.getParameter<edm::ParameterSet>("Variables"));
+  vHelperInstance_ = iConfig.getParameter<std::string>("@module_label");
+  VariableHelperInstance::init(vHelperInstance_,iConfig.getParameter<edm::ParameterSet>("Variables"));
 
   //configure the tools
   selections_ = new Selections(iConfig.getParameter<edm::ParameterSet>("Selections"));
@@ -82,6 +85,7 @@ ConfigurableAnalysis::ConfigurableAnalysis(const edm::ParameterSet& iConfig) :
     ntupler_ = new CombinedNTupler(iConfig.getParameter<edm::ParameterSet>("Ntupler"));
   
   flows_ = iConfig.getParameter<std::vector<std::string> >("flows");
+  workAsASelector_ = iConfig.getParameter<bool>("workAsASelector");
 
   //vector of passed selections
   produces<std::vector<bool> >();
@@ -107,7 +111,7 @@ bool ConfigurableAnalysis::filter(edm::Event& iEvent, const edm::EventSetup& iSe
   //will the filter pass or not.
   bool majorGlobalAccept=false;
 
-  VariableHelperInstance::get().update(iEvent,iSetup);
+  VariableHelperInstance::get(vHelperInstance_).update(iEvent,iSetup);
 
   std::auto_ptr<std::vector<bool> > passedProduct(new std::vector<bool>(flows_.size(),false));
   bool filledOnce=false;  
@@ -182,7 +186,10 @@ bool ConfigurableAnalysis::filter(edm::Event& iEvent, const edm::EventSetup& iSe
   }//loop the different filter order/number: loop the Selections
 
   iEvent.put(passedProduct);
-  return majorGlobalAccept;
+  if (workAsASelector_)
+    return majorGlobalAccept;
+  else
+    return true;
 }
    
 

@@ -10,6 +10,8 @@
 //VariableHelperService::VariableHelperService(const edm::ParameterSet & iConfig, edm::ActivityRegistry & r){instance_ = new VariableHelper(iConfig);}
 
 VariableHelper * VariableHelperInstance::VariableHelperUniqueInstance_=0;
+VariableHelper * VariableHelperInstance::SetVariableHelperUniqueInstance_=0;
+std::map<std::string, VariableHelper* > VariableHelperInstance::multipleInstance_ = std::map<std::string, VariableHelper* >();
 
 VariableHelper::VariableHelper(const edm::ParameterSet & iConfig){
   std::vector<std::string> psetNames;
@@ -23,27 +25,17 @@ VariableHelper::VariableHelper(const edm::ParameterSet & iConfig){
       std::string method=vPset.getParameter<std::string>("method");
       variables_[vname]=CachingVariableFactory::get()->create(method,vname,vPset);
     }
-    /*    else if (type=="parser"){
-	  std::string Class=vPset.getParameter<std::string>("class");
-	  if (Class=="pat::Jet")
-	  {
-	  variables_[vname]=new ExpressionVariable<pat::Jet>(vname,vPset);
-	  }
-	  else if (Class=="pat::Muon")
-	  {
-	  variables_[vname]=new ExpressionVariable<pat::Muon>(vname,vPset);
-	  }
-	  else
-	  {
-	  //Class not recognized
-	  throw;
-	  }
-	}*/
     else{
       //type not recognized
       throw;
     }
   }
+}
+
+void VariableHelper::setHolder(std::string hn){
+  std::map<std::string, CachingVariable*> ::const_iterator it = variables_.begin();
+  std::map<std::string, CachingVariable*> ::const_iterator it_end = variables_.end();
+  for (;it!=it_end;++it)  it->second->setHolder(hn);
 }
 
 void VariableHelper::update(const edm::Event & e, const edm::EventSetup & es) const
@@ -52,18 +44,6 @@ void VariableHelper::update(const edm::Event & e, const edm::EventSetup & es) co
   es_=&es;
 }
 
-/*
-const CachingVariable* VariableHelper::variable(std::string & name) const{
-std::map<std::string, CachingVariable*> ::const_iterator v=variables_.find(name);
-if (v!=variables_.end())
-return v->second;
-else
-{
-//unknown request variable.
-throw;
-}
-}
-*/
 
 const CachingVariable* VariableHelper::variable(std::string name) const{ 
   std::map<std::string, CachingVariable*> ::const_iterator v=variables_.find(name);

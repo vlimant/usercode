@@ -70,7 +70,7 @@ class VariableNTupler : public NTupler{
   
   void fill(edm::Event& iEvent){
     //protection against stupid users :-(
-    if (!edm::Service<UpdaterService>()->checkOnce("VariableNTupler::fill")) return;
+    //    if (!edm::Service<UpdaterService>()->checkOnce("VariableNTupler::fill")) return;
     
     if (useTFileService_){
       //fill the data holder
