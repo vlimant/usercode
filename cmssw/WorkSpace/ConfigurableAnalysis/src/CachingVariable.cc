@@ -37,7 +37,7 @@ ProcessIdSplitter::ProcessIdSplitter(std::string  n,const edm::ParameterSet & iC
   for (uint id=0;id!=maxID;++id){
     labels_.push_back(std::string(csa07::csa07ProcessName(id)));
     std::stringstream ss;
-    ss<<"processID_"<<id;
+    ss<<"_processIDSplit_"<<id;
     short_labels_.push_back(ss.str());
   }
 }

@@ -1,0 +1,35 @@
+block isoAxis={
+	uint32 nBins=100
+	double Min=0
+	double Max=20}
+block eTaxis={
+	uint32 nBins=600
+	double Min=0
+	double Max=1200}
+block jet={
+	string method="JetExpressionVariable"
+//	InputTag src=selectedLayer1Jets}
+	string src="jets"}
+block jet1={
+	using jet
+	uint32 index=0}
+block jet2={
+	using jet
+	uint32 index=1}	
+block muon1={
+	string method="MuonExpressionVariable"
+//	InputTag src=selectedLayer1Muons
+	string src="muons"
+	uint32 index=0}
+
+
+block basicKinematicLeaves={
+	string et="et"
+	string pt="pt"
+	string px="px"
+	string py="py"
+	string pz="pz"
+	string eta="eta"
+	string phi="phi"
+	string theta="theta"
+}

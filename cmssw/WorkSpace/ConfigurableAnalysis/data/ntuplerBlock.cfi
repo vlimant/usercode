@@ -1,0 +1,91 @@
+	PSet Ntupler={
+		bool useTFileService = true
+		PSet variablesPSet ={
+			bool allVariables = true
+			vstring leaves = { "jet1Pt", "jet2Pt", "muon1Pt" }
+		}
+		PSet branchesPSet ={
+			string treeName="event"
+			PSet mus={
+			 string class="pat::Muon"
+			 InputTag src=selectedLayer1Muons
+			 PSet leaves={
+				using basicKinematicLeaves
+				string cIso="caloIso"
+				string tIso="trackIso"
+				string id="leptonID"
+				string chi2="track.chi2"
+				string charge="charge"
+				string d0="track.d0"
+				string d0Err="track.d0Error"
+#				string e_em="getCalEnergy.em"
+#				string e_emS9="getCalEnergy.emS9"
+#				string e_had="getCalEnergy.had"
+#				string e_hadS9="getCalEnergy.hadS9"
+#				string e_ho="getCalEnergy.ho"
+#				string e_hoS9="getCalEnergy.hoS9"
+#				string iso03_ntrk="getIsolationR03.nTracks"
+			 }
+			}
+			PSet jets={
+			 string class="pat::Jet"
+			 InputTag src=selectedLayer1Jets
+			 PSet leaves={
+			  	using basicKinematicLeaves
+			  	string gen_et="genJet.et"
+			  	string emf="emEnergyFraction"
+			  	string ehf="energyFractionHadronic"
+#				string n60="n60"
+#				string n90="n90"
+				string area="towersArea"
+				string max_em="maxEInEmTowers"
+				string max_had="maxEInHadTowers"
+			 }
+			}
+			PSet els={
+			 string class="pat::Electron"
+			 InputTag src=selectedLayer1Electrons
+			 PSet leaves={
+			  	using basicKinematicLeaves
+			  	string id="leptonID"
+			  	string cIso="caloIso"
+			  	string tIso="trackIso"
+                          	string chi2="gsfTrack.chi2"
+				string class="classification"
+
+				string e="caloEnergy"
+				string e_em="(1-hadronicOverEm)*caloEnergy"
+				string e_had="hadronicOverEm*caloEnergy"
+
+				string cpx="trackMomentumAtCalo.x"
+			  	string cpy="trackMomentumAtCalo.y"
+			  	string cpz="trackMomentumAtCalo.z"
+			  	string vpx="trackMomentumAtVtx.x"
+			  	string vpy="trackMomentumAtVtx.y"
+			  	string vpz="trackMomentumAtVtx.z"
+			  	string cx="TrackPositionAtCalo.x"
+			  	string cy="TrackPositionAtCalo.y"
+			  	string cz="TrackPositionAtCalo.z"
+			  	string vx="TrackPositionAtVtx.x"
+			  	string vy="TrackPositionAtVtx.y"
+			  	string vz="TrackPositionAtVtx.z"
+			 }
+			}
+			PSet mets={
+			 string class="pat::MET"
+			 InputTag src=selectedLayer1METs
+			 PSet leaves={
+			  	string et="et"
+			  	string phi="phi"
+			  	string ex="px"
+			  	string ey="py"
+			  	string gen_et="genMET.et"
+			  	string gen_phi="genMET.phi"
+				string max_em="maxEtInEmTowers"
+				string max_had="maxEtInHadTowers"
+				string emf="emEtFraction"
+				string ehf="etFractionHadronic"
+			 }
+			}
+		}
+}

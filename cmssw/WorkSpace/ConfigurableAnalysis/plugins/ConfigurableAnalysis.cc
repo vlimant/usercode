@@ -73,7 +73,11 @@ class ConfigurableAnalysis : public edm::EDFilter {
 ConfigurableAnalysis::ConfigurableAnalysis(const edm::ParameterSet& iConfig) :
   selections_(0), plotter_(0), ntupler_(0)
 {
+
+  
   vHelperInstance_ = iConfig.getParameter<std::string>("@module_label");
+  if (iConfig.exists("InputTags"))
+    InputTagDistributor::init(vHelperInstance_,iConfig.getParameter<edm::ParameterSet>("InputTags"));
   VariableHelperInstance::init(vHelperInstance_,iConfig.getParameter<edm::ParameterSet>("Variables"));
 
   //configure the tools
@@ -89,7 +93,8 @@ ConfigurableAnalysis::ConfigurableAnalysis(const edm::ParameterSet& iConfig) :
 
   //vector of passed selections
   produces<std::vector<bool> >();
-  ntupler_->registerleaves(this);
+  if (ntupler_)
+    ntupler_->registerleaves(this);
 }
 
 ConfigurableAnalysis::~ConfigurableAnalysis()
@@ -111,7 +116,8 @@ bool ConfigurableAnalysis::filter(edm::Event& iEvent, const edm::EventSetup& iSe
   //will the filter pass or not.
   bool majorGlobalAccept=false;
 
-  VariableHelperInstance::get(vHelperInstance_).update(iEvent,iSetup);
+  InputTagDistributor::set(vHelperInstance_);
+  VariableHelperInstance::set(vHelperInstance_).update(iEvent,iSetup);
 
   std::auto_ptr<std::vector<bool> > passedProduct(new std::vector<bool>(flows_.size(),false));
   bool filledOnce=false;  
@@ -204,6 +210,7 @@ void
 ConfigurableAnalysis::endJob() {
   //print summary tables
   selections_->print();
+  plotter_->complete();
 }
 
 

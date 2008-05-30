@@ -31,17 +31,22 @@ namespace configurableAnalysis{
   char Jet[]="pat::Jet";
   char Muon[]="pat::Muon";
   char MET[]="pat::MET";
+  char Electron[]="pat::Electron";
 }
 #include "DataFormats/PatCandidates/interface/Jet.h"
 #include "DataFormats/PatCandidates/interface/MET.h"
 #include "DataFormats/PatCandidates/interface/Muon.h"
+#include "DataFormats/PatCandidates/interface/Electron.h"
+
 typedef ExpressionVariable<pat::Jet,configurableAnalysis::Jet> JetExpressionVariable;
 typedef ExpressionVariable<pat::MET,configurableAnalysis::MET> METExpressionVariable;
 typedef ExpressionVariable<pat::Muon,configurableAnalysis::Muon> MuonExpressionVariable;
+typedef ExpressionVariable<pat::Electron,configurableAnalysis::Electron> ElectronExpressionVariable;
 
 DEFINE_EDM_PLUGIN(CachingVariableFactory, JetExpressionVariable, "JetExpressionVariable");
 DEFINE_EDM_PLUGIN(CachingVariableFactory, METExpressionVariable, "METExpressionVariable");
 DEFINE_EDM_PLUGIN(CachingVariableFactory, MuonExpressionVariable, "MuonExpressionVariable");
+DEFINE_EDM_PLUGIN(CachingVariableFactory, ElectronExpressionVariable, "ElectronExpressionVariable");
 
 typedef CosDphiVariable<pat::Jet,configurableAnalysis::Jet,pat::Muon,configurableAnalysis::Muon> JetMuonCosDphiVariable;
 typedef CosDphiVariable<pat::Jet,configurableAnalysis::Jet,pat::MET,configurableAnalysis::MET> JetMETCosDphiVariable;

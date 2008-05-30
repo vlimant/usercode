@@ -40,20 +40,11 @@ class VariableHelper {
 
 class VariableHelperInstance {
  private:
-  static VariableHelper * VariableHelperUniqueInstance_;
   static VariableHelper * SetVariableHelperUniqueInstance_;
   static std::map<std::string, VariableHelper* > multipleInstance_;
 
  public:
-  static VariableHelper & init(const edm::ParameterSet & iConfig){
-    if (VariableHelperUniqueInstance_){
-      std::cerr<<" VariableHelperUniqueInstance_ already defined."<<std::endl;
-      throw;
-    }
-    else VariableHelperUniqueInstance_ = new VariableHelper(iConfig);
-    SetVariableHelperUniqueInstance_ = VariableHelperUniqueInstance_;
-   return *VariableHelperUniqueInstance_;
-  }
+
   static VariableHelper & init(std::string user, const edm::ParameterSet & iConfig){
     if (multipleInstance_.find(user)!=multipleInstance_.end()){
       std::cerr<<user<<" VariableHelper user already defined."<<std::endl;
@@ -65,17 +56,19 @@ class VariableHelperInstance {
   }
   
   static VariableHelper & get(){
-    if (!VariableHelperUniqueInstance_ && !SetVariableHelperUniqueInstance_)
+    if (!SetVariableHelperUniqueInstance_)
+      //    if (!VariableHelperUniqueInstance_ && !SetVariableHelperUniqueInstance_)
       {
 	std::cerr<<" none of VariableHelperUniqueInstance_ or SetVariableHelperUniqueInstance_ is valid."<<std::endl;
 	throw;
       }
-    else {
-      if (VariableHelperUniqueInstance_) return (*VariableHelperUniqueInstance_);
+    //    else {
+    //      if (VariableHelperUniqueInstance_) return (*VariableHelperUniqueInstance_);
       else return (*SetVariableHelperUniqueInstance_);
-    }
+    //    }
   }
-  static VariableHelper & get(std::string user){
+
+  static VariableHelper & set(std::string user){
     std::map<std::string, VariableHelper* >::iterator f=multipleInstance_.find(user);
     if (f == multipleInstance_.end()){
       std::cerr<<user<<" VariableHelper user not defined."<<std::endl;

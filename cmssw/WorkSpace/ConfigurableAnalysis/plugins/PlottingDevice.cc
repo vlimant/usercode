@@ -48,6 +48,7 @@ class PlottingDevice : public edm::EDAnalyzer {
       virtual void endJob() ;
 
       // ----------member data ---------------------------
+  std::string vHelperInstance_;
   std::string plotDirectoryName_;
   Plotter * plotter_;
 };
@@ -65,9 +66,11 @@ class PlottingDevice : public edm::EDAnalyzer {
 //
 PlottingDevice::PlottingDevice(const edm::ParameterSet& iConfig)
 {
-  //  plotDirectoryName_ = iConfig.getParameter<std::string>("@module_label");
+  vHelperInstance_ = iConfig.getParameter<std::string>("@module_label");
   plotDirectoryName_="PlottingDevice";
-  VariableHelperInstance::init(iConfig.getParameter<edm::ParameterSet>("Variables"));
+  if (iConfig.exists("InputTags"))
+    InputTagDistributor::init(vHelperInstance_,iConfig.getParameter<edm::ParameterSet>("InputTags"));
+  VariableHelperInstance::init(vHelperInstance_,iConfig.getParameter<edm::ParameterSet>("Variables"));
   plotter_ = new Plotter(iConfig.getParameter<edm::ParameterSet>("Plotter"));
 }
 
@@ -83,7 +86,8 @@ PlottingDevice::~PlottingDevice(){}
 void
 PlottingDevice::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
-  VariableHelperInstance::get().update(iEvent,iSetup);
+  InputTagDistributor::set(vHelperInstance_);
+  VariableHelperInstance::set(vHelperInstance_).update(iEvent,iSetup);
 
   plotter_->setDir(plotDirectoryName_);
 

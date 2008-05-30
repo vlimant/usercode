@@ -8,6 +8,7 @@
 #include "TH1F.h"
 #include "TH2F.h"
 #include "TProfile.h"
+#include "THStack.h"
 
 #include "Workspace/ConfigurableAnalysis/interface/VariableHelper.h"
 #include "Workspace/ConfigurableAnalysis/interface/CachingVariable.h"
@@ -196,6 +197,9 @@ class ConfigurableHisto {
   }
   const HType & type() { return type_;}  
 
+  void complete() {}
+  TH1 * h() {return h_;}
+
  protected:
   ConfigurableHisto(const ConfigurableHisto & master){
     type_=master.type_;
@@ -277,7 +281,7 @@ class SplittingConfigurableHisto : public ConfigurableHisto {
 	  edm::ParameterSet mPset=pset;
 	  edm::Entry e("string",title+" for "+label,true);
 	  mPset.insert(true,"title",e);
-	  subHistos_.push_back(new ConfigurableHisto(t,name+"_"+slabel, mPset));
+	  subHistos_.push_back(new ConfigurableHisto(t,name+slabel, mPset));
 	}
       }
     }
@@ -291,10 +295,21 @@ class SplittingConfigurableHisto : public ConfigurableHisto {
     if (subHistoMap_.size()!=0){
       SubHistoMap::iterator i=subHistoMap_.begin();
       SubHistoMap::iterator i_end=subHistoMap_.end();
-      for (;i!=i_end;++i){for (uint h=0;h!=i->second.size();++h){ i->second[h]->book(dir);}}
+      for (;i!=i_end;++i){for (uint h=0;h!=i->second.size();++h){ 
+	  i->second[h]->book(dir);}
+	//book the THStack
+	std::string sName= name_+"_"+i->first->name();
+	std::string sTitle="Stack histogram of "+name_+" for splitter "+i->first->name();
+	subHistoStacks_[i->first]= dir->make<THStack>(sName.c_str(),sTitle.c_str());
+      }
     }else{
-      for (uint i=0;i!=subHistos_.size();i++){subHistos_[i]->book(dir);}
+      for (uint h=0;h!=subHistos_.size();h++){subHistos_[h]->book(dir);}
+      //book a THStack
+      std::string sName= name_+"_"+splitter_->name();
+      std::string sTitle="Stack histogram of "+name_+" for splitter "+splitter_->name();
+      stack_ = dir->make<THStack>(sName.c_str(),sTitle.c_str());
     }
+    
   }
 
   ConfigurableHisto * clone() const {    return new SplittingConfigurableHisto(*this);  }
@@ -327,7 +342,26 @@ class SplittingConfigurableHisto : public ConfigurableHisto {
       subHistos_[slot]->fill(e);
     }
   }
-  
+
+  void complete(){
+    if (subHistoMap_.size()!=0){
+      //fill up the stacks
+      SubHistoMap::iterator i=subHistoMap_.begin();
+      SubHistoMap::iterator i_end=subHistoMap_.end();
+      for (;i!=i_end;++i){
+	for (uint h=0;h!=i->second.size();h++){
+	  //	  if (i->second[h]->h()->Integral==0) continue;// do not add empty histograms. NO, because it will be tough to merge two THStack
+	  subHistoStacks_[i->first]->Add(i->second[h]->h(), i->first->label(h).c_str());
+	}
+      }
+
+    }else{
+      //fill up the only stack
+      for (uint i=0;i!=subHistos_.size();i++){	stack_->Add(subHistos_[i]->h(), splitter_->label(i).c_str());      }
+    }
+
+
+  }
  private:
   SplittingConfigurableHisto(const SplittingConfigurableHisto & master) : ConfigurableHisto(master){
     splitter_ = master.splitter_;
@@ -345,12 +379,14 @@ class SplittingConfigurableHisto : public ConfigurableHisto {
   }
 
   typedef std::map<const Splitter *, std::vector<ConfigurableHisto* > > SubHistoMap;
+  typedef std::map<const Splitter *, THStack *> SubHistoStacks;
+  SubHistoStacks subHistoStacks_;
   SubHistoMap subHistoMap_;
   
   const Splitter * splitter_;
   std::vector<ConfigurableHisto* > subHistos_;
   // do you want to have a stack already made from the splitted histos?
-  //  THStack * stack_;
+  THStack * stack_;
 };
 
 #endif

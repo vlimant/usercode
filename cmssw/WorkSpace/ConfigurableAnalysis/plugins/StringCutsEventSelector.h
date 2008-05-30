@@ -3,13 +3,15 @@
 
 #include "Workspace/EventSelectors/interface/SusyEventSelector.h"
 #include "PhysicsTools/Utilities/interface/StringCutObjectSelector.h"
+#include "Workspace/ConfigurableAnalysis/interface/InputTagDistributor.h"
 
 template<typename Object>
 class  StringCutsEventSelector : public SusyEventSelector {
  public:
   StringCutsEventSelector(const edm::ParameterSet& pset) :
     SusyEventSelector(pset),
-    src_(pset.getParameter<edm::InputTag>("src"))
+    //    src_(pset.getParameter<edm::InputTag>("src"))
+    src_(InputTagDistributor::retrieve("src",pset))
       {
 	std::vector<std::string> selection=pset.getParameter<std::vector<std::string > >("cut");
 	std::stringstream ss;

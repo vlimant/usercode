@@ -21,6 +21,7 @@
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
+#include "Workspace/ConfigurableAnalysis/interface/InputTagDistributor.h"
 
 class TreeBranch {
  public:
@@ -100,7 +101,7 @@ class StringBasedNTupler : public NTupler {
     for (uint b=0;b!=branches.size();++b){
       edm::ParameterSet bPSet = branchesPSet.getParameter<edm::ParameterSet>(branches[b]);
       std::string className=bPSet.getParameter<std::string>("class");
-      edm::InputTag src=bPSet.getParameter<edm::InputTag>("src");
+      edm::InputTag src=InputTagDistributor::retrieve("src",iConfig);
       edm::ParameterSet leavesPSet=bPSet.getParameter<edm::ParameterSet>("leaves");
       std::vector<std::string> leaves=leavesPSet.getParameterNamesForType<std::string>();
       std::string maxName="N"+branches[b];

@@ -12,6 +12,8 @@
 #include "PhysicsTools/Utilities/interface/StringObjectFunction.h"
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
+#include "Workspace/ConfigurableAnalysis/interface/InputTagDistributor.h"
+
 namespace edm {
   class EventSetup;
 }
@@ -186,8 +188,8 @@ class CalculateMHT : public CachingVariable {
  public:
   CalculateMHT(std::string  n,const edm::ParameterSet & iConfig) :
     CachingVariable(std::string("CalculateMHT"),n,iConfig){
-    metSrc_=iConfig.getParameter<edm::InputTag>("metSrc");
-    jetSrc_=iConfig.getParameter<edm::InputTag>("jetSrc");
+    metSrc_=InputTagDistributor::retrieve("metSrc",iConfig);
+    jetSrc_=InputTagDistributor::retrieve("jetSrc",iConfig);
     std::stringstream ss("Compute MHT by adding all jet ET from: ");
     ss<<"jets: "<<jetSrc_<<" and MET: "<<metSrc_;
     addDescriptionLine(ss.str());
@@ -225,7 +227,7 @@ class ExpressionVariable : public CachingVariable {
  public:
   ExpressionVariable(std::string n, const edm::ParameterSet & iConfig) :
     CachingVariable(std::string(label)+"ExpressionVariable",n,iConfig) {
-    src_=iConfig.getParameter<edm::InputTag>("src");
+    src_=InputTagDistributor::retrieve("src",iConfig);
     std::string expr=iConfig.getParameter<std::string>("expr");
     index_=iConfig.getParameter<uint>("index");
     f_ = new StringObjectFunction<Object>(expr);
@@ -254,9 +256,9 @@ class CosDphiVariable : public CachingVariable {
 public:
   CosDphiVariable(std::string n, const edm::ParameterSet& iConfig) :
     CachingVariable(std::string(lLHS)+std::string(lRHS)+"CosDphiVariable",n,iConfig),
-    srcLhs_(iConfig.getParameter<edm::InputTag>("srcLhs")),
+    srcLhs_(InputTagDistributor::retrieve("srcLhs",iConfig)),
     indexLhs_(iConfig.getParameter<uint>("indexLhs")),
-    srcRhs_(iConfig.getParameter<edm::InputTag>("srcRhs")),
+    srcRhs_(InputTagDistributor::retrieve("srcRhs",iConfig)),
     indexRhs_(iConfig.getParameter<uint>("indexRhs"))
       {
 	std::stringstream ss;

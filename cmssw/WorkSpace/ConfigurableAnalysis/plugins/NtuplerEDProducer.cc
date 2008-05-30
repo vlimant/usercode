@@ -13,7 +13,7 @@
 //
 // Original Author:  Jean-Roch Vlimant
 //         Created:  Sun May 11 21:12:46 CEST 2008
-// $Id: NtuplerEDProducer.cc,v 1.1 2008/05/11 21:24:40 vlimant Exp $
+// $Id$
 //
 //
 
@@ -63,6 +63,7 @@ class NtuplerEDProducer : public edm::EDProducer {
 //
 NtuplerEDProducer::NtuplerEDProducer(const edm::ParameterSet& iConfig)
 {
+  //this Ntupler can work with the InputTagDistributor, but should not be configured as such.
   ntupler_ = new StringBasedNTupler(iConfig.getParameter<edm::ParameterSet>("Ntupler"));
   ntupler_->registerleaves(this);
   produces<double>("dummy");
@@ -76,7 +77,7 @@ void
 NtuplerEDProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
   ntupler_->fill(iEvent);
-  std::auto_ptr<double> v(new double);
+  std::auto_ptr<double> v(new double(0));
   iEvent.put(v,"dummy");
 }
 

@@ -3,13 +3,15 @@
 
 #include "Workspace/EventSelectors/interface/SusyEventSelector.h"
 #include "PhysicsTools/Utilities/interface/StringCutObjectSelector.h"
+#include "Workspace/ConfigurableAnalysis/interface/InputTagDistributor.h"
 
 template<typename Object>
 class  StringCutEventSelector : public SusyEventSelector {
  public:
   StringCutEventSelector(const edm::ParameterSet& pset) :
     SusyEventSelector(pset),
-    src_(pset.getParameter<edm::InputTag>("src")),
+    //    src_(pset.getParameter<edm::InputTag>("src")),
+    src_(InputTagDistributor::retrieve("src",pset)),
     f_(pset.getParameter<std::string>("cut")),
     //put this guy to 0 to do the check on "all" object in the collection
     nFirst_(pset.getParameter<uint>("nFirst"))

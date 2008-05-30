@@ -7,9 +7,6 @@
 #include "DataFormats/PatCandidates/interface/Jet.h"
 #include "DataFormats/PatCandidates/interface/Muon.h"
 
-//VariableHelperService::VariableHelperService(const edm::ParameterSet & iConfig, edm::ActivityRegistry & r){instance_ = new VariableHelper(iConfig);}
-
-VariableHelper * VariableHelperInstance::VariableHelperUniqueInstance_=0;
 VariableHelper * VariableHelperInstance::SetVariableHelperUniqueInstance_=0;
 std::map<std::string, VariableHelper* > VariableHelperInstance::multipleInstance_ = std::map<std::string, VariableHelper* >();
 

@@ -1,0 +1,152 @@
+	PSet Plotter={ #harry's the first name
+	PSet TH1s ={
+		PSet hMET={
+			string title="Missing E_{T} (index 0)"
+			string splitter="pIDSplit"
+			PSet xAxis={
+				string var="met"
+				string Label="missing E_{T} [GeV]"
+				using eTaxis
+			}
+		}
+		PSet hHT={
+			string splitter="pIDSplit"
+			string title="H_{T}"
+			PSet xAxis={
+				string var="MHT"
+				string Label="H_{T} [GeV]"
+				using eTaxis
+			}
+		}
+		PSet hMu1pT={
+			vstring splitters={ "j2pTSplit" , "pIDSplit" }
+			string title="Muon_{1} p_{T}"
+			PSet xAxis={
+				string var="muon1Pt"
+				string Label="leading muon p_{T} [GeV]"
+				using eTaxis
+			}
+		}
+		PSet hMu1CIso={
+			string title="Muon_{1} calorimeter isolation"
+			PSet xAxis={
+				string var="muon1CIso"
+				string Label="leading muon calo. iso. [GeV]"
+				using isoAxis
+			}
+		}
+		PSet hMu1TIso={
+			string title="Muon_{1} tracker isolation"
+			PSet xAxis={
+				string var="muon1TIso"
+				string Label="leading muon track iso. [GeV]"
+				using isoAxis
+			}
+		}
+		PSet hEl1pT={
+			string splitter="pIDSplit"
+			string title="Electron_{1} p_{T}"
+			PSet xAxis={
+				string var="electron1Pt"
+				string Label="leading electron p_{T} [GeV]"
+				using eTaxis
+			}
+		}
+		PSet hEl2pT={
+			string splitter="pIDSplit"
+			string title="Electron_{2} p_{T}"
+			PSet xAxis={
+				string var="electron2Pt"
+				string Label="second electron p_{T} [GeV]"
+				using eTaxis
+			}
+		}
+		PSet hJet1pT={
+			vstring splitters={ "j2pTSplit" , "pIDSplit" }
+			string title="Jet_{1} E_{T}"
+			PSet xAxis={
+				string var="jet1Pt"
+				string Label="leading jet E_{T} [GeV]"
+				using eTaxis
+			}
+		}
+		PSet hJet2pT={
+			string splitter="pIDSplit"
+			string title="Jet_{2} E_{T}"
+			PSet xAxis={
+				string var="jet2Pt"
+				string Label="second jet E_{T} [GeV]"
+				using eTaxis
+			}
+		}
+		PSet hJet3pT={
+			string splitter="pIDSplit"
+			string title="Jet_{3} E_{T}"
+			PSet xAxis={
+				string var="jet3Pt"
+				string Label="third jet E_{T} [GeV]"
+				using eTaxis
+			}
+		}
+/*
+		PSet hVJet1pT={
+			string splitter="j2pTSplit"
+			string title="Jet_{1} E_{T} [GeV]"
+			PSet xAxis={
+				string var="jet1Pt"
+				string Label="leading jet E_{T} [GeV]"
+				#vdouble vBins={0,10,30,50,100,600}
+				using eTaxis
+			}
+		}
+*/
+
+	}#PSet TH1s
+	PSet TH2s ={
+/*		PSet hJet1pTvsJet2pT={
+			string title="leading versus second jet E_{T}"
+			PSet xAxis={
+				string var="jet1Pt"
+				string Label="leading jet E_{T} [GeV]"
+				using eTaxis
+			}
+			PSet yAxis={
+				string var="jet2Pt"
+				string Label="second jet E_{T} [GeV]"
+				vdouble vBins={0,10,40,50,100,600}
+			}
+		}
+*/
+		PSet hMuon1CIsovsTIso={
+			string title="muon track isolation versus calorimeter isolation"
+			PSet xAxis={
+				string var="muon1CIso"
+				string Label="leading muon calo. iso. [GeV]"
+				using isoAxis
+			}
+			PSet yAxis={
+				string var="muon1TIso"
+				string Label="leading muon track iso. [GeV]"
+				using isoAxis
+			}
+		}
+	}#PSet TH2s
+	PSet TProfiles={
+/*
+		PSet pfJet1pTvsJet2pT={
+			string title="leading versus second jet E_{T}"
+			string Option=""
+			PSet xAxis={
+				string var="jet1Pt"
+				string Label="leading jet E_{T} [GeV]"
+				using eTaxis
+			}
+			PSet yAxis={
+				string var="jet2Pt"
+				string Label="second jet E_{T} [GeV]"
+				vdouble vBins={0,10,40,50,100,600}
+			}
+		}
+*/
+	}#PSet TProfiles
+	}#PSet Plotter

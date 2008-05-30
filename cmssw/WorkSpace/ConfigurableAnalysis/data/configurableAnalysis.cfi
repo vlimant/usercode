@@ -1,92 +1,13 @@
 
 module configurableAnalysis = ConfigurableAnalysis{
-	PSet Variables={
-	     	PSet MHT={
-	     	 string method = "CalculateMHT"
-		 InputTag jetSrc = selectedLayer1Jets
-		 InputTag metSrc = selectedLayer1METs
-	     	}
-		PSet met={
-		 string method = "METExpressionVariable"
-		 InputTag src=selectedLayer1METs
-		 uint32 index=0
-		 string expr="et"
-		}
-	     	PSet jet1Pt={
-      		 string method = "JetExpressionVariable"
-      		 InputTag src=selectedLayer1Jets
-      		 uint32 index=0
-      		 string expr="et"
-	     	}
-	     	PSet jet2Pt={
-      		 string method = "JetExpressionVariable"
-      		 InputTag src=selectedLayer1Jets
-      		 uint32 index=1
-      		 string expr="et"
-	     	}
-	     	PSet jet3Pt={
-      	 	 string method = "JetExpressionVariable"
-      		 InputTag src=selectedLayer1Jets
-      		 uint32 index=2
-      		 string expr="et"
-	     	}
-		PSet pIDSplit={
-		 string method="ProcessIdSplitter"
-		 double lumi=1000.
-		 string weightLabel="csaweightproducer"
-		 uint32 maxID=70
-		}
-	     	PSet j2pTSplit={
-		 string method="VarSplitter"
-		 string var="jet2Pt"
-		 bool useUnderFlow=false
-		 bool useOverFlow=true
-		 vdouble slots={0, 10, 40, 50, 100, 200, 500, 1000}
-		 string labelsFormat="Jet_{2} p_{T} [%2.f , %2.f]"
-	     	}		
-	     	PSet muon1CIso={
-		 using muon1
-		 string expr="caloIso"
-#		 string expr="getIsolationR03.emEt"
-	     	}
-		PSet muon1CIsoSplit={
-		 string method="VarSplitter"
-                 string var="muon1CIso"
-                 bool useUnderFlow=false
-                 bool useOverFlow=true
-		 vdouble slots={-10, -5, 0, 1, 2, 4, 6, 10}
-	 	 string labelsFormat="#mu_{iso}^{calo} [%2.f , %2.f]"
-		}
-	     	PSet muon1TIso={
-		 using muon1
-		 string expr="trackIso"
-		}
-	     	PSet muon1Pt={
-		 using muon1
-		 string expr="pt"
-		}
-	     	PSet jet1jet2CosDphi={
-		 string method="JetJetCosDphiVariable"
-		 InputTag srcLhs=selectedLayer1Jets
-		 uint32 indexLhs=0
-		 InputTag srcRhs=selectedLayer1Jets
-		 uint32 indexRhs=1
-	     	}
-	     	PSet jet1METCosDphi={
-		 string method="JetMETCosDphiVariable"
-		 InputTag srcLhs=selectedLayer1Jets
-		 uint32 indexLhs=0
-		 InputTag srcRhs=selectedLayer1METs
-		 uint32 indexRhs=0
-	     	}
-	     	PSet jet2METCosDphi={
-		 string method="JetMETCosDphiVariable"
-		 InputTag srcLhs=selectedLayer1Jets
-		 uint32 indexLhs=1
-		 InputTag srcRhs=selectedLayer1METs
-		 uint32 indexRhs=0
-	     	}
-	}#PSet Variables
+	PSet InputTags={
+		InputTag jets=selectedLayer1Jets
+		InputTag electrons=selectedLayer1Electrons
+		InputTag muons=selectedLayer1Muons
+		InputTag mets=selectedLayer1METs
+	}
+
+	include "Workspace/ConfigurableAnalysis/data/variablesBlock.cfi"
 
 	PSet Selections={
 		PSet filters={
@@ -97,17 +18,17 @@ module configurableAnalysis = ConfigurableAnalysis{
 		 }
 		 PSet leadingMuon={
 		  string selector="MuonSEventSelector"
-		  InputTag src=selectedLayer1Muons
+		  string src="muons"
 		  vstring cut = { "pt > 30.0 & abs(eta) < 3.0" }
 		 }
 		 PSet leadingMuonIso={
 		  string selector="MuonSEventSelector"
-		  InputTag src=selectedLayer1Muons
+		  string src="muons"
 		  vstring cut = { "caloIso < 10.0" }
 		 }
 		 PSet jets={
 		  string selector="JetSEventSelector"
-		  InputTag src=selectedLayer1Jets
+		  string src="jets"
 		  vstring cut = { "et > 50.0 & abs(eta) < 3.0", "et > 50.0 & abs(eta) < 3.0", "et > 50.0 & abs(eta) < 3.0" }
 		 }
 		 PSet MET={
@@ -117,17 +38,17 @@ module configurableAnalysis = ConfigurableAnalysis{
 		 }
 		 PSet leadingJet={
 		  string selector="JetSEventSelector"
-		  InputTag src=selectedLayer1Jets
+                  string src="jets"
 		  vstring cut = { "et > 440.0 & abs(eta) < 1.9" , "-" , "-" }
 		 }
 		 PSet secondJet={
 		  string selector="JetSEventSelector"
- 		  InputTag src=selectedLayer1Jets
+                  string src="jets"
 		  vstring cut = { "-", "et > 440.0 & abs(eta) < 1.5" , "-" }
 		 }
 		 PSet thirdJet={
 		  string selector="JetSEventSelector"
-		  InputTag src=selectedLayer1Jets
+                  string src="jets"
 		  vstring cut = { "-", "-", "et > 50.0 & abs(eta) < 3.0" }
 		 }
 		 PSet dPhiJ1J2={
@@ -164,7 +85,7 @@ module configurableAnalysis = ConfigurableAnalysis{
 			PSet preSelection={
 				vstring filterOrder = { "leadingMuon", "leadingMuonIso", "jets"}
 				bool ntuplize=true
-				bool makeContentPlots=false
+				bool makeContentPlots=true
 				bool makeFinalPlots=true
 				bool makeCumulativePlots=false
 				bool makeAllButOnePlots=false
@@ -208,224 +129,8 @@ module configurableAnalysis = ConfigurableAnalysis{
 	vstring flows={ "preSelection" }
 	bool workAsASelector = false
 
-	PSet Plotter={ #harry's the first name
-	PSet TH1s ={
-		PSet hMET={
-			string title="Missing E_{T} (index 0)"
-			PSet xAxis={
-				string var="met"
-				string Label="missing E_{T} [GeV]"
-				using eTaxis
-			}
-		}
-		PSet hHT={
-			string splitter="pIDSplit"
-			string title="H_{T}"
-			PSet xAxis={
-				string var="MHT"
-				string Label="H_{T} [GeV]"
-				using eTaxis
-			}
-		}
-		PSet hMu1pT={
-			vstring splitters={ "j2pTSplit" }
-			string title="Muon_{1} p_{T}"
-			PSet xAxis={
-				string var="muon1Pt"
-				string Label="leading muon p_{T} [GeV]"
-				using eTaxis
-			}
-		}
-		PSet hMu1CIso={
-			string title="Muon_{1} calorimeter isolation"
-			PSet xAxis={
-				string var="muon1CIso"
-				string Label="leading muon calo. iso. [GeV]"
-				using isoAxis
-			}
-		}
-		PSet hMu1TIso={
-			string title="Muon_{1} tracker isolation"
-			PSet xAxis={
-				string var="muon1TIso"
-				string Label="leading muon track iso. [GeV]"
-				using isoAxis
-			}
-		}
-		PSet hJet1pT={
-			string title="Jet_{1} E_{T}"
-			PSet xAxis={
-				string var="jet1Pt"
-				string Label="leading jet E_{T} [GeV]"
-				using eTaxis
-			}
-		}
-		PSet hJet2pT={
-			string title="Jet_{2} E_{T}"
-			PSet xAxis={
-				string var="jet2Pt"
-				string Label="second jet E_{T} [GeV]"
-				using eTaxis
-			}
-		}
-		PSet hJet3pT={
-			string title="Jet_{3} E_{T}"
-			PSet xAxis={
-				string var="jet3Pt"
-				string Label="third jet E_{T} [GeV]"
-				using eTaxis
-			}
-		}
-		PSet hVJet1pT={
-			string splitter="j2pTSplit"
-			string title="Jet_{1} E_{T} [GeV]"
-			PSet xAxis={
-				string var="jet1Pt"
-				string Label="leading jet E_{T} [GeV]"
-				#vdouble vBins={0,10,30,50,100,600}
-				using eTaxis
-			}
-		}
-
-	}#PSet TH1s
-	PSet TH2s ={
-/*		PSet hJet1pTvsJet2pT={
-			string title="leading versus second jet E_{T}"
-			PSet xAxis={
-				string var="jet1Pt"
-				string Label="leading jet E_{T} [GeV]"
-				using eTaxis
-			}
-			PSet yAxis={
-				string var="jet2Pt"
-				string Label="second jet E_{T} [GeV]"
-				vdouble vBins={0,10,40,50,100,600}
-			}
-		}
-*/
-		PSet hMuon1CIsovsTIso={
-			string title="muon track isolation versus calorimeter isolation"
-			PSet xAxis={
-				string var="muon1CIso"
-				string Label="leading muon calo. iso. [GeV]"
-				using isoAxis
-			}
-			PSet yAxis={
-				string var="muon1TIso"
-				string Label="leading muon track iso. [GeV]"
-				using isoAxis
-			}
-		}
-	}#PSet TH2s
-	PSet TProfiles={
-/*
-		PSet pfJet1pTvsJet2pT={
-			string title="leading versus second jet E_{T}"
-			string Option=""
-			PSet xAxis={
-				string var="jet1Pt"
-				string Label="leading jet E_{T} [GeV]"
-				using eTaxis
-			}
-			PSet yAxis={
-				string var="jet2Pt"
-				string Label="second jet E_{T} [GeV]"
-				vdouble vBins={0,10,40,50,100,600}
-			}
-		}
-*/
-	}#PSet TProfiles
-	}#PSet Plotter
-
-	PSet Ntupler={
-		bool useTFileService = true
-		PSet variablesPSet ={
-			bool allVariables = true
-			vstring leaves = { "jet1Pt", "jet2Pt", "muon1Pt" }
-		}
-		PSet branchesPSet ={
-			string treeName="event"
-			PSet mus={
-			 string class="pat::Muon"
-			 InputTag src=selectedLayer1Muons
-			 PSet leaves={
-				using basicKinematicLeaves
-				string cIso="caloIso"
-				string tIso="trackIso"
-				string id="leptonID"
-				string chi2="track.chi2"
-				string charge="charge"
-				string d0="track.d0"
-				string d0Err="track.d0Error"
-#				string e_em="getCalEnergy.em"
-#				string e_emS9="getCalEnergy.emS9"
-#				string e_had="getCalEnergy.had"
-#				string e_hadS9="getCalEnergy.hadS9"
-#				string e_ho="getCalEnergy.ho"
-#				string e_hoS9="getCalEnergy.hoS9"
-#				string iso03_ntrk="getIsolationR03.nTracks"
-			 }
-			}
-			PSet jets={
-			 string class="pat::Jet"
-			 InputTag src=selectedLayer1Jets
-			 PSet leaves={
-			  	using basicKinematicLeaves
-			  	string gen_et="genJet.et"
-			  	string emf="emEnergyFraction"
-			  	string ehf="energyFractionHadronic"
-				string n60="n60"
-				string n90="n90"
-				string area="towersArea"
-				string max_em="maxEInEmTowers"
-				string max_had="maxEInHadTowers"
-			 }
-			}
-			PSet els={
-			 string class="pat::Electron"
-			 InputTag src=selectedLayer1Electrons
-			 PSet leaves={
-			  	using basicKinematicLeaves
-			  	string id="leptonID"
-			  	string cIso="caloIso"
-			  	string tIso="trackIso"
-                          	string chi2="gsfTrack.chi2"
-				string class="classification"
-
-				string e="caloEnergy"
-				string e_em="(1-hadronicOverEm)*caloEnergy"
-				string e_had="hadronicOverEm*caloEnergy"
-
-				string cpx="trackMomentumAtCalo.x"
-			  	string cpy="trackMomentumAtCalo.y"
-			  	string cpz="trackMomentumAtCalo.z"
-			  	string vpx="trackMomentumAtVtx.x"
-			  	string vpy="trackMomentumAtVtx.y"
-			  	string vpz="trackMomentumAtVtx.z"
-			  	string cx="TrackPositionAtCalo.x"
-			  	string cy="TrackPositionAtCalo.y"
-			  	string cz="TrackPositionAtCalo.z"
-			  	string vx="TrackPositionAtVtx.x"
-			  	string vy="TrackPositionAtVtx.y"
-			  	string vz="TrackPositionAtVtx.z"
-			 }
-			}
-			PSet mets={
-			 string class="pat::MET"
-			 InputTag src=selectedLayer1METs
-			 PSet leaves={
-			  	string et="et"
-			  	string phi="phi"
-			  	string ex="px"
-			  	string ey="py"
-			  	string gen_et="genMET.et"
-			  	string gen_phi="genMET.phi"
-				string max_em="maxEtInEmTowers"
-				string max_had="maxEtInHadTowers"
-				string emf="emEtFraction"
-				string ehf="etFractionHadronic"
-			 }
-			}
-		}
-	}
+	include "Workspace/ConfigurableAnalysis/data/plotterBlock.cfi"
+	PSet Ntupler={}
+#	include "Workspace/ConfigurableAnalysis/data/ntuplerBlock.cfi"
+	
 }
