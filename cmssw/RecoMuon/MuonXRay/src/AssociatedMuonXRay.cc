@@ -13,7 +13,7 @@
 //
 // Original Author:  Finn Rebassoo
 //         Created:  Wed Oct  3 16:40:27 CDT 2007
-// $Id$
+// $Id: AssociatedMuonXRay.cc,v 1.2 2008/05/27 21:44:42 vlimant Exp $
 //
 //
 
@@ -462,12 +462,12 @@ AssociatedMuonXRay::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
      if (leading_simtrack || leading_gentrack){
        if (leading_simtrack){
 	 h.e("h_mu_leading_sim_pt")->Fill(leading_simtrack->momentum().perp());
-	 wantMotherBin.GetBinNum(leading_simMother->type());
+	 motherBinNumber = wantMotherBin.GetBinNum(leading_simMother->type());
 	 h.HBC["h_mu_leading_sim_pt_assoc_ID"][motherBinNumber]->Fill(leading_simtrack->momentum().perp());
        }
        else if(leading_gentrack){
 	 h.e("h_mu_leading_sim_pt")->Fill(leading_gentrack->momentum().perp());
-	 wantMotherBin.GetBinNum(leading_genMother->pdg_id());
+	 motherBinNumber = wantMotherBin.GetBinNum(leading_genMother->pdg_id());
 	 h.HBC["h_mu_leading_sim_pt_assoc_ID"][motherBinNumber]->Fill(leading_gentrack->momentum().perp());
        }
        h.HBC["h_mu_leading_pt_assoc_ID"][motherBinNumber]->Fill(leading_track->pt());
