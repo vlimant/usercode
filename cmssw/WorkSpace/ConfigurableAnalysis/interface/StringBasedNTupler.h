@@ -1,7 +1,7 @@
 #ifndef StringBasedNTupler_NTupler_H
 #define StringBasedNTupler_NTupler_H
 
-#include "Workspace/ConfigurableAnalysis/interface/UpdaterService.h"
+#include "PhysicsTools/UtilAlgos/interface/UpdaterService.h"
 
 #include "FWCore/ParameterSet/interface/InputTag.h"
 #include "FWCore/Framework/interface/Frameworkfwd.h"
@@ -13,7 +13,7 @@
 #include "TTree.h"
 #include "TBranch.h"
 
-#include "Workspace/ConfigurableAnalysis/interface/NTupler.h"
+#include "PhysicsTools/UtilAlgos/interface/NTupler.h"
 
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
@@ -21,7 +21,7 @@
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
-#include "Workspace/ConfigurableAnalysis/interface/InputTagDistributor.h"
+#include "PhysicsTools/UtilAlgos/interface/InputTagDistributor.h"
 
 class TreeBranch {
  public:
@@ -101,7 +101,7 @@ class StringBasedNTupler : public NTupler {
     for (uint b=0;b!=branches.size();++b){
       edm::ParameterSet bPSet = branchesPSet.getParameter<edm::ParameterSet>(branches[b]);
       std::string className=bPSet.getParameter<std::string>("class");
-      edm::InputTag src=InputTagDistributor::retrieve("src",iConfig);
+      edm::InputTag src=InputTagDistributor::retrieve("src",bPSet);
       edm::ParameterSet leavesPSet=bPSet.getParameter<edm::ParameterSet>("leaves");
       std::vector<std::string> leaves=leavesPSet.getParameterNamesForType<std::string>();
       std::string maxName="N"+branches[b];

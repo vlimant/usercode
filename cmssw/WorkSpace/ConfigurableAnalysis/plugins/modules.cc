@@ -5,60 +5,20 @@
 
 DEFINE_SEAL_MODULE();
 
-#include "Workspace/EventSelectors/interface/EventSelectorFactory.h"
 
-#include "Workspace/ConfigurableAnalysis/plugins/JetMetDphiEventSelector.h"
-#include "Workspace/ConfigurableAnalysis/plugins/JetJetDphiEventSelector.h"
-#include "Workspace/ConfigurableAnalysis/plugins/JetEventSelector.h"
-#include "Workspace/ConfigurableAnalysis/plugins/METEventSelector.h"
-#include "Workspace/ConfigurableAnalysis/plugins/MuonEventSelector.h"
-#include "Workspace/ConfigurableAnalysis/plugins/VariableEventSelector.h"
+#include "DataFormats/HepMCCandidate/interface/GenParticleFwd.h"
+#include "DataFormats/HepMCCandidate/interface/GenParticle.h"
+#include "PhysicsTools/UtilAlgos/interface/ObjectSelector.h"
+#include "PhysicsTools/UtilAlgos/interface/SortCollectionSelector.h"
+#include "PhysicsTools/Utilities/interface/PtComparator.h"
 
-DEFINE_EDM_PLUGIN(EventSelectorFactory, JetMetDphiEventSelector, "JetMetDphiEventSelector");
-DEFINE_EDM_PLUGIN(EventSelectorFactory, JetJetDphiEventSelector, "JetJetDphiEventSelector");
-DEFINE_EDM_PLUGIN(EventSelectorFactory, aJetEventSelector, "aJetEventSelector");
-DEFINE_EDM_PLUGIN(EventSelectorFactory, JetSEventSelector, "JetSEventSelector");
-DEFINE_EDM_PLUGIN(EventSelectorFactory, aMETEventSelector, "aMETEventSelector");
-DEFINE_EDM_PLUGIN(EventSelectorFactory, METSEventSelector, "METSEventSelector");
-DEFINE_EDM_PLUGIN(EventSelectorFactory, MuonEventSelector, "MuonEventSelector");
-DEFINE_EDM_PLUGIN(EventSelectorFactory, MuonSEventSelector, "MuonSEventSelector");
-DEFINE_EDM_PLUGIN(EventSelectorFactory, VariableEventSelector, "VariableEventSelector");
+typedef ObjectSelector<SortCollectionSelector<reco::GenParticleCollection,GreaterByPt<reco::GenParticle> > > GenParticleSorterByPt;
 
-#include "Workspace/ConfigurableAnalysis/interface/CachingVariableFactory.h"
-#include "Workspace/ConfigurableAnalysis/interface/CachingVariable.h"
+DEFINE_FWK_MODULE(GenParticleSorterByPt);
 
-namespace configurableAnalysis{
-  char Jet[]="pat::Jet";
-  char Muon[]="pat::Muon";
-  char MET[]="pat::MET";
-  char Electron[]="pat::Electron";
-}
-#include "DataFormats/PatCandidates/interface/Jet.h"
-#include "DataFormats/PatCandidates/interface/MET.h"
-#include "DataFormats/PatCandidates/interface/Muon.h"
-#include "DataFormats/PatCandidates/interface/Electron.h"
-
-typedef ExpressionVariable<pat::Jet,configurableAnalysis::Jet> JetExpressionVariable;
-typedef ExpressionVariable<pat::MET,configurableAnalysis::MET> METExpressionVariable;
-typedef ExpressionVariable<pat::Muon,configurableAnalysis::Muon> MuonExpressionVariable;
-typedef ExpressionVariable<pat::Electron,configurableAnalysis::Electron> ElectronExpressionVariable;
-
-DEFINE_EDM_PLUGIN(CachingVariableFactory, JetExpressionVariable, "JetExpressionVariable");
-DEFINE_EDM_PLUGIN(CachingVariableFactory, METExpressionVariable, "METExpressionVariable");
-DEFINE_EDM_PLUGIN(CachingVariableFactory, MuonExpressionVariable, "MuonExpressionVariable");
-DEFINE_EDM_PLUGIN(CachingVariableFactory, ElectronExpressionVariable, "ElectronExpressionVariable");
-
-typedef CosDphiVariable<pat::Jet,configurableAnalysis::Jet,pat::Muon,configurableAnalysis::Muon> JetMuonCosDphiVariable;
-typedef CosDphiVariable<pat::Jet,configurableAnalysis::Jet,pat::MET,configurableAnalysis::MET> JetMETCosDphiVariable;
-typedef CosDphiVariable<pat::Jet,configurableAnalysis::Jet,pat::Jet,configurableAnalysis::Jet> JetJetCosDphiVariable;
-
-DEFINE_EDM_PLUGIN(CachingVariableFactory, JetMuonCosDphiVariable, "JetMuonCosDphiVariable");
-DEFINE_EDM_PLUGIN(CachingVariableFactory, JetMETCosDphiVariable, "JetMETCosDphiVariable");
-DEFINE_EDM_PLUGIN(CachingVariableFactory, JetJetCosDphiVariable, "JetJetCosDphiVariable");
-
-
-DEFINE_EDM_PLUGIN(CachingVariableFactory, Power, "Power");
-DEFINE_EDM_PLUGIN(CachingVariableFactory, CalculateMHT, "CalculateMHT");
-DEFINE_EDM_PLUGIN(CachingVariableFactory, VarSplitter, "VarSplitter");
+#include "Workspace/ConfigurableAnalysis/interface/ProcessIdSplitter.h"
 DEFINE_EDM_PLUGIN(CachingVariableFactory, ProcessIdSplitter, "ProcessIdSplitter");
 
+
+#include "Workspace/ConfigurableAnalysis/interface/StringBasedNTupler.h"
+DEFINE_EDM_PLUGIN(NTuplerFactory, StringBasedNTupler, "StringBasedNTupler");
