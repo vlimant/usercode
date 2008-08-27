@@ -161,8 +161,8 @@ MuonXRay::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	   thetrackIdDone[isimtk->trackId()]=1;
 	   countMuons++;
 
-	   if (isimtk->momentum().perp() > leadingPt){
-	     leadingPt = isimtk->momentum().perp();
+	   if (isimtk->momentum().pt() > leadingPt){
+	     leadingPt = isimtk->momentum().pt();
 	     leadingSimTrack = isimtk;
 	   }
 
@@ -171,22 +171,22 @@ MuonXRay::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	
 	   //use sim or gen information about mother
 	   if (mother.SimIsValid()){
-	     h.e("h_mu_sim_pt")->Fill(isimtk->momentum().perp(),eventWeight);
+	     h.e("h_mu_sim_pt")->Fill(isimtk->momentum().pt(),eventWeight);
 	     h.e("h_mu_sim_eta")->Fill(isimtk->momentum().eta(),eventWeight);
 	     h.e("h_mu_sim_phi")->Fill(isimtk->momentum().phi(),eventWeight);
 	     h.e("h_mu_sim_Aeta")->Fill(fabs(isimtk->momentum().eta()),eventWeight);
-	     h.e("h_sim_vertex_position")->Fill(mother.Sim_vertex->position().v().mag(),eventWeight);
+	     h.e("h_sim_vertex_position")->Fill(mother.Sim_vertex->position().mag(),eventWeight);
 
 	     int motherBinNumber = wantMotherBin.GetBinNum(mother.Sim_mother->type());
 	     h.e("h_parent_id")->Fill(motherBinNumber,eventWeight);
-	     h.HBC["h_mu_sim_pt_assoc_ID"][motherBinNumber]->Fill(mother.simtrack->momentum().perp(),eventWeight);
+	     h.HBC["h_mu_sim_pt_assoc_ID"][motherBinNumber]->Fill(mother.simtrack->momentum().pt(),eventWeight);
 	     h.HBC["h_mu_sim_eta_assoc_ID"][motherBinNumber]->Fill(mother.simtrack->momentum().eta(),eventWeight);
 	     h.HBC["h_mu_sim_phi_assoc_ID"][motherBinNumber]->Fill(mother.simtrack->momentum().phi(),eventWeight);
 	     h.HBC["h_mu_sim_Aeta_assoc_ID"][motherBinNumber]->Fill(fabs(mother.simtrack->momentum().eta()),eventWeight);
-	     h.HBC["h_sim_vertex_position_assoc_ID"][motherBinNumber]->Fill(mother.Sim_vertex->position().v().mag(),eventWeight);
+	     h.HBC["h_sim_vertex_position_assoc_ID"][motherBinNumber]->Fill(mother.Sim_vertex->position().mag(),eventWeight);
 	   }//use Sim
 	   else if (mother.GenIsValid()){
-	     h.e("h_mu_sim_pt")->Fill(isimtk->momentum().perp(),eventWeight);
+	     h.e("h_mu_sim_pt")->Fill(isimtk->momentum().pt(),eventWeight);
 	     h.e("h_mu_sim_eta")->Fill(isimtk->momentum().eta(),eventWeight);
 	     h.e("h_mu_sim_phi")->Fill(isimtk->momentum().phi(),eventWeight);
 	     h.e("h_mu_sim_Aeta")->Fill(fabs(isimtk->momentum().eta()),eventWeight);
@@ -202,7 +202,7 @@ MuonXRay::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	   }//both gen mother and vertex valid
 	   else{
 	     edm::LogWarning(theCategory)<<"tricky event. the muon has no parent whatsoever";
-	     h.e("h_mu_sim_pt_tricky")->Fill(isimtk->momentum().perp(),eventWeight);
+	     h.e("h_mu_sim_pt_tricky")->Fill(isimtk->momentum().pt(),eventWeight);
 	     h.e("h_mu_sim_eta_tricky")->Fill(isimtk->momentum().eta(),eventWeight);
 	   }
 	 }//Simtrack is a muon
@@ -216,22 +216,22 @@ MuonXRay::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	
 	   //use sim or gen information about mother
 	   if (mother.SimIsValid()){
-	     h.e("h_leading_mu_sim_pt")->Fill(leadingSimTrack->momentum().perp(),eventWeight);
+	     h.e("h_leading_mu_sim_pt")->Fill(leadingSimTrack->momentum().pt(),eventWeight);
 	     h.e("h_leading_mu_sim_eta")->Fill(leadingSimTrack->momentum().eta(),eventWeight);
 	     h.e("h_leading_mu_sim_phi")->Fill(leadingSimTrack->momentum().phi(),eventWeight);
 	     h.e("h_leading_mu_sim_Aeta")->Fill(fabs(leadingSimTrack->momentum().eta()),eventWeight);
-	     h.e("h_leading_mu_sim_vertex_position")->Fill(mother.Sim_vertex->position().v().mag(),eventWeight);
+	     h.e("h_leading_mu_sim_vertex_position")->Fill(mother.Sim_vertex->position().mag(),eventWeight);
 
 	     int motherBinNumber = wantMotherBin.GetBinNum(mother.Sim_mother->type());
 	     h.e("h_parent_id")->Fill(motherBinNumber,eventWeight);
-	     h.HBC["h_leading_mu_sim_pt_assoc_ID"][motherBinNumber]->Fill(mother.simtrack->momentum().perp(),eventWeight);
+	     h.HBC["h_leading_mu_sim_pt_assoc_ID"][motherBinNumber]->Fill(mother.simtrack->momentum().pt(),eventWeight);
 	     h.HBC["h_leading_mu_sim_eta_assoc_ID"][motherBinNumber]->Fill(mother.simtrack->momentum().eta(),eventWeight);
 	     h.HBC["h_leading_mu_sim_phi_assoc_ID"][motherBinNumber]->Fill(mother.simtrack->momentum().phi(),eventWeight);
 	     h.HBC["h_leading_mu_sim_Aeta_assoc_ID"][motherBinNumber]->Fill(fabs(mother.simtrack->momentum().eta()),eventWeight);
-	     h.HBC["h_leading_mu_sim_vertex_position_assoc_ID"][motherBinNumber]->Fill(mother.Sim_vertex->position().v().mag(),eventWeight);
+	     h.HBC["h_leading_mu_sim_vertex_position_assoc_ID"][motherBinNumber]->Fill(mother.Sim_vertex->position().mag(),eventWeight);
 	   }//use Sim
 	   else if (mother.GenIsValid()){
-	     h.e("h_leading_mu_sim_pt")->Fill(leadingSimTrack->momentum().perp(),eventWeight);
+	     h.e("h_leading_mu_sim_pt")->Fill(leadingSimTrack->momentum().pt(),eventWeight);
 	     h.e("h_leading_mu_sim_eta")->Fill(leadingSimTrack->momentum().eta(),eventWeight);
 	     h.e("h_leading_mu_sim_phi")->Fill(leadingSimTrack->momentum().phi(),eventWeight);
 	     h.e("h_leading_mu_sim_Aeta")->Fill(fabs(leadingSimTrack->momentum().eta()),eventWeight);
@@ -247,7 +247,7 @@ MuonXRay::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	   }//both gen mother and vertex valid
 	   else{
 	     edm::LogWarning(theCategory)<<"tricky event. the muon has no parent whatsoever";
-	     h.e("h_leading_mu_sim_pt_tricky")->Fill(leadingSimTrack->momentum().perp(),eventWeight);
+	     h.e("h_leading_mu_sim_pt_tricky")->Fill(leadingSimTrack->momentum().pt(),eventWeight);
 	     h.e("h_leading_mu_sim_eta_tricky")->Fill(leadingSimTrack->momentum().eta(),eventWeight);
 	   }
 

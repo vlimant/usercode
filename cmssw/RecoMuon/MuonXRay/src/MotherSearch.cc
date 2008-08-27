@@ -9,7 +9,7 @@ MotherSearch::MotherSearch(const SimTrack * isimtk,
   const std::string theCategory = "MotherSearch::MotherSearch";
   
   simtrack = isimtk;
-  const HepLorentzVector momentum = isimtk->momentum();
+  const math::XYZTLorentzVectorD & momentum = isimtk->momentum();
   int selfID = isimtk->type();
 
   useGen=false;
@@ -20,10 +20,10 @@ MotherSearch::MotherSearch(const SimTrack * isimtk,
     if (!Sim_vertex->noParent()){
       LogDebug(theCategory)<<"I am here 3";
       
-      const HepLorentzVector position = Sim_vertex->position();
-      edm::LogVerbatim(theCategory)<<"This sim vertex position is :"<<position.v()
-				   <<"\nThis sim vertex magnitude is :"<<position.v().mag()
+      const math::XYZTLorentzVectorD & position = Sim_vertex->position();
+      edm::LogVerbatim(theCategory)<<"This sim vertex position is : ("<<position.x()<<" ; "<<position.y()<<" ; "<<position.z()
 				   <<"\nThis sim vertex magnitude is :"<<position.mag();
+	//				   <<"\nThis sim vertex magnitude is :"<<position.ag();
       
       LogDebug(theCategory)<<"I am here 4";      
       
@@ -68,7 +68,7 @@ MotherSearch::MotherSearch(const SimTrack * isimtk,
     //skip it if not a valid GenIndex
     if(IndexGenPart<0){
       edm::LogError(theCategory)<<"The IndexGenPart is: "<<IndexGenPart
-				<<"\n the sim momentum of this "<<selfID<<" is :"<<momentum.perp();return;}
+				<<"\n the sim momentum of this "<<selfID<<" is :"<<momentum.Pt();return;}
     
     const HepMC::GenParticle *part = evt->barcode_to_particle(IndexGenPart);
     gentrack = part;

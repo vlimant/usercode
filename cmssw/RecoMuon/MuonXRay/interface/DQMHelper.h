@@ -1,20 +1,24 @@
 #ifndef RecoMuon_MuonXRay_DQMHelper
 #define RecoMuon_MuonXRay_DQMHelper
-#include "DQMServices/Core/interface/DaqMonitorBEInterface.h"
-#include "DQMServices/Daemon/interface/MonitorDaemon.h"
+
+#include "DQMServices/Core/interface/DQMStore.h"
+#include "DQMServices/Core/interface/MonitorElement.h"
+
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 
 template <class H>
 H* MEA1(MonitorElement* me ){
-  H * h =dynamic_cast<H*>(&(**((MonitorElementRootH1 *)me)));
+  //  H * h =dynamic_cast<H*>(&(**((MonitorElementRootH1 *)me)));
+  H * h = dynamic_cast<H*>(me->getTH1());
   if (!h) {edm::LogError("MonitorElementAdaptor")<<"in MEA, MonitorElement "<<me->getName()<<" does not cast to H1 types.";}
   return h;
 }
 template <class H>
 H* MEA2(MonitorElement* me ){
-  H * h =dynamic_cast<H*>(&(**((MonitorElementRootH2 *)me)));
+  //  H * h =dynamic_cast<H*>(&(**((MonitorElementRootH2 *)me)));
+  H * h = dynamic_cast<H*>(me->getTH1());
   if (!h) {edm::LogError("MonitorElementAdaptor")<<"in MEA, MonitorElement "<<me->getName()<<" does not cast to H2 types.";}
   return h;
 }
@@ -28,7 +32,7 @@ H* MEA2(MonitorElement* me ){
 class DQMHelper {
 public:
   DQMHelper(edm::ParameterSet  par):
-    dbe_(edm::Service<DaqMonitorBEInterface>().operator->()){
+    dbe_(edm::Service<DQMStore>().operator->()){
     //    dump_=dbe_->book1D("dump","value for non-register histograms",1,0,1);
 
     if (par.exists("directory")){
@@ -67,17 +71,17 @@ public:
   }
 
   DQMHelper():
-    dbe_(edm::Service<DaqMonitorBEInterface>().operator->()){
+    dbe_(edm::Service<DQMStore>().operator->()){
     //dump_=dbe_->book1D("dump","value for non-register histograms",1,0,1);
   }
-  DaqMonitorBEInterface* dbe() {return dbe_;}
+  DQMStore* dbe() {return dbe_;}
   ~DQMHelper(){
     //remove the dump histogram.
     //    if (dump_){      dbe_->removeElement("dump");}
   }
 private:
   //DQM interface
-  DaqMonitorBEInterface* dbe_;
+  DQMStore* dbe_;
   typedef std::vector<MonitorElement* > byCategory;
   typedef std::map<std::string, byCategory > histosByCategory;
   typedef std::map<std::string, MonitorElement* > histos;

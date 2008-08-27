@@ -30,7 +30,7 @@ class ConfigurableAxis {
 
 class ConfigurableH1 {
  public:
-  ConfigurableH1(edm::ParameterSet & par, DaqMonitorBEInterface*dbe){
+  ConfigurableH1(edm::ParameterSet & par, DQMStore *dbe){
     name_=par.getParameter<std::string>("name");
     std::string title=par.getParameter<std::string>("title");
     ConfigurableAxis a;
@@ -56,7 +56,7 @@ class ConfigurableH1 {
 
 class ConfigurableH2 {
  public:
-  ConfigurableH2(edm::ParameterSet & par, DaqMonitorBEInterface*dbe){
+  ConfigurableH2(edm::ParameterSet & par, DQMStore *dbe){
     name_=par.getParameter<std::string>("name");
     std::string title=par.getParameter<std::string>("title");
     ConfigurableAxis ax(par.getParameter<edm::ParameterSet>("xAxis"));
@@ -104,7 +104,7 @@ class ConfigurableStackH1 {
 class ConfigurableHistogram {
  public:
   enum TYPE { H1, H2 };
-  ConfigurableHistogram(edm::ParameterSet & par, DaqMonitorBEInterface*dbe){
+  ConfigurableHistogram(edm::ParameterSet & par, DQMStore *dbe){
     bool returnToDir=false;
     std::string oldDir=dbe->pwd();
     if (par.exists("directory")){

@@ -13,7 +13,7 @@
 //
 // Original Author:  Finn Rebassoo
 //         Created:  Wed Oct  3 16:40:27 CDT 2007
-// $Id: AssociatedMuonXRay.cc,v 1.2 2008/05/27 21:44:42 vlimant Exp $
+// $Id$
 //
 //
 
@@ -70,10 +70,12 @@
 #include "DataFormats/RecoCandidate/interface/RecoChargedCandidateFwd.h"
 #include "DataFormats/RecoCandidate/interface/RecoChargedCandidate.h"
 
-//#include "DataFormats/HLTReco/interface/TriggerFilterObjectWithRefs.h"
-#include "DataFormats/HLTReco/interface/HLTFilterObject.h"
+#include "DataFormats/HLTReco/interface/TriggerFilterObjectWithRefs.h"
 
 #include <DataFormats/MuonReco/interface/MuonTrackLinks.h>
+
+#include "DataFormats/RecoCandidate/interface/IsoDeposit.h"
+#include "DataFormats/RecoCandidate/interface/IsoDepositFwd.h"
 
 //
 // class declaration
@@ -103,6 +105,9 @@ private:
   bool theNeedLink;
   edm::InputTag theLinkLabel;
 
+  bool theDoIsolation;
+  edm::InputTag theIsoLabel;
+
   edm::ESHandle<MagneticField> field;
   edm::ESHandle<HepPDT::ParticleDataTable> fPDGTable;
 
@@ -122,6 +127,7 @@ private:
 // constructors and destructor
 //
 
+//double pt90(const edm::RefToBase<reco::Track> & tk, const edm::Event & ev){
 double pt90(const reco::TrackRef & tk, const edm::Event & ev){
   std::string prov=ev.getProvenance(tk.id()).moduleLabel();
   std::string instance = ev.getProvenance(tk.id()).productInstanceName();
@@ -246,7 +252,8 @@ AssociatedMuonXRay::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
    iSetup.get<IdealMagneticFieldRecord>().get(field);
    
    //open a collection of track
-   edm::Handle<reco::TrackCollection> tracks;
+   //   edm::Handle<reco::TrackCollection> tracks;
+   edm::Handle<edm::View<reco::Track> > tracks;
    iEvent.getByLabel(thetrackLabel,tracks);
 
    //open a collection of Tracking Particles
@@ -276,47 +283,64 @@ AssociatedMuonXRay::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
    h.e("num_reco")->Fill(iTmax);
 
    //trigger collections
-   edm::Handle<reco::HLTFilterObjectWithRefs> triggered;
+   edm::Handle<trigger::TriggerFilterObjectWithRefs> triggered;
    edm::Handle<reco::MuonTrackLinksCollection> links;
    if (theConfirm){
      iEvent.getByLabel(theConfirmLabel, triggered);
      if (theNeedLink) iEvent.getByLabel(theLinkLabel, links);
    }
 
+   //isolation products
+   edm::Handle<reco::IsoDepositMap> isolationMap;
+   edm::Handle<edm::ValueMap<bool> > isolationDecisionMap;
+   if (theDoIsolation){
+     iEvent.getByLabel(theIsoLabel, isolationMap);
+     iEvent.getByLabel(theIsoLabel, isolationDecisionMap);
+   }
+
    double highest_pt_reco = -1;
+   //   edm::RefToBase<reco::Track> leading_track;
    reco::TrackRef leading_track;
    const SimTrack * leading_simtrack=0, *leading_simMother=0;;
    const HepMC::GenParticle * leading_gentrack=0, *leading_genMother=0;
 
    uint countConfirm=0;
    for(;iT!=iTmax;++iT){
-     reco::TrackRef ref(tracks, iT);
+     edm::RefToBase<reco::Track> refTB(tracks, iT);
+     const reco::TrackRef ref = refTB.castTo<reco::TrackRef>();
 
      //confirm that it has triggered.
      bool isConfirmed=false;
      //     reco::TrackRef confirmedL2Track;
      if (theConfirm){
 
-       reco::HLTFilterObjectWithRefs::const_iterator ti = triggered->begin();
-       reco::HLTFilterObjectWithRefs::const_iterator end = triggered->end();
+       trigger::VRmuon triggeredMuonRefs;
+       triggered->getObjects(trigger::TriggerMuon, triggeredMuonRefs);
+
+       //       edm::RefToBase<reco::Track> refToCompareTo=ref;
        reco::TrackRef refToCompareTo=ref;
        if (theNeedLink){
 	 //find link back to tracker track
 	 reco::MuonTrackLinksCollection::const_iterator il= links->begin();
 	 reco::MuonTrackLinksCollection::const_iterator end= links->end();
 	 for (;il!=end;++il){
+	   //	   if (il->trackerTrack().id() == refToCompareTo.id() && il->trackerTrack().key() == refToCompareTo.key()){
 	   if (il->trackerTrack() == refToCompareTo){
-	     refToCompareTo=il->globalTrack(); 
+	     refToCompareTo = il->globalTrack();
+	     //	     refToCompareTo= edm::RefToBase<reco::Track>(il->globalTrack()); 
 	     //	     confirmedL2Track=il->standAloneTrack();
 	     break;}
 	 }
        }
-       
+     
+       trigger::VRmuon::const_iterator ti = triggeredMuonRefs.begin();
+       trigger::VRmuon::const_iterator end = triggeredMuonRefs.end();       
        for (;ti!=end;++ti){
-	 const reco::RecoChargedCandidate * cand = dynamic_cast<const reco::RecoChargedCandidate*>(&(*ti));
+	 const reco::RecoChargedCandidate * cand = dynamic_cast<const reco::RecoChargedCandidate*>(&(**ti));
 	 if (!cand) { edm::LogError(theCategory)<<" casting is failing."; continue;}
 	 //	 edm::LogInfo(theCategory)<<"comparing references from: "<<cand->track().id()<<" and: "<<refToCompareTo.id();
-	 if (cand->track() == refToCompareTo){
+	 //	 if (cand->track().id() == refToCompareTo.id() && cand->track().key() == refToCompareTo.key()){
+	 if ( cand->track() == refToCompareTo){
 	   isConfirmed=true; break; }
        }
 
@@ -338,6 +362,8 @@ AssociatedMuonXRay::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
        leading_track = ref;
        isLeading=true;}
 
+     reco::IsoDeposit muonIsolation = (*isolationMap)[ref];
+
      h.e("h_mu_pt")->Fill(ref->pt());
      h.e("h_mu_90pt")->Fill(pt90(ref,iEvent));
      h.e("h_mu_hits")->Fill(ref->recHitsSize());
@@ -347,7 +373,10 @@ AssociatedMuonXRay::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
      h.e("h_mu_d0")->Fill(ref->d0());
      h.e("h_mu_d0_pT")->Fill(ref->pt(),ref->d0());
      
-     reco::RecoToSimCollection::const_iterator findRefIt = recSimColl.find(ref);
+     //     h.e("h_mu_cIso")->Fill(
+			    
+     
+     reco::RecoToSimCollection::const_iterator findRefIt = recSimColl.find(refTB);
      if (findRefIt != recSimColl.end()){
        const std::vector<std::pair<TrackingParticleRef,double> > & tp = findRefIt->val;
        const TrackingParticleRef & trp = tp.begin()->first;
@@ -383,7 +412,7 @@ AssociatedMuonXRay::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
 		   if (mother.SimIsValid()){
 		     parentID= mother.Sim_mother->type();
 		     motherBinNumber = wantMotherBin.GetBinNum(mother.Sim_mother->type());
-		     pt=mother.simtrack->momentum().perp();
+		     pt=mother.simtrack->momentum().pt();
 		     eta=mother.simtrack->momentum().eta();
 		     phi=mother.simtrack->momentum().phi();
 		     if (isLeading){
@@ -461,9 +490,9 @@ AssociatedMuonXRay::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
      int motherBinNumber =0;
      if (leading_simtrack || leading_gentrack){
        if (leading_simtrack){
-	 h.e("h_mu_leading_sim_pt")->Fill(leading_simtrack->momentum().perp());
+	 h.e("h_mu_leading_sim_pt")->Fill(leading_simtrack->momentum().pt());
 	 motherBinNumber = wantMotherBin.GetBinNum(leading_simMother->type());
-	 h.HBC["h_mu_leading_sim_pt_assoc_ID"][motherBinNumber]->Fill(leading_simtrack->momentum().perp());
+	 h.HBC["h_mu_leading_sim_pt_assoc_ID"][motherBinNumber]->Fill(leading_simtrack->momentum().pt());
        }
        else if(leading_gentrack){
 	 h.e("h_mu_leading_sim_pt")->Fill(leading_gentrack->momentum().perp());
