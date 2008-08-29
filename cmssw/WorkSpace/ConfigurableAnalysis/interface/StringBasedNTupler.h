@@ -23,16 +23,19 @@
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
 #include "PhysicsTools/UtilAlgos/interface/InputTagDistributor.h"
+#include "PhysicsTools/UtilAlgos/interface/CachingVariable.h"
+
 
 class TreeBranch {
  public:
-  TreeBranch(): class_(""),expr_(""),maxIndexName_(""),branchAlias_("") {}
-    TreeBranch(std::string C, edm::InputTag S, std::string E, std::string Mi, std::string Ba) :
-      class_(C),src_(S),expr_(E),maxIndexName_(Mi),branchAlias_(Ba){}
+  TreeBranch(): class_(""),expr_(""),order_(""),maxIndexName_(""),branchAlias_("") {}
+    TreeBranch(std::string C, edm::InputTag S, std::string E, std::string O, std::string Mi, std::string Ba) :
+      class_(C),src_(S),expr_(E),order_(O),maxIndexName_(Mi),branchAlias_(Ba){}
     
   const std::string & className() const { return class_;}
   const edm::InputTag & src() const { return src_;}
   const std::string & expr() const { return expr_;}
+  const std::string & order() const { return order_;}
   const std::string & maxIndexName() const { return maxIndexName_;}
   const std::string branchName()const{ 
 	TString name(branchAlias_);
@@ -50,6 +53,7 @@ class TreeBranch {
   std::string class_;
   edm::InputTag src_;
   std::string expr_;
+  std::string order_;
   std::string maxIndexName_;
   std::string branchAlias_;
 
@@ -77,13 +81,28 @@ public:
 	StringObjectFunction<Object> expr(B.expr());
 	value_.reset(new std::vector<double>(oH->size()));
 
-	//actually fill the vector of values
 	uint i_end=oH->size();
-	for (uint i=0;i!=i_end;++i){
-	  try {
-	    (*value_)[i]=(expr)((*oH)[i]); 
-	  }catch(...){
-	    LogDebug("StringBranchHelper")<<"could not evaluate expression: "<<B.expr()<<" on class: "<<B.className(); }
+	//sort things first if requested
+	if (B.order()!=""){
+	  StringObjectFunction<Object> order(B.order());
+	  std::vector<const Object*> copyToSort(oH->size()); 
+	  for (uint i=0;i!=i_end;++i)  copyToSort[i]= &(*oH)[i];
+	  std::sort(copyToSort.begin(), copyToSort.end(), sortByStringFunction<Object>(&order)); 
+	  for (uint i=0;i!=i_end;++i) {
+	    try{
+	      (*value_)[i]=(expr)(*(copyToSort)[i]);
+	    }catch(...){
+	      LogDebug("StringBranchHelper")<<"with sorting. could not evaluate expression: "<<B.expr()<<" on class: "<<B.className(); }
+	  }
+	}
+	else{
+	  //actually fill the vector of values
+	  for (uint i=0;i!=i_end;++i){
+	    try {
+	      (*value_)[i]=(expr)((*oH)[i]); 
+	    }catch(...){
+	      LogDebug("StringBranchHelper")<<"could not evaluate expression: "<<B.expr()<<" on class: "<<B.className(); }
+	  }
 	}
       }
     }
@@ -103,9 +122,11 @@ class StringBasedNTupler : public NTupler {
     for (uint b=0;b!=branches.size();++b){
       edm::ParameterSet bPSet = branchesPSet.getParameter<edm::ParameterSet>(branches[b]);
       std::string className=bPSet.getParameter<std::string>("class");
-      edm::InputTag src=InputTagDistributor::retrieve("src",bPSet);
+      edm::InputTag src=edm::Service<InputTagDistributorService>()->retrieve("src",bPSet);
       edm::ParameterSet leavesPSet=bPSet.getParameter<edm::ParameterSet>("leaves");
-      
+      std::string order = "";
+      if (bPSet.exists("order")) order = bPSet.getParameter<std::string>("order");
+
       // do it one by one with string x = "x"
       std::vector<std::string> leaves=leavesPSet.getParameterNamesForType<std::string>();
       std::string maxName="N"+branches[b];
@@ -114,7 +135,7 @@ class StringBasedNTupler : public NTupler {
 	std::string branchAlias=branches[b]+"_"+leaves[l];
 	
 	//	if (branches_.find(maxName) != branches_.end()) edm::LogWarning("StringBasedNTupler")<<"replacing the branch: "<<maxName;
-	branches_[maxName].push_back(TreeBranch(className, src, leave_expr, maxName, branchAlias));
+	branches_[maxName].push_back(TreeBranch(className, src, leave_expr, order, maxName, branchAlias));
       }//loop the provided leaves
       
       //do it once with vstring vars = { "x:x" ,... } where ":"=separator
@@ -135,7 +156,7 @@ class StringBasedNTupler : public NTupler {
 	  std::string branchAlias=branches[b]+"_"+name;
 
 	  //	  if (branches_.find(maxName) != branches_.end()) edm::LogWarning("StringBasedNTupler")<<"replacing the branch: "<<maxName;
-	  branches_[maxName].push_back(TreeBranch(className, src, expr, maxName, branchAlias));
+	  branches_[maxName].push_back(TreeBranch(className, src, expr, order, maxName, branchAlias));
 	}
       }
 
@@ -221,7 +242,6 @@ class StringBasedNTupler : public NTupler {
   }
 
   void fill(edm::Event& iEvent){
-    //protection against stupid users :-(
     //    if (!edm::Service<UpdaterService>()->checkOnce("StringBasedNTupler::fill")) return;
     //well if you do that, you cannot have two ntupler of the same type in the same job...
 

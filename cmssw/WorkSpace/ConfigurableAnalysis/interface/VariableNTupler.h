@@ -24,8 +24,8 @@ class VariableNTupler : public NTupler{
     edm::ParameterSet variablePSet=iConfig.getParameter<edm::ParameterSet>("variablesPSet");
     if (variablePSet.getParameter<bool>("allVariables"))
       {
-	VariableHelper::iterator v=VariableHelperInstance::get().begin();
-	VariableHelper::iterator v_end=VariableHelperInstance::get().end();
+	VariableHelper::iterator v=edm::Service<VariableHelperService>()->get().begin();
+	VariableHelper::iterator v_end=edm::Service<VariableHelperService>()->get().end();
 	for(;v!=v_end;++v){
 	  leaves_[v->second->name()]=v->second;
 	}
@@ -33,7 +33,7 @@ class VariableNTupler : public NTupler{
     else{
       std::vector<std::string> leaves=variablePSet.getParameter<std::vector<std::string> >("leaves");
       for (uint i=0;i!=leaves.size();++i){
-	leaves_[leaves[i]]= VariableHelperInstance::get().variable(leaves[i]);
+	leaves_[leaves[i]]= edm::Service<VariableHelperService>()->get().variable(leaves[i]);
       }
     }
     if (variablePSet.exists("useTFileService"))
@@ -83,7 +83,6 @@ class VariableNTupler : public NTupler{
   }
   
   void fill(edm::Event& iEvent){
-    //protection against stupid users :-(
     //    if (!edm::Service<UpdaterService>()->checkOnce("VariableNTupler::fill")) return;
     //    std::cout<<"I am trying to fill the tree VariableNTupler "<< useTFileService_ <<" " <<ownTheTree_<< std::endl;
     if (useTFileService_){

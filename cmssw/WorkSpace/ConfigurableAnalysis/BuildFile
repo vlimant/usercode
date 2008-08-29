@@ -1,7 +1,6 @@
 <use name=FWCore/Framework>
 <use name=FWCore/PluginManager>
 <use name=FWCore/ParameterSet>
-<use name=Workspace/EventSelectors>
 <use name=PhysicsTools/Utilities>
 <use name=PhysicsTools/UtilAlgos>
 <use name=PhysicsTools/HepMCCandAlgos>
@@ -13,7 +12,6 @@
    <use name=FWCore/Framework>
    <use name=FWCore/PluginManager>
    <use name=FWCore/ParameterSet>
-   <use name=Workspace/EventSelectors>
    <use name=PhysicsTools/Utilities>
    <use name=PhysicsTools/UtilAlgos>
    <use name=PhysicsTools/HepMCCandAlgos>
