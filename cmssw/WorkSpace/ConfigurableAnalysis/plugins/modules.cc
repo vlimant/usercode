@@ -22,3 +22,7 @@ DEFINE_EDM_PLUGIN(CachingVariableFactory, ProcessIdSplitter, "ProcessIdSplitter"
 
 #include "Workspace/ConfigurableAnalysis/interface/StringBasedNTupler.h"
 DEFINE_EDM_PLUGIN(NTuplerFactory, StringBasedNTupler, "StringBasedNTupler");
+#include "Workspace/ConfigurableAnalysis/interface/VariableNTupler.h"
+DEFINE_EDM_PLUGIN(NTuplerFactory, VariableNTupler, "VariableNTupler");
+#include "Workspace/ConfigurableAnalysis/interface/CompleteNTupler.h"
+DEFINE_EDM_PLUGIN(NTuplerFactory, CompleteNTupler, "CompleteNTupler");

@@ -20,8 +20,13 @@ class ProcessIdSplitter : public Splitter{
   }
 
     CachingVariable::evalType eval(const edm::Event & iEvent) const{
-      int ID=csa07::csa07ProcessId(iEvent,lumi_,weightLabel_);
-      return std::make_pair(true, (double)ID);
+      try {
+	int ID=csa07::csa07ProcessId(iEvent,lumi_,weightLabel_);
+	return std::make_pair(true, (double)ID);
+      }catch(...){
+	//failed to find the processId: probably running on some signal MC
+	return std::make_pair(false,  0.);
+      }
     }
 
  private:

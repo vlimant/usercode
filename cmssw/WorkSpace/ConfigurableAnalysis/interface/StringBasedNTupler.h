@@ -12,6 +12,7 @@
 #include "PhysicsTools/UtilAlgos/interface/TFileService.h"
 #include "TTree.h"
 #include "TBranch.h"
+#include "TFile.h"
 
 #include "PhysicsTools/UtilAlgos/interface/NTupler.h"
 
@@ -82,7 +83,7 @@ public:
 	  try {
 	    (*value_)[i]=(expr)((*oH)[i]); 
 	  }catch(...){
-	    edm::LogError("StringBranchHelper")<<"could not evaluate expression: "<<B.expr()<<" on class: "<<B.className(); }
+	    LogDebug("StringBranchHelper")<<"could not evaluate expression: "<<B.expr()<<" on class: "<<B.className(); }
 	}
       }
     }
@@ -98,24 +99,62 @@ class StringBasedNTupler : public NTupler {
     edm::ParameterSet branchesPSet = iConfig.getParameter<edm::ParameterSet>("branchesPSet");
     std::vector<std::string> branches;
     branchesPSet.getParameterSetNames(branches);
+    const std::string separator = branchesPSet.getUntrackedParameter<std::string>("separator",":");
     for (uint b=0;b!=branches.size();++b){
       edm::ParameterSet bPSet = branchesPSet.getParameter<edm::ParameterSet>(branches[b]);
       std::string className=bPSet.getParameter<std::string>("class");
       edm::InputTag src=InputTagDistributor::retrieve("src",bPSet);
       edm::ParameterSet leavesPSet=bPSet.getParameter<edm::ParameterSet>("leaves");
+      
+      // do it one by one with string x = "x"
       std::vector<std::string> leaves=leavesPSet.getParameterNamesForType<std::string>();
       std::string maxName="N"+branches[b];
       for (uint l=0;l!=leaves.size();++l){
 	std::string leave_expr=leavesPSet.getParameter<std::string>(leaves[l]);
 	std::string branchAlias=branches[b]+"_"+leaves[l];
+	
+	//	if (branches_.find(maxName) != branches_.end()) edm::LogWarning("StringBasedNTupler")<<"replacing the branch: "<<maxName;
 	branches_[maxName].push_back(TreeBranch(className, src, leave_expr, maxName, branchAlias));
       }//loop the provided leaves
+      
+      //do it once with vstring vars = { "x:x" ,... } where ":"=separator
+      if (leavesPSet.exists("vars")){
+	std::vector<std::string> leavesS = leavesPSet.getParameter<std::vector<std::string> >("vars");
+	for (uint l=0;l!=leavesS.size();++l){
+	  uint sep=leavesS[l].find(separator);
+	  std::string name=leavesS[l].substr(0,sep);
+	  //removes spaces from the variable name
+	  uint space = name.find(" ");
+	  while (space!=std::string::npos){
+	    std::string first = name.substr(0,space);
+	    std::string second = name.substr(space+1);
+	    name = first+second;
+	    space = name.find(" ");
+	  }
+	  std::string expr=leavesS[l].substr(sep+1);
+	  std::string branchAlias=branches[b]+"_"+name;
+
+	  //	  if (branches_.find(maxName) != branches_.end()) edm::LogWarning("StringBasedNTupler")<<"replacing the branch: "<<maxName;
+	  branches_[maxName].push_back(TreeBranch(className, src, expr, maxName, branchAlias));
+	}
+      }
+
     }//loop the provided branches
+
+    ev_ = new uint;
+    run_ = new uint;
+
     if (branchesPSet.exists("useTFileService"))
       useTFileService_=branchesPSet.getParameter<bool>("useTFileService");         
     else
       useTFileService_=iConfig.getParameter<bool>("useTFileService");
-    treeName_=branchesPSet.getParameter<std::string>("treeName");
+
+    if (useTFileService_){
+      if (branchesPSet.exists("treeName"))
+	treeName_=branchesPSet.getParameter<std::string>("treeName");
+      else
+	treeName_=iConfig.getParameter<std::string>("treeName");
+    }
   }
 
   //  uint registerleaves(edm::EDFilter * producer){
@@ -123,8 +162,15 @@ class StringBasedNTupler : public NTupler {
     uint nLeaves=0;
 
     if (useTFileService_){
-      edm::Service<TFileService> fs;
-      tree_=fs->make<TTree>(treeName_.c_str(),"StringBasedNTupler tree");
+      edm::Service<TFileService> fs;      
+      //      tree_=dynamic_cast<TTree*>(fs->file().FindObjectAny(treeName_.c_str()));
+      //      if (!tree_){
+      //	std::cout<<"StringBasedNTupler owns its tree"<<std::endl;
+	ownTheTree_=true;
+	tree_=fs->make<TTree>(treeName_.c_str(),"StringBasedNTupler tree");
+	//	fs->file().Add(tree_);
+	//      }
+
       //reserve memory for the indexes      
       indexDataHolder_ = new uint[branches_.size()];
       // loop the automated leafer
@@ -146,6 +192,13 @@ class StringBasedNTupler : public NTupler {
 	  //---	  std::cout<<"happy so far 4"<<std::endl;
 	}
       }
+
+      //extra leaves for event info.
+      //      tree_->Branch("run","UInt_t",run_);
+      //      tree_->Branch("event","UInt_t",ev_);
+      tree_->Branch("run",run_,"run/i");
+      tree_->Branch("event",ev_,"event/i");
+
     }
     else{
       // loop the automated leafer
@@ -193,7 +246,15 @@ class StringBasedNTupler : public NTupler {
 	}
 	indexDataHolder_[indexOfIndexInDataHolder]=maxS;
       }
-      tree_->Fill();
+      
+      //fill event info.
+      *run_ = iEvent.id().run();
+      *ev_ = iEvent.id().event();
+
+      if (ownTheTree_){
+	//	std::cout<<"I am filling the tree StringBasedNTupler"<<std::endl;
+	tree_->Fill();
+      }
 
       //de-allocate memory now: allocated in branch(...) and released to the pointer.
       for(;iB!=iB_end;++iB,++indexOfIndexInDataHolder){
@@ -229,8 +290,13 @@ class StringBasedNTupler : public NTupler {
   typedef std::map<std::string, std::vector<TreeBranch> > Branches;
   Branches branches_;
 
+  bool ownTheTree_;
   std::string treeName_;
   uint * indexDataHolder_;
+
+  //event info
+  uint * ev_;
+  uint * run_;
 };
 
 
