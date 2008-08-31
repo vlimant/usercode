@@ -98,7 +98,9 @@ class VariableNTupler : public NTupler{
       iterator i_end=leaves_.end();
       for(;i!=i_end;++i){
 	std::auto_ptr<double> leafValue(new double((*i->second)(iEvent)));
-	iEvent.put(leafValue, i->first);
+	TString lName(i->first); 
+	lName.ReplaceAll("_","0");
+	iEvent.put(leafValue, lName.Data());
       }
     }
   }
