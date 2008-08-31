@@ -59,13 +59,8 @@ class VariableNTupler : public NTupler{
       iterator i=leaves_.begin();
       iterator i_end= leaves_.end();
       edm::Service<TFileService> fs;
-      //      tree_=dynamic_cast<TTree*>(fs->file().FindObjectAny(treeName_.c_str()));
-      //      if (!tree_){
-      //      std::cout<<"VariableNTupler owns its tree"<<std::endl;
-	ownTheTree_=true;
-	tree_=fs->make<TTree>(treeName_.c_str(),"VariableNTuple tree");
-	//	fs->file().Add(tree_);
-	//      }
+      ownTheTree_=true;
+      tree_=fs->make<TTree>(treeName_.c_str(),"VariableNTuple tree");
       uint iInDataHolder=0;
       for(;i!=i_end;++i,++iInDataHolder){
 	tree_->Branch(i->first.c_str(), &(dataHolder_[iInDataHolder]), (i->first+"/D").c_str());
@@ -76,29 +71,25 @@ class VariableNTupler : public NTupler{
       iterator i_end= leaves_.end();
       for(;i!=i_end;++i){
 	nLeaves++;
-	producer->produces<double>(i->first).setBranchAlias(i->first);
+	TString lName(i->first);
+	lName.ReplaceAll("_","0");
+	producer->produces<double>(lName.Data()).setBranchAlias(i->first);
       }
     }
     return nLeaves;
   }
   
   void fill(edm::Event& iEvent){
-    //    if (!edm::Service<UpdaterService>()->checkOnce("VariableNTupler::fill")) return;
-    //    std::cout<<"I am trying to fill the tree VariableNTupler "<< useTFileService_ <<" " <<ownTheTree_<< std::endl;
     if (useTFileService_){
       //fill the data holder
       iterator i=leaves_.begin();
       iterator i_end=leaves_.end();
       uint iInDataHolder=0;
-      //      std::cout<<"looping: "<<leaves_.size()<<std::endl;
       for(;i!=i_end;++i,++iInDataHolder){
-	//	std::cout<<"index: "<<iInDataHolder<<std::endl;
 	dataHolder_[iInDataHolder]=(*i->second)(iEvent);
-	//	std::cout<<"succeeded"<<std::endl;
       }
       //fill into root;
       if (ownTheTree_) {
-	//	std::cout<<"I am filling the tree VariableNTupler"<<std::endl;
 	tree_->Fill();
       }
     }else{

@@ -5,11 +5,11 @@
 
 class ProcessIdSplitter : public Splitter{
  public:
-  ProcessIdSplitter(std::string  n,const edm::ParameterSet & iConfig) :
-    Splitter("ProcessIdSplitter",n,iConfig){
-    lumi_=iConfig.getParameter<double>("lumi");
-    weightLabel_=iConfig.getParameter<std::string>("weightLabel");
-    uint maxID = iConfig.getParameter<uint>("maxID");//70
+  ProcessIdSplitter(CachingVariableFactoryArg arg) :
+    Splitter("ProcessIdSplitter",arg.n,arg.iConfig){
+    lumi_=arg.iConfig.getParameter<double>("lumi");
+    weightLabel_=arg.iConfig.getParameter<std::string>("weightLabel");
+    uint maxID = arg.iConfig.getParameter<uint>("maxID");//70
     //fill the labels
     for (uint id=0;id!=maxID;++id){
       labels_.push_back(std::string(csa07::csa07ProcessName(id)));
@@ -17,6 +17,7 @@ class ProcessIdSplitter : public Splitter{
       ss<<"_processIDSplit_"<<id;
       short_labels_.push_back(ss.str());
     }
+    arg.m[arg.n] =this;
   }
 
     CachingVariable::evalType eval(const edm::Event & iEvent) const{

@@ -79,29 +79,32 @@ public:
       else{
 	//parser for the object expression
 	StringObjectFunction<Object> expr(B.expr());
+	//allocate enough memory for the data holder
 	value_.reset(new std::vector<double>(oH->size()));
 
 	uint i_end=oH->size();
 	//sort things first if requested
 	if (B.order()!=""){
 	  StringObjectFunction<Object> order(B.order());
+	  // allocate a vector of pointers (we are using view) to be sorted
 	  std::vector<const Object*> copyToSort(oH->size()); 
 	  for (uint i=0;i!=i_end;++i)  copyToSort[i]= &(*oH)[i];
 	  std::sort(copyToSort.begin(), copyToSort.end(), sortByStringFunction<Object>(&order)); 
+	  //then loop and fill
 	  for (uint i=0;i!=i_end;++i) {
-	    try{
-	      (*value_)[i]=(expr)(*(copyToSort)[i]);
-	    }catch(...){
-	      LogDebug("StringBranchHelper")<<"with sorting. could not evaluate expression: "<<B.expr()<<" on class: "<<B.className(); }
+	    //try and catch is necessary because ...
+	    try{ 
+	    (*value_)[i]=(expr)(*(copyToSort)[i]);
+	    }catch(...){ LogDebug("StringBranchHelper")<<"with sorting. could not evaluate expression: "<<B.expr()<<" on class: "<<B.className(); } 
 	  }
 	}
 	else{
 	  //actually fill the vector of values
 	  for (uint i=0;i!=i_end;++i){
+	    //try and catch is necessary because ...
 	    try {
-	      (*value_)[i]=(expr)((*oH)[i]); 
-	    }catch(...){
-	      LogDebug("StringBranchHelper")<<"could not evaluate expression: "<<B.expr()<<" on class: "<<B.className(); }
+	    (*value_)[i]=(expr)((*oH)[i]); 
+	    }catch(...){ LogDebug("StringBranchHelper")<<"could not evaluate expression: "<<B.expr()<<" on class: "<<B.className(); } 
 	  }
 	}
       }
@@ -127,18 +130,18 @@ class StringBasedNTupler : public NTupler {
       std::string order = "";
       if (bPSet.exists("order")) order = bPSet.getParameter<std::string>("order");
 
-      // do it one by one with string x = "x"
+      // do it one by one with configuration [string x = "x"]
       std::vector<std::string> leaves=leavesPSet.getParameterNamesForType<std::string>();
       std::string maxName="N"+branches[b];
       for (uint l=0;l!=leaves.size();++l){
 	std::string leave_expr=leavesPSet.getParameter<std::string>(leaves[l]);
 	std::string branchAlias=branches[b]+"_"+leaves[l];
 	
-	//	if (branches_.find(maxName) != branches_.end()) edm::LogWarning("StringBasedNTupler")<<"replacing the branch: "<<maxName;
+	//add a branch manager for this expression on this collection
 	branches_[maxName].push_back(TreeBranch(className, src, leave_expr, order, maxName, branchAlias));
       }//loop the provided leaves
       
-      //do it once with vstring vars = { "x:x" ,... } where ":"=separator
+      //do it once with configuration [vstring vars = { "x:x" ,... } ] where ":"=separator
       if (leavesPSet.exists("vars")){
 	std::vector<std::string> leavesS = leavesPSet.getParameter<std::vector<std::string> >("vars");
 	for (uint l=0;l!=leavesS.size();++l){
@@ -155,7 +158,7 @@ class StringBasedNTupler : public NTupler {
 	  std::string expr=leavesS[l].substr(sep+1);
 	  std::string branchAlias=branches[b]+"_"+name;
 
-	  //	  if (branches_.find(maxName) != branches_.end()) edm::LogWarning("StringBasedNTupler")<<"replacing the branch: "<<maxName;
+	  //add a branch manager for this expression on this collection
 	  branches_[maxName].push_back(TreeBranch(className, src, expr, order, maxName, branchAlias));
 	}
       }
@@ -178,19 +181,13 @@ class StringBasedNTupler : public NTupler {
     }
   }
 
-  //  uint registerleaves(edm::EDFilter * producer){
   uint registerleaves(edm::ProducerBase * producer){
     uint nLeaves=0;
 
     if (useTFileService_){
       edm::Service<TFileService> fs;      
-      //      tree_=dynamic_cast<TTree*>(fs->file().FindObjectAny(treeName_.c_str()));
-      //      if (!tree_){
-      //	std::cout<<"StringBasedNTupler owns its tree"<<std::endl;
-	ownTheTree_=true;
-	tree_=fs->make<TTree>(treeName_.c_str(),"StringBasedNTupler tree");
-	//	fs->file().Add(tree_);
-	//      }
+      ownTheTree_=true;
+      tree_=fs->make<TTree>(treeName_.c_str(),"StringBasedNTupler tree");
 
       //reserve memory for the indexes      
       indexDataHolder_ = new uint[branches_.size()];
@@ -199,24 +196,20 @@ class StringBasedNTupler : public NTupler {
       Branches::iterator iB_end=branches_.end();
       uint indexOfIndexInDataHolder=0;
       for(;iB!=iB_end;++iB,++indexOfIndexInDataHolder){
-	//branch for the index
-	//---	std::cout<<"happy so far 1"<<std::endl;
+	//create a branch for the index: an integer
 	tree_->Branch(iB->first.c_str(), &(indexDataHolder_[indexOfIndexInDataHolder]),(iB->first+"/i").c_str());
-	//---	std::cout<<"happy so far 2"<<std::endl;
+	//loop on the "leaves"
 	std::vector<TreeBranch>::iterator iL=iB->second.begin();
 	std::vector<TreeBranch>::iterator iL_end=iB->second.end();
 	for(;iL!=iL_end;++iL){
 	  TreeBranch & b=*iL;
-	  //---	  std::cout<<"happy so far 3"<<std::endl;
-	  //branch for the leave
+	  //create a branch for the leaves: vector of doubles
 	  tree_->Branch(b.branchAlias().c_str(),"std::vector<double>",iL->dataHolderPtrAdress());
-	  //---	  std::cout<<"happy so far 4"<<std::endl;
+	  nLeaves++;
 	}
       }
 
       //extra leaves for event info.
-      //      tree_->Branch("run","UInt_t",run_);
-      //      tree_->Branch("event","UInt_t",ev_);
       tree_->Branch("run",run_,"run/i");
       tree_->Branch("event",ev_,"event/i");
 
@@ -227,14 +220,15 @@ class StringBasedNTupler : public NTupler {
       Branches::iterator iB_end=branches_.end();
       for(;iB!=iB_end;++iB){
 	//the index. should produce it only once
-	nLeaves++;
+	// a simple uint for the index
 	producer->produces<uint>(iB->first).setBranchAlias(iB->first);
 	std::vector<TreeBranch>::iterator iL=iB->second.begin();
 	std::vector<TreeBranch>::iterator iL_end=iB->second.end();
 	for(;iL!=iL_end;++iL){
 	  TreeBranch & b=*iL;
-	  //the values
+	  //a vector of double for each leave
 	  producer->produces<std::vector<double> >(b.branchName()).setBranchAlias(b.branchAlias());
+	  nLeaves++;
 	}
       }
     }
@@ -256,14 +250,15 @@ class StringBasedNTupler : public NTupler {
 	uint maxS=0;
 	for(;iL!=iL_end;++iL){
 	  TreeBranch & b=*iL;
-	  //---	  std::cout<<"happy so far 5"<<std::endl;
+	  // grab the vector of values from the interpretation of expression for the associated collection
 	  std::auto_ptr<std::vector<double> > branch(b.branch(iEvent));
-	  //---	  std::cout<<"happy so far 6"<<std::endl;
+	  // calculate the maximum index size.
 	  if (branch->size()>maxS) maxS=branch->size();
-	  //---	  std::cout<<"happy so far 7"<<std::endl;
+	  // transfer of (no copy) pointer to the vector of double from the auto_ptr to the tree data pointer
 	  b.assignDataHolderPtr(branch.release());
-	  //---	  std::cout<<"happy so far 8"<<std::endl;
+	  // for memory tracing, object b is holding the data (not auto_ptr) and should delete it for each event (that's not completely optimum)
 	}
+	//assigne the maximum vector size for this collection
 	indexDataHolder_[indexOfIndexInDataHolder]=maxS;
       }
       
@@ -271,10 +266,7 @@ class StringBasedNTupler : public NTupler {
       *run_ = iEvent.id().run();
       *ev_ = iEvent.id().event();
 
-      if (ownTheTree_){
-	//	std::cout<<"I am filling the tree StringBasedNTupler"<<std::endl;
-	tree_->Fill();
-      }
+      if (ownTheTree_){	tree_->Fill(); }
 
       //de-allocate memory now: allocated in branch(...) and released to the pointer.
       for(;iB!=iB_end;++iB,++indexOfIndexInDataHolder){
@@ -298,15 +290,20 @@ class StringBasedNTupler : public NTupler {
 	  if (branch->size()>maxS) maxS=branch->size();
 	  iEvent.put(branch, b.branchName());
 	}
-	//index should be put only once per branch
-	//FIXME. max or min of branch size?
+	//index should be put only once per branch. doe not really mattter for edm root files
 	std::auto_ptr<uint> maxN(new uint(maxS));
 	iEvent.put(maxN, iB->first);
-    }
+      }
     }
   }
 
-  protected:
+  ~StringBasedNTupler(){
+    delete indexDataHolder_;
+    delete ev_;
+    delete run_;
+  }
+    
+ protected:
   typedef std::map<std::string, std::vector<TreeBranch> > Branches;
   Branches branches_;
 
