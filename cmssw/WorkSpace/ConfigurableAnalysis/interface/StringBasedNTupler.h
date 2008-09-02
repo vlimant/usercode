@@ -30,7 +30,9 @@ class TreeBranch {
  public:
   TreeBranch(): class_(""),expr_(""),order_(""),maxIndexName_(""),branchAlias_("") {}
     TreeBranch(std::string C, edm::InputTag S, std::string E, std::string O, std::string Mi, std::string Ba) :
-      class_(C),src_(S),expr_(E),order_(O),maxIndexName_(Mi),branchAlias_(Ba){}
+      class_(C),src_(S),expr_(E),order_(O),maxIndexName_(Mi),branchAlias_(Ba){
+      branchTitle_= E+" on "+C+" object from "+S.encode();
+      if (O!="") branchTitle_+=" ordered according to "+O;}
     
   const std::string & className() const { return class_;}
   const edm::InputTag & src() const { return src_;}
@@ -42,7 +44,7 @@ class TreeBranch {
 	name.ReplaceAll("_","0");
 	return std::string(name.Data());}
   const std::string & branchAlias()const{ return branchAlias_;}
-
+  const std::string & branchTitle()const{ return branchTitle_;}
   typedef std::auto_ptr<std::vector<double> > value;
   value branch(const edm::Event& iEvent);
 
@@ -56,6 +58,7 @@ class TreeBranch {
   std::string order_;
   std::string maxIndexName_;
   std::string branchAlias_;
+  std::string branchTitle_;
 
   std::vector<double> * dataHolderPtr_;
 };
@@ -204,7 +207,8 @@ class StringBasedNTupler : public NTupler {
 	for(;iL!=iL_end;++iL){
 	  TreeBranch & b=*iL;
 	  //create a branch for the leaves: vector of doubles
-	  tree_->Branch(b.branchAlias().c_str(),"std::vector<double>",iL->dataHolderPtrAdress());
+	  TBranch * br = tree_->Branch(b.branchAlias().c_str(),"std::vector<double>",iL->dataHolderPtrAdress());
+	  br->SetTitle(b.branchTitle().c_str());
 	  nLeaves++;
 	}
       }
