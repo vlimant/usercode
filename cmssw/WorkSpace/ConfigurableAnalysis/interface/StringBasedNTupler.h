@@ -31,8 +31,11 @@ class TreeBranch {
   TreeBranch(): class_(""),expr_(""),order_(""),maxIndexName_(""),branchAlias_("") {}
     TreeBranch(std::string C, edm::InputTag S, std::string E, std::string O, std::string Mi, std::string Ba) :
       class_(C),src_(S),expr_(E),order_(O),maxIndexName_(Mi),branchAlias_(Ba){
-      branchTitle_= E+" on "+C+" object from "+S.encode();
-      if (O!="") branchTitle_+=" ordered according to "+O;}
+      branchTitle_= E+" calculated on "+C+" object from "+S.encode();
+      if (O!="") branchTitle_+=" ordered according to "+O;
+      //      LogDebug("TreeBranch")<<"the branch with alias: "<<branchAlias_<<" corresponds to: "<<branchTitle_;
+      edm::LogInfo("TreeBranch")<<"the branch with alias: "<<branchAlias_<<" corresponds to: "<<branchTitle_;
+    }
     
   const std::string & className() const { return class_;}
   const edm::InputTag & src() const { return src_;}
