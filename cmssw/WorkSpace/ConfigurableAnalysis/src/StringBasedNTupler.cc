@@ -9,6 +9,8 @@
 
 #include "SimDataFormats/Track/interface/SimTrack.h"
 
+#include "DataFormats/HepMCCandidate/interface/GenParticle.h"
+
 //--------------------------------------------------------------------------------
 //just define here a list of objects you would like to be able to have a branch of
 //--------------------------------------------------------------------------------
@@ -24,9 +26,10 @@ TreeBranch::value TreeBranch::branch(const edm::Event& iEvent){
   else ANOTHER_CLASS(reco::Muon);
   else ANOTHER_CLASS(reco::Track);
   else ANOTHER_CLASS(SimTrack);
+  else ANOTHER_CLASS(reco::GenParticle);
   else {
     edm::LogError("TreeBranch")<<branchName()<<" failed to recognized class type: "<<class_;
-    return TreeBranch::value(new std::vector<double>());
+    return TreeBranch::value(new std::vector<float>());
   }
 }
 #undef ANOTHER_CLASS

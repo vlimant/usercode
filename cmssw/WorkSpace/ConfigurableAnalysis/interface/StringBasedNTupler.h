@@ -107,7 +107,7 @@ public:
 	  for (uint i=0;i!=i_end;++i) {
 	    //try and catch is necessary because ...
 	    try{ 
-	      if (selection && !(*selection(*(copyToSort)[i]))) continue;
+	      if (selection && !((*selection)(*(copyToSort)[i]))) continue;
 	      (*value_)[i]=(expr)(*(copyToSort)[i]);
 	    }catch(...){ LogDebug("StringBranchHelper")<<"with sorting. could not evaluate expression: "<<B.expr()<<" on class: "<<B.className(); } 
 	  }
@@ -117,7 +117,7 @@ public:
 	  for (uint i=0;i!=i_end;++i){
 	    //try and catch is necessary because ...
 	    try {
-	      if (selection && !(*selection((*oH)[i]))) continue;
+	      if (selection && !((*selection)((*oH)[i]))) continue;
 	      (*value_)[i]=(expr)((*oH)[i]); 
 	    }catch(...){ LogDebug("StringBranchHelper")<<"could not evaluate expression: "<<B.expr()<<" on class: "<<B.className(); } 
 	  }
@@ -155,7 +155,7 @@ class StringBasedNTupler : public NTupler {
 	std::string branchAlias=branches[b]+"_"+leaves[l];
 	
 	//add a branch manager for this expression on this collection
-	branches_[maxName].push_back(TreeBranch(className, src, leave_expr, order, maxName, branchAlias));
+	branches_[maxName].push_back(TreeBranch(className, src, leave_expr, selection, order, maxName, branchAlias));
       }//loop the provided leaves
       
       //do it once with configuration [vstring vars = { "x:x" ,... } ] where ":"=separator
