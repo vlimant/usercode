@@ -25,15 +25,16 @@
 #include "PhysicsTools/UtilAlgos/interface/InputTagDistributor.h"
 #include "PhysicsTools/UtilAlgos/interface/CachingVariable.h"
 
+//#define StringBasedNTuplerPrecision float;
 
 class TreeBranch {
  public:
-  TreeBranch(): class_(""),expr_(""),order_(""),maxIndexName_(""),branchAlias_("") {}
-    TreeBranch(std::string C, edm::InputTag S, std::string E, std::string O, std::string Mi, std::string Ba) :
-      class_(C),src_(S),expr_(E),order_(O),maxIndexName_(Mi),branchAlias_(Ba){
+  TreeBranch(): class_(""),expr_(""),order_(""),selection_(""),maxIndexName_(""),branchAlias_("") {}
+    TreeBranch(std::string C, edm::InputTag S, std::string E, std::string O, std::string SE, std::string Mi, std::string Ba) :
+      class_(C),src_(S),expr_(E),order_(O), selection_(SE),maxIndexName_(Mi),branchAlias_(Ba){
       branchTitle_= E+" calculated on "+C+" object from "+S.encode();
       if (O!="") branchTitle_+=" ordered according to "+O;
-      //      LogDebug("TreeBranch")<<"the branch with alias: "<<branchAlias_<<" corresponds to: "<<branchTitle_;
+      if (SE!="") branchTitle_+=" selecting on "+SE;
       edm::LogInfo("TreeBranch")<<"the branch with alias: "<<branchAlias_<<" corresponds to: "<<branchTitle_;
     }
     
@@ -41,6 +42,7 @@ class TreeBranch {
   const edm::InputTag & src() const { return src_;}
   const std::string & expr() const { return expr_;}
   const std::string & order() const { return order_;}
+  const std::string & selection() const { return selection_;}
   const std::string & maxIndexName() const { return maxIndexName_;}
   const std::string branchName()const{ 
 	TString name(branchAlias_);
@@ -48,22 +50,23 @@ class TreeBranch {
 	return std::string(name.Data());}
   const std::string & branchAlias()const{ return branchAlias_;}
   const std::string & branchTitle()const{ return branchTitle_;}
-  typedef std::auto_ptr<std::vector<double> > value;
+  typedef std::auto_ptr<std::vector<float> > value;
   value branch(const edm::Event& iEvent);
 
-  std::vector<double>** dataHolderPtrAdress() { return &dataHolderPtr_;}
-  std::vector<double>* dataHolderPtr() { return dataHolderPtr_;}
-  void assignDataHolderPtr(std::vector<double> * data) { dataHolderPtr_=data;}
+  std::vector<float>** dataHolderPtrAdress() { return &dataHolderPtr_;}
+  std::vector<float>* dataHolderPtr() { return dataHolderPtr_;}
+  void assignDataHolderPtr(std::vector<float> * data) { dataHolderPtr_=data;}
  private:
   std::string class_;
   edm::InputTag src_;
   std::string expr_;
   std::string order_;
+  std::string selection_;
   std::string maxIndexName_;
   std::string branchAlias_;
   std::string branchTitle_;
 
-  std::vector<double> * dataHolderPtr_;
+  std::vector<float> * dataHolderPtr_;
 };
 
 template <typename Object, typename Collection=std::vector<Object> >
@@ -80,13 +83,17 @@ public:
       //empty vector if product not found
       if (oH.failedToGet()){
 	edm::LogError("StringBranchHelper")<<"cannot open: "<<B.src();
-	std::auto_ptr<std::vector<double> > ret(new std::vector<double>());
+	std::auto_ptr<std::vector<float> > ret(new std::vector<float>());
       }
       else{
 	//parser for the object expression
 	StringObjectFunction<Object> expr(B.expr());
 	//allocate enough memory for the data holder
-	value_.reset(new std::vector<double>(oH->size()));
+	value_.reset(new std::vector<float>(oH->size()));
+
+	StringObjectFunction<Object> * selection=0;
+	if (B.selection()!="")
+	  selection = new StringObjectFunction<Object>(B.selection());
 
 	uint i_end=oH->size();
 	//sort things first if requested
@@ -100,7 +107,8 @@ public:
 	  for (uint i=0;i!=i_end;++i) {
 	    //try and catch is necessary because ...
 	    try{ 
-	    (*value_)[i]=(expr)(*(copyToSort)[i]);
+	      if (selection && !(*selection(*(copyToSort)[i]))) continue;
+	      (*value_)[i]=(expr)(*(copyToSort)[i]);
 	    }catch(...){ LogDebug("StringBranchHelper")<<"with sorting. could not evaluate expression: "<<B.expr()<<" on class: "<<B.className(); } 
 	  }
 	}
@@ -109,10 +117,12 @@ public:
 	  for (uint i=0;i!=i_end;++i){
 	    //try and catch is necessary because ...
 	    try {
-	    (*value_)[i]=(expr)((*oH)[i]); 
+	      if (selection && !(*selection((*oH)[i]))) continue;
+	      (*value_)[i]=(expr)((*oH)[i]); 
 	    }catch(...){ LogDebug("StringBranchHelper")<<"could not evaluate expression: "<<B.expr()<<" on class: "<<B.className(); } 
 	  }
 	}
+	if (selection) delete selection;
       }
     }
  private:
@@ -135,7 +145,8 @@ class StringBasedNTupler : public NTupler {
       edm::ParameterSet leavesPSet=bPSet.getParameter<edm::ParameterSet>("leaves");
       std::string order = "";
       if (bPSet.exists("order")) order = bPSet.getParameter<std::string>("order");
-
+      std::string selection = "";
+      if (bPSet.exists("selection")) selection = bPSet.getParameter<std::string>("selection");
       // do it one by one with configuration [string x = "x"]
       std::vector<std::string> leaves=leavesPSet.getParameterNamesForType<std::string>();
       std::string maxName="N"+branches[b];
@@ -165,7 +176,7 @@ class StringBasedNTupler : public NTupler {
 	  std::string branchAlias=branches[b]+"_"+name;
 
 	  //add a branch manager for this expression on this collection
-	  branches_[maxName].push_back(TreeBranch(className, src, expr, order, maxName, branchAlias));
+	  branches_[maxName].push_back(TreeBranch(className, src, expr, order, selection, maxName, branchAlias));
 	}
       }
 
@@ -209,8 +220,8 @@ class StringBasedNTupler : public NTupler {
 	std::vector<TreeBranch>::iterator iL_end=iB->second.end();
 	for(;iL!=iL_end;++iL){
 	  TreeBranch & b=*iL;
-	  //create a branch for the leaves: vector of doubles
-	  TBranch * br = tree_->Branch(b.branchAlias().c_str(),"std::vector<double>",iL->dataHolderPtrAdress());
+	  //create a branch for the leaves: vector of floats
+	  TBranch * br = tree_->Branch(b.branchAlias().c_str(),"std::vector<float>",iL->dataHolderPtrAdress());
 	  br->SetTitle(b.branchTitle().c_str());
 	  nLeaves++;
 	}
@@ -233,8 +244,8 @@ class StringBasedNTupler : public NTupler {
 	std::vector<TreeBranch>::iterator iL_end=iB->second.end();
 	for(;iL!=iL_end;++iL){
 	  TreeBranch & b=*iL;
-	  //a vector of double for each leave
-	  producer->produces<std::vector<double> >(b.branchName()).setBranchAlias(b.branchAlias());
+	  //a vector of float for each leave
+	  producer->produces<std::vector<float> >(b.branchName()).setBranchAlias(b.branchAlias());
 	  nLeaves++;
 	}
       }
@@ -258,10 +269,10 @@ class StringBasedNTupler : public NTupler {
 	for(;iL!=iL_end;++iL){
 	  TreeBranch & b=*iL;
 	  // grab the vector of values from the interpretation of expression for the associated collection
-	  std::auto_ptr<std::vector<double> > branch(b.branch(iEvent));
+	  std::auto_ptr<std::vector<float> > branch(b.branch(iEvent));
 	  // calculate the maximum index size.
 	  if (branch->size()>maxS) maxS=branch->size();
-	  // transfer of (no copy) pointer to the vector of double from the auto_ptr to the tree data pointer
+	  // transfer of (no copy) pointer to the vector of float from the auto_ptr to the tree data pointer
 	  b.assignDataHolderPtr(branch.release());
 	  // for memory tracing, object b is holding the data (not auto_ptr) and should delete it for each event (that's not completely optimum)
 	}
@@ -293,7 +304,7 @@ class StringBasedNTupler : public NTupler {
 	uint maxS=0;
 	for(;iL!=iL_end;++iL){
 	  TreeBranch & b=*iL;
-	  std::auto_ptr<std::vector<double> > branch(b.branch(iEvent));
+	  std::auto_ptr<std::vector<float> > branch(b.branch(iEvent));
 	  if (branch->size()>maxS) maxS=branch->size();
 	  iEvent.put(branch, b.branchName());
 	}
