@@ -19,6 +19,7 @@
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "PhysicsTools/Utilities/interface/StringObjectFunction.h"
+#include "PhysicsTools/Utilities/interface/StringCutObjectSelector.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
@@ -91,9 +92,9 @@ public:
 	//allocate enough memory for the data holder
 	value_.reset(new std::vector<float>(oH->size()));
 
-	StringObjectFunction<Object> * selection=0;
+	StringCutObjectSelector<Object> * selection=0;
 	if (B.selection()!="")
-	  selection = new StringObjectFunction<Object>(B.selection());
+	  selection = new StringCutObjectSelector<Object>(B.selection());
 
 	uint i_end=oH->size();
 	//sort things first if requested
