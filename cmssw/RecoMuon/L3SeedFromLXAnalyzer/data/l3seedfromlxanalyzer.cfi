@@ -1,1 +1,0 @@
-module demo = L3SeedFromLXAnalyzer { InputTag l3SeedLabel = hltL3TrajectorySeedFromL2 }
