@@ -90,7 +90,8 @@ public:
 	//parser for the object expression
 	StringObjectFunction<Object> expr(B.expr());
 	//allocate enough memory for the data holder
-	value_.reset(new std::vector<float>(oH->size()));
+	value_.reset(new std::vector<float>());
+	value_->reserve(oH->size());
 
 	StringCutObjectSelector<Object> * selection=0;
 	if (B.selection()!="")
@@ -109,7 +110,7 @@ public:
 	    //try and catch is necessary because ...
 	    try{ 
 	      if (selection && !((*selection)(*(copyToSort)[i]))) continue;
-	      (*value_)[i]=(expr)(*(copyToSort)[i]);
+	      value_->push_back((expr)(*(copyToSort)[i]));
 	    }catch(...){ LogDebug("StringBranchHelper")<<"with sorting. could not evaluate expression: "<<B.expr()<<" on class: "<<B.className(); } 
 	  }
 	}
@@ -119,7 +120,7 @@ public:
 	    //try and catch is necessary because ...
 	    try {
 	      if (selection && !((*selection)((*oH)[i]))) continue;
-	      (*value_)[i]=(expr)((*oH)[i]); 
+	      value_->push_back((expr)((*oH)[i])); 
 	    }catch(...){ LogDebug("StringBranchHelper")<<"could not evaluate expression: "<<B.expr()<<" on class: "<<B.className(); } 
 	  }
 	}
