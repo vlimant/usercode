@@ -11,7 +11,7 @@ class ProcessIdSplitter : public Splitter{
     weightLabel_=arg.iConfig.getParameter<std::string>("weightLabel");
     uint maxID = arg.iConfig.getParameter<uint>("maxID");//70
     //fill the labels
-    for (uint id=0;id!=maxID;++id){
+    for (uint id=0;id<=maxID;++id){
       labels_.push_back(std::string(csa07::csa07ProcessName(id)));
       std::stringstream ss;
       ss<<"_processIDSplit_"<<id;
