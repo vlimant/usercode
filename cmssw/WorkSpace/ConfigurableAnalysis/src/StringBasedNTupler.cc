@@ -4,12 +4,16 @@
 #include "DataFormats/PatCandidates/interface/Muon.h"
 #include "DataFormats/PatCandidates/interface/MET.h"
 #include "DataFormats/PatCandidates/interface/Electron.h"
+#include "DataFormats/PatCandidates/interface/Photon.h"
 #include "DataFormats/PatCandidates/interface/Tau.h"
 #include "DataFormats/PatCandidates/interface/Hemisphere.h"
 
 #include "SimDataFormats/Track/interface/SimTrack.h"
 
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
+
+#include "DataFormats/L1Trigger/interface/L1ParticleMap.h"
+
 
 //--------------------------------------------------------------------------------
 //just define here a list of objects you would like to be able to have a branch of
@@ -23,10 +27,12 @@ TreeBranch::value TreeBranch::branch(const edm::Event& iEvent){
   else ANOTHER_CLASS(pat::MET);
   else ANOTHER_CLASS(pat::Tau);
   else ANOTHER_CLASS(pat::Hemisphere);
+  else ANOTHER_CLASS(pat::Photon);
   else ANOTHER_CLASS(reco::Muon);
   else ANOTHER_CLASS(reco::Track);
   else ANOTHER_CLASS(SimTrack);
   else ANOTHER_CLASS(reco::GenParticle);
+  else ANOTHER_CLASS(l1extra::L1ParticleMap);
   else {
     edm::LogError("TreeBranch")<<branchName()<<" failed to recognized class type: "<<class_;
     return TreeBranch::value(new std::vector<float>());
