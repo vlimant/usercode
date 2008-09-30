@@ -2,7 +2,7 @@
 #define VariableNtupler_NTupler_H
 
 #include "PhysicsTools/UtilAlgos/interface/VariableHelper.h"
-#include "PhysicsTools/UtilAlgos/interface/UpdaterService.h"
+//#include "PhysicsTools/UtilAlgos/interface/UpdaterService.h"
 
 #include "FWCore/ParameterSet/interface/InputTag.h"
 #include "FWCore/Framework/interface/Frameworkfwd.h"

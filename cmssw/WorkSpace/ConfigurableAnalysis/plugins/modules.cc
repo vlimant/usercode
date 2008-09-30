@@ -16,8 +16,8 @@ typedef ObjectSelector<SortCollectionSelector<reco::GenParticleCollection,Greate
 
 DEFINE_FWK_MODULE(GenParticleSorterByPt);
 
-#include "Workspace/ConfigurableAnalysis/interface/ProcessIdSplitter.h"
-DEFINE_EDM_PLUGIN(CachingVariableFactory, ProcessIdSplitter, "ProcessIdSplitter");
+//#include "Workspace/ConfigurableAnalysis/interface/ProcessIdSplitter.h"
+//DEFINE_EDM_PLUGIN(CachingVariableFactory, ProcessIdSplitter, "ProcessIdSplitter");
 
 
 #include "Workspace/ConfigurableAnalysis/interface/StringBasedNTupler.h"
