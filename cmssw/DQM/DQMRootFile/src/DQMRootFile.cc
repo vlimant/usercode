@@ -13,7 +13,7 @@
 //
 // Original Author:  Jean-Roch Vlimant
 //         Created:  Fri Nov  2 20:13:09 CET 2007
-// $Id$
+// $Id: DQMRootFile.cc,v 1.1 2007/11/27 20:51:09 vlimant Exp $
 //
 //
 
@@ -30,7 +30,8 @@
 
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
-#include "DQMServices/Core/interface/DaqMonitorBEInterface.h"
+//#include "DQMServices/Core/interface/DaqMonitorBEInterface.h"
+#include "DQMServices/Core/interface/DQMStore.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
 
 //
@@ -49,14 +50,14 @@ class DQMRootFile : public edm::EDAnalyzer {
       virtual void endJob() ;
 
   // ----------member data ---------------------------
-  DaqMonitorBEInterface * theDBE;
+  DQMStore * theDBE;
   std::string theDQMRootFileName;
 };
 
 //
 // constructors and destructor
 //
-DQMRootFile::DQMRootFile(const edm::ParameterSet& iConfig) :  theDBE(edm::Service<DaqMonitorBEInterface>().operator->()), theDQMRootFileName(iConfig.getParameter<std::string>("DQMRootFileName")) {}
+DQMRootFile::DQMRootFile(const edm::ParameterSet& iConfig) :  theDBE(edm::Service<DQMStore>().operator->()), theDQMRootFileName(iConfig.getParameter<std::string>("DQMRootFileName")) {}
 
 
 
