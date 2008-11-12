@@ -1,3 +1,0 @@
-module flatNtupler = NtuplerEDProducer {
-	include "Workspace/ConfigurableAnalysis/data/ntuplerBlock.cfi"
-}
