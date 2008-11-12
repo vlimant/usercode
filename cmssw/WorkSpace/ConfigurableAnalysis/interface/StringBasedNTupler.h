@@ -78,6 +78,7 @@ public:
 
   StringBranchHelper(const TreeBranch & B, const edm::Event& iEvent)
     {
+      const float defaultValue = 0.;
       //    grab the collection
       edm::Handle<Collection> oH;
       iEvent.getByLabel(B.src(), oH);
@@ -111,7 +112,10 @@ public:
 	    try{ 
 	      if (selection && !((*selection)(*(copyToSort)[i]))) continue;
 	      value_->push_back((expr)(*(copyToSort)[i]));
-	    }catch(...){ LogDebug("StringBranchHelper")<<"with sorting. could not evaluate expression: "<<B.expr()<<" on class: "<<B.className(); } 
+	    }catch(...){ 
+	      LogDebug("StringBranchHelper")<<"with sorting. could not evaluate expression: "<<B.expr()<<" on class: "<<B.className();
+	      value_->push_back(defaultValue);//push a default value to not change the indexing
+	    } 
 	  }
 	}
 	else{
@@ -121,7 +125,10 @@ public:
 	    try {
 	      if (selection && !((*selection)((*oH)[i]))) continue;
 	      value_->push_back((expr)((*oH)[i])); 
-	    }catch(...){ LogDebug("StringBranchHelper")<<"could not evaluate expression: "<<B.expr()<<" on class: "<<B.className(); } 
+	    }catch(...){ 
+	      LogDebug("StringBranchHelper")<<"could not evaluate expression: "<<B.expr()<<" on class: "<<B.className(); 
+	      value_->push_back(defaultValue);//push a default value to not change the indexing
+	    } 
 	  }
 	}
 	if (selection) delete selection;
