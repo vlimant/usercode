@@ -149,7 +149,11 @@ class StringBasedNTupler : public NTupler {
     const std::string separator = branchesPSet.getUntrackedParameter<std::string>("separator",":");
     for (uint b=0;b!=branches.size();++b){
       edm::ParameterSet bPSet = branchesPSet.getParameter<edm::ParameterSet>(branches[b]);
-      std::string className=bPSet.getParameter<std::string>("class");
+      std::string className="";
+      if (bPSet.exists("class"))
+	className=bPSet.getParameter<std::string>("class");
+      else
+	className=bPSet.getParameter<std::string>("Class");
       edm::InputTag src=edm::Service<InputTagDistributorService>()->retrieve("src",bPSet);
       edm::ParameterSet leavesPSet=bPSet.getParameter<edm::ParameterSet>("leaves");
       std::string order = "";
