@@ -1,6 +1,0 @@
-PSet DQMHelper = {
- string directory = ""
- PSet H1s = {}
- PSet H2s = {}
- PSet sH1s = {}
-}
