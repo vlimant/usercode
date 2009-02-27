@@ -739,6 +739,24 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
     Ntupler = cms.PSet(
         branchesPSet = cms.PSet(
             treeName = cms.string('eventB'),
+
+            pv = cms.PSet(
+                 src = cms.InputTag("offlinePrimaryVertices"),
+                 leaves = cms.PSet(
+                       vars = cms.vstring(
+                          'x:x',
+                          'y:y',
+                          'z:z',
+                          'xErr:xError',
+                          'yErr:yError',
+                          'zErr:zError',
+                           ),
+               ),
+               Class = cms.string('reco::Vertex'),
+           ),
+
+
+
             hemi = cms.PSet(
                 src = cms.InputTag("selectedLayer1Hemispheres"),
                 leaves = cms.PSet(
