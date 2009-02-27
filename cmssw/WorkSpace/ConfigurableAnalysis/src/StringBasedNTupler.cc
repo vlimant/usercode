@@ -7,6 +7,9 @@
 #include "DataFormats/PatCandidates/interface/Photon.h"
 #include "DataFormats/PatCandidates/interface/Tau.h"
 #include "DataFormats/PatCandidates/interface/Hemisphere.h"
+#include "DataFormats/PatCandidates/interface/GenericParticle.h"
+
+#include <DataFormats/BeamSpot/interface/BeamSpot.h>
 
 #include "SimDataFormats/Track/interface/SimTrack.h"
 
@@ -33,6 +36,8 @@ TreeBranch::value TreeBranch::branch(const edm::Event& iEvent){
   else ANOTHER_CLASS(SimTrack);
   else ANOTHER_CLASS(reco::GenParticle);
   else ANOTHER_CLASS(l1extra::L1ParticleMap);
+  else ANOTHER_CLASS(reco::Vertex);
+  else ANOTHER_CLASS(pat::GenericParticle);
   else {
     edm::LogError("TreeBranch")<<branchName()<<" failed to recognized class type: "<<class_;
     return TreeBranch::value(new std::vector<float>());
