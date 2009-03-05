@@ -1,4 +1,4 @@
-service = DaqMonitorROOTBackEnd{}
+service = DQMStore {}
 
 module muonXray = MuonXRay {
 	include "RecoMuon/MuonXRay/data/IDconverttoBinNum.cfi"
@@ -34,19 +34,65 @@ module muonXrayAtL3iso = MuonXRay {
 ## need to redo the tracking particles
 include "Configuration/StandardSequences/data/MixingNoPileUp.cff"
 
-module mytrackingParticles = trackingParticles from "SimGeneral/TrackingAnalysis/data/trackingParticles.cfi"
+#module mytrackingtruthprod = trackingtruthprod from "SimGeneral/TrackingAnalysis/data/trackingParticles.cfi"
+module mytrackingtruthprod = TrackingTruthProducer {
+  double vertexDistanceCut = 0.003
+  vstring HepMCDataLabels = {"VtxSmeared","PythiaSource","source"}
+  vstring TrackerHitLabels = {"TrackerHitsPixelBarrelLowTof",
+                              "TrackerHitsPixelBarrelHighTof",
+                              "TrackerHitsPixelEndcapLowTof",
+                              "TrackerHitsPixelEndcapHighTof",
+                              "TrackerHitsTIBLowTof",
+                              "TrackerHitsTIBHighTof",
+                              "TrackerHitsTIDLowTof",
+                              "TrackerHitsTIDHighTof",
+                              "TrackerHitsTOBLowTof",
+                              "TrackerHitsTOBHighTof",
+                              "TrackerHitsTECLowTof",
+                              "TrackerHitsTECHighTof"}
+  string simHitLabel = "g4SimHits"
+  double volumeRadius = 1200
+  double volumeZ      = 3000
+  bool discardOutVolume = false
+  bool DiscardHitsFromDeltas = true
+}
+
 #allow decays in flight to be there
-replace mytrackingParticles.vertexDistanceCut = 1000
+replace mytrackingtruthprod.vertexDistanceCut = 1000
 # add the muon hits to the trackingParticle
 
-module mytrackingParticlesWithmuHits = trackingParticles from "SimGeneral/TrackingAnalysis/data/trackingParticles.cfi"
+
+#module mytrackingtruthprodWithmuHits = trackingtruthprod from "SimGeneral/TrackingAnalysis/data/trackingParticles.cfi"
+module mytrackingtruthprodWithmuHits = TrackingTruthProducer {
+  double vertexDistanceCut = 0.003
+  vstring HepMCDataLabels = {"VtxSmeared","PythiaSource","source"}
+  vstring TrackerHitLabels = {"TrackerHitsPixelBarrelLowTof",
+                              "TrackerHitsPixelBarrelHighTof",
+                              "TrackerHitsPixelEndcapLowTof",
+                              "TrackerHitsPixelEndcapHighTof",
+                              "TrackerHitsTIBLowTof",
+                              "TrackerHitsTIBHighTof",
+                              "TrackerHitsTIDLowTof",
+                              "TrackerHitsTIDHighTof",
+                              "TrackerHitsTOBLowTof",
+                              "TrackerHitsTOBHighTof",
+                              "TrackerHitsTECLowTof",
+                              "TrackerHitsTECHighTof"}
+  string simHitLabel = "g4SimHits"
+  double volumeRadius = 1200
+  double volumeZ      = 3000
+  bool discardOutVolume = false
+  bool DiscardHitsFromDeltas = true
+}
+
 #allow decays in flight to be there
-replace mytrackingParticlesWithmuHits.vertexDistanceCut = 1000
+replace mytrackingtruthprodWithmuHits.vertexDistanceCut = 1000
 # add the muon hits to the trackingParticle
-replace mytrackingParticlesWithmuHits.MuonHitLabels +={ g4SimHits:MuonDTHits, g4SimHits:MuonCSCHits, g4SimHits:MuonRPCHits }
+#replace mytrackingtruthprodWithmuHits.MuonHitLabels +={ g4SimHits:MuonDTHits, g4SimHits:MuonCSCHits, g4SimHits:MuonRPCHits }
 
 
-module mytrackingParticlesTEST = TrackingTruthTest {}
+
+module mytrackingtruthprodTEST = TrackingTruthTest {}
 
 ##tracking particles
 module tpMuon = cutsTPEffic from "Validation/RecoTrack/data/cutsTPEffic.cfi"
@@ -55,7 +101,7 @@ replace tpMuon.pdgId = {13,-13}
 #allows decays in flight
 replace tpMuon.tip = 10000
 replace tpMuon.lip = 10000
-replace tpMuon.src = mytrackingParticlesWithmuHits
+replace tpMuon.src = mytrackingtruthprodWithmuHits
 
 ## associator
 es_module AssociatorByDeltaR0pt1 = TrackAssociatorByPosition from "SimTracker/TrackAssociation/data/TrackAssociatorByPosition.cfi"
@@ -70,8 +116,8 @@ replace AssociatorByDeltaR0pt2.ComponentName = "AssociatorByDeltaR0.2"
 
 include "SimTracker/TrackAssociation/data/TrackAssociatorByHits.cfi"
 
-#sequence simParticle = {mix, mytrackingParticles, mytrackingParticlesTEST, tpMuon }
-sequence simParticle = {mix, mytrackingParticles, mytrackingParticlesWithmuHits, tpMuon }
+#sequence simParticle = {mix, mytrackingtruthprod, mytrackingtruthprodTEST, tpMuon }
+sequence simParticle = {mix, mytrackingtruthprod, mytrackingtruthprodWithmuHits, tpMuon }
 
 
 
@@ -98,7 +144,7 @@ replace associatedMuonXrayAtL2noUpdate.DQMHelper.H1s.h_mu_d0.xAxis.Max=10
 
 module associatedAnyXrayAtL2 = AssociatedMuonXRay {
  InputTag trackLabel = hltL2Muons:UpdatedAtVtx
- InputTag trackingParticleLabel = mytrackingParticlesWithmuHits
+ InputTag trackingParticleLabel = mytrackingtruthprodWithmuHits
  string associatorName = "AssociatorByDeltaR0.2"
  include "RecoMuon/MuonXRay/data/IDconverttoBinNum.cfi"
  include "RecoMuon/MuonXRay/data/DQMHelper-associatedMuonXRay.cfi"
@@ -108,11 +154,11 @@ replace associatedAnyXrayAtL2.DQMHelper.H1s.h_mu_d0.xAxis.Max=10
 
 module associatedAnyXrayAtL2Cand = AssociatedMuonXRay {
  InputTag trackLabel = hltL2Muons:UpdatedAtVtx
- InputTag trackingParticleLabel = mytrackingParticlesWithmuHits
+ InputTag trackingParticleLabel = mytrackingtruthprodWithmuHits
  string associatorName = "AssociatorByDeltaR0.2"
  include "RecoMuon/MuonXRay/data/IDconverttoBinNum.cfi"
  include "RecoMuon/MuonXRay/data/DQMHelper-associatedMuonXRay.cfi"
- InputTag confirmLabel = SingleMuNoIsoL2PreFiltered
+ InputTag confirmLabel = hltSingleMuNoIsoL2PreFiltered
 }
 replace associatedAnyXrayAtL2Cand.DQMHelper.H1s.h_mu_d0.xAxis.Min=-10
 replace associatedAnyXrayAtL2Cand.DQMHelper.H1s.h_mu_d0.xAxis.Max=10
@@ -127,7 +173,7 @@ module associatedMuonXrayAtL3 = AssociatedMuonXRay {
 
 module associatedAnyXrayAtL3 = AssociatedMuonXRay {
  InputTag trackLabel = hltL3Muons
- InputTag trackingParticleLabel = mytrackingParticlesWithmuHits
+ InputTag trackingParticleLabel = mytrackingtruthprodWithmuHits
  string associatorName = "AssociatorByDeltaR0.1"
  include "RecoMuon/MuonXRay/data/IDconverttoBinNum.cfi"
  include "RecoMuon/MuonXRay/data/DQMHelper-associatedMuonXRay.cfi"
@@ -135,16 +181,16 @@ module associatedAnyXrayAtL3 = AssociatedMuonXRay {
 
 module associatedAnyXrayAtL3Cand = AssociatedMuonXRay {
  InputTag trackLabel = hltL3Muons
- InputTag trackingParticleLabel = mytrackingParticlesWithmuHits
+ InputTag trackingParticleLabel = mytrackingtruthprodWithmuHits
  string associatorName = "AssociatorByDeltaR0.1"
  include "RecoMuon/MuonXRay/data/IDconverttoBinNum.cfi"
  include "RecoMuon/MuonXRay/data/DQMHelper-associatedMuonXRay.cfi"
- InputTag confirmLabel = SingleMuNoIsoL3PreFiltered
+ InputTag confirmLabel = hltSingleMuNoIsoL3PreFiltered
 }
 
 module associatedAnyXrayAtL3byHits = AssociatedMuonXRay {
  InputTag trackLabel = hltL3Muons:L2Seeded
- InputTag trackingParticleLabel = mytrackingParticles
+ InputTag trackingParticleLabel = mytrackingtruthprod
  string associatorName = "TrackAssociatorByHits"
  include "RecoMuon/MuonXRay/data/IDconverttoBinNum.cfi"
  include "RecoMuon/MuonXRay/data/DQMHelper-associatedMuonXRay.cfi"
@@ -152,57 +198,60 @@ module associatedAnyXrayAtL3byHits = AssociatedMuonXRay {
 
 module associatedAnyXrayAtL3CandbyHits = AssociatedMuonXRay {
  InputTag trackLabel = hltL3Muons:L2Seeded
- InputTag trackingParticleLabel = mytrackingParticles
+ InputTag trackingParticleLabel = mytrackingtruthprod
  string associatorName = "TrackAssociatorByHits"
  include "RecoMuon/MuonXRay/data/IDconverttoBinNum.cfi"
  include "RecoMuon/MuonXRay/data/DQMHelper-associatedMuonXRay.cfi"
- InputTag confirmLabel = SingleMuNoIsoL3PreFiltered
+ InputTag confirmLabel = hltSingleMuNoIsoL3PreFiltered
  InputTag linkLabel = hltL3Muons
 }
 
 
-module dqmSaver = saver from "DQM/DQMRootFile/data/dqmrootfile.cfi"
-/*
+//module dqmSaver = saver from "DQM/DQMRootFile/data/dqmrootfile.cfi"
 module dqmSaver = DQMFileSaver {
         untracked string fileName = "dqmRootFile"
-        untracked string environment = "Online"
+#        untracked string environment = "Online"
+        untracked string environment = "Offline"
         untracked int32 prescaleLS = -1
         untracked int32 prescaleEvt = -1
         untracked int32 prescaleTime = -1
         untracked bool saveAtRunEnd = false
         untracked bool saveAtJobEnd = true
+	untracked string workflow = "/A/B/C"
+	untracked int32 forceRunNumber = 1
     }
-*/
 
 path xRay = {muonXray }
 
-include "HLTrigger/Muon/data/PathSingleMu_1032_NoIso.cff"
-path xRayL1 = { SingleMuNoIsoLevel1Seed & SingleMuNoIsoL1Filtered & muonXrayAtL1 }
-path xRayL2 = { SingleMuNoIsoLevel1Seed & SingleMuNoIsoL1Filtered & SingleMuNoIsoL2PreFiltered & muonXrayAtL2 }
-//path xRayL2iso = { SingleMuIsoLevel1Seed & SingleMuIsoL1Filtered & SingleMuIsoL2PreFiltered & SingleMuNoIsoIsoFiltered & muonXrayAtL2iso }
-path xRayL3 = { SingleMuNoIsoLevel1Seed & SingleMuNoIsoL1Filtered & SingleMuNoIsoL2PreFiltered & SingleMuNoIsoL3PreFiltered & muonXrayAtL3 }
+#include "HLTrigger/Muon/data/PathSingleMu_1032_NoIso.cff"
+path xRayL1 = { hltSingleMuNoIsoLevel1Seed & hltSingleMuNoIsoL1Filtered & muonXrayAtL1 }
+path xRayL2 = { hltSingleMuNoIsoLevel1Seed & hltSingleMuNoIsoL1Filtered & hltSingleMuNoIsoL2PreFiltered & muonXrayAtL2 }
+//path xRayL2iso = { hltSingleMuIsoLevel1Seed & hltSingleMuIsoL1Filtered & hltSingleMuIsoL2PreFiltered & hltSingleMuNoIsoIsoFiltered & muonXrayAtL2iso }
+path xRayL3 = { hltSingleMuNoIsoLevel1Seed & hltSingleMuNoIsoL1Filtered & hltSingleMuNoIsoL2PreFiltered & hltSingleMuNoIsoL3PreFiltered & muonXrayAtL3 }
 
 path l2Xray = { simParticle & 
-	SingleMuNoIsoLevel1Seed & SingleMuNoIsoL1Filtered &
+	hltSingleMuNoIsoLevel1Seed & hltSingleMuNoIsoL1Filtered &
 	associatedMuonXrayAtL2 & associatedAnyXrayAtL2 & associatedMuonXrayAtL2noUpdate &
-	SingleMuNoIsoL2PreFiltered & 
+	hltSingleMuNoIsoL2PreFiltered & 
 	associatedAnyXrayAtL2Cand }
 
 path l3Xray = { simParticle & 
-	SingleMuNoIsoLevel1Seed & SingleMuNoIsoL1Filtered & SingleMuNoIsoL2PreFiltered &
+	hltSingleMuNoIsoLevel1Seed & hltSingleMuNoIsoL1Filtered & hltSingleMuNoIsoL2PreFiltered &
 	associatedMuonXrayAtL3 & associatedAnyXrayAtL3 & associatedAnyXrayAtL3byHits & 
-	SingleMuNoIsoL3PreFiltered & 
+	hltSingleMuNoIsoL3PreFiltered & 
 	associatedAnyXrayAtL3Cand & associatedAnyXrayAtL3CandbyHits }
 
 
 
 /*
 include "HLTrigger/Muon/data/PathSingleMu_1032_Iso.cff"
-path xRayL1 = { SingleMuIsoLevel1Seed & SingleMuIsoL1Filtered & muonXrayAtL1 }
-path xRayL2 = { SingleMuIsoL2PreFiltered & muonXrayAtL2 }
-path xRayL2iso = { SingleMuIsoL2PreFiltered & muonXrayAtL2iso }
-path xRayL3 = { SingleMuIsoL3PreFiltered & muonXrayAtL3 }
-path xRayL3iso = { SingleMuIsoL3PreFiltered & muonXrayAtL3iso }
+path xRayL1 = { hltSingleMuIsoLevel1Seed & hltSingleMuIsoL1Filtered & muonXrayAtL1 }
+path xRayL2 = { hltSingleMuIsoL2PreFiltered & muonXrayAtL2 }
+path xRayL2iso = { hltSingleMuIsoL2PreFiltered & muonXrayAtL2iso }
+path xRayL3 = { hltSingleMuIsoL3PreFiltered & muonXrayAtL3 }
+path xRayL3iso = { hltSingleMuIsoL3PreFiltered & muonXrayAtL3iso }
 */
 
 endpath saver = {dqmSaver}
+
+path pReco = { HLTL1muonrecoSequence & HLTL2muonrecoSequence & HLTL2muonisorecoSequence & HLTL3muonrecoSequence & HLTL3muonisorecoSequence  }
