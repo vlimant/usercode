@@ -1,0 +1,5 @@
+<use name=RecoMuon/MuonXRay>
+
+<library file="*.cc" name=RecoMuonMuonXRayPlugins>
+	  <flags EDM_PLUGIN=1>
+</library>

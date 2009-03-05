@@ -13,7 +13,7 @@
 //
 // Original Author:  Finn Rebassoo
 //         Created:  Tue Jan  8 17:56:28 CST 2008
-// $Id$
+// $Id: MuonXRay.cc,v 1.3 2008/08/27 06:56:36 vlimant Exp $
 //
 //
 

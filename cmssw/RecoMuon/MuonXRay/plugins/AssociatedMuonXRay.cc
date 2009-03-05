@@ -13,7 +13,7 @@
 //
 // Original Author:  Finn Rebassoo
 //         Created:  Wed Oct  3 16:40:27 CDT 2007
-// $Id$
+// $Id: AssociatedMuonXRay.cc,v 1.4 2008/08/27 06:56:36 vlimant Exp $
 //
 //
 
@@ -170,10 +170,17 @@ AssociatedMuonXRay::AssociatedMuonXRay(const edm::ParameterSet& iConfig):
   if (theConfirm){
     theConfirmLabel = iConfig.getParameter<edm::InputTag>("confirmLabel");
     theNeedLink = iConfig.exists("linkLabel");
-    if (theNeedLink)
+    if (theNeedLink){
       theLinkLabel = iConfig.getParameter<edm::InputTag>("linkLabel");
+      if (theLinkLabel.label() == "" ) theNeedLink = false;
+    }
   }
 
+  theDoIsolation = iConfig.exists("isolationLabel");
+  if (theDoIsolation){
+    theIsoLabel = iConfig.getParameter<edm::InputTag>("isolationLabel");
+  }
+    
 
   h.dbe()->setCurrentFolder("AssociatedMuonXRay/"+iConfig.getParameter<std::string>("@module_label"));
   //now that the directory is set
@@ -187,6 +194,9 @@ AssociatedMuonXRay::AssociatedMuonXRay(const edm::ParameterSet& iConfig):
   wantMotherBin.splitH1ByCategory("h_mu_leading_Aeta",h,"%s coming from %s");
   wantMotherBin.splitH1ByCategory("h_mu_leading_phi",h,"%s coming from %s");
   wantMotherBin.splitH1ByCategory("h_mu_leading_d0",h,"%s coming from %s");
+  wantMotherBin.splitH1ByCategory("h_mu_leading_IsoDep",h,"%s coming from %s");
+  wantMotherBin.splitH1ByCategory("h_mu_leading_nIsoDep",h,"%s coming from %s");
+
   wantMotherBin.splitH1ByCategory("h_mu_eta",h,"%s coming from %s");
   wantMotherBin.splitH1ByCategory("h_mu_phi",h,"%s coming from %s");
   wantMotherBin.splitH1ByCategory("h_mu_Aeta",h,"%s coming from %s");
@@ -362,7 +372,14 @@ AssociatedMuonXRay::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
        leading_track = ref;
        isLeading=true;}
 
-     reco::IsoDeposit muonIsolation = (*isolationMap)[ref];
+     reco::IsoDeposit muonIsolation;
+     if (theDoIsolation)
+       {
+	 muonIsolation = (*isolationMap)[ref];
+	 std::pair<double,int> dep = muonIsolation.depositAndCountWithin(0.24);
+	 h.e("h_mu_IsoDep")->Fill(dep.first);
+	 h.e("h_mu_nIsoDep")->Fill(dep.second);
+       }
 
      h.e("h_mu_pt")->Fill(ref->pt());
      h.e("h_mu_90pt")->Fill(pt90(ref,iEvent));
@@ -373,7 +390,7 @@ AssociatedMuonXRay::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
      h.e("h_mu_d0")->Fill(ref->d0());
      h.e("h_mu_d0_pT")->Fill(ref->pt(),ref->d0());
      
-     //     h.e("h_mu_cIso")->Fill(
+
 			    
      
      reco::RecoToSimCollection::const_iterator findRefIt = recSimColl.find(refTB);
@@ -487,6 +504,16 @@ AssociatedMuonXRay::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
      h.e("h_mu_leading_90pt")->Fill(pt90(leading_track,iEvent));   
      h.e("h_mu_leading_Aeta")->Fill(fabs(leading_track->eta()));
      h.e("h_mu_leading_phi")->Fill(leading_track->phi());
+     std::pair<double,int> dep;
+     if (theDoIsolation)
+       {
+	 dep = (*isolationMap)[leading_track].depositAndCountWithin(0.24);
+	 h.e("h_mu_leading_IsoDep")->Fill(dep.first);
+         h.e("h_mu_leading_nIsoDep")->Fill(dep.second);
+       }
+
+
+
      int motherBinNumber =0;
      if (leading_simtrack || leading_gentrack){
        if (leading_simtrack){
@@ -503,6 +530,11 @@ AssociatedMuonXRay::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
        h.HBC["h_mu_leading_d0_assoc_ID"][motherBinNumber]->Fill(leading_track->d0());
        h.HBC["h_mu_leading_phi_assoc_ID"][motherBinNumber]->Fill(leading_track->phi());
        h.HBC["h_mu_leading_90pt_assoc_ID"][motherBinNumber]->Fill(pt90(leading_track,iEvent));
+       if (theDoIsolation)
+	 {
+	   h.HBC["h_mu_leading_IsoDep_assoc_ID"][motherBinNumber]->Fill(dep.first);
+	   h.HBC["h_mu_leading_nIsoDep_assoc_ID"][motherBinNumber]->Fill(dep.second);
+	 }
      }
    }
      
