@@ -238,35 +238,35 @@ RandomNumberGeneratorService = cms.Service("RandomNumberGeneratorService",
 simParticle = cms.Sequence(mix*mytrackingtruthprod*mytrackingtruthprodWithmuHits*tpMuon*trDigi)
 
 
-from Workspace.IsoMuAnalyzer.treeMaker_cff import hltMuonTreeMaker
+from Workspace.MuonHLTTreeUtility.muonHLTTreeUtility_cfi import hltMuonTreeMaker
 treePath = cms.Path(simParticle)
 treeEndPath = cms.EndPath( hltMuonTreeMaker)
 
 xRay = cms.Path(muonXray)
 #include "HLTrigger/Muon/data/PathSingleMu_1032_NoIso.cff"
 
-from HLTrigger.Configuration.HLT_2E30_cff import hltL1sSingleMuNoIso,hltSingleMuNoIsoL1Filtered,hltSingleMuNoIsoL2PreFiltered,hltSingleMuNoIsoL3PreFiltered
-from HLTrigger.Configuration.HLT_2E30_cff import hltL1sSingleMuIso,hltSingleMuIsoL1Filtered,hltSingleMuIsoL2PreFiltered,hltSingleMuIsoL2IsoFiltered,hltSingleMuIsoL3PreFiltered,hltSingleMuIsoL3IsoFiltered
+from HLTrigger.Configuration.HLT_2E30_cff import hltL1sSingleMuNoIso10,hltSingleMuNoIsoL1Filtered10,hltSingleMuNoIsoL2PreFiltered11,hltSingleMuNoIsoL3PreFiltered13
+from HLTrigger.Configuration.HLT_2E30_cff import hltL1sSingleMuIso7,hltSingleMuIsoL1Filtered,hltSingleMuIsoL2PreFiltered7,hltSingleMuIsoL2IsoFiltered7,hltSingleMuIsoL3PreFiltered9,hltSingleMuIsoL3IsoFiltered9
 
-xRayL1 = cms.Path(hltL1sSingleMuNoIso+hltSingleMuNoIsoL1Filtered+muonXrayAtL1)
-xRayL2 = cms.Path(hltL1sSingleMuNoIso+hltSingleMuNoIsoL1Filtered+hltSingleMuNoIsoL2PreFiltered+muonXrayAtL2)
-xRayL2iso = cms.Path(hltL1sSingleMuIso+hltSingleMuIsoL1Filtered+hltSingleMuIsoL2PreFiltered+hltSingleMuIsoL2IsoFiltered+muonXrayAtL2iso)
-xRayL3 = cms.Path(hltL1sSingleMuNoIso+hltSingleMuNoIsoL1Filtered+hltSingleMuNoIsoL2PreFiltered+hltSingleMuNoIsoL3PreFiltered+muonXrayAtL3)
-xRayL3iso = cms.Path(hltL1sSingleMuIso+hltSingleMuIsoL1Filtered+hltSingleMuIsoL2PreFiltered+hltSingleMuIsoL2IsoFiltered+hltSingleMuIsoL3PreFiltered+hltSingleMuIsoL3IsoFiltered+muonXrayAtL3)
+xRayL1 = cms.Path(hltL1sSingleMuNoIso10+hltSingleMuNoIsoL1Filtered10+muonXrayAtL1)
+xRayL2 = cms.Path(hltL1sSingleMuNoIso10+hltSingleMuNoIsoL1Filtered10+hltSingleMuNoIsoL2PreFiltered11+muonXrayAtL2)
+xRayL2iso = cms.Path(hltL1sSingleMuIso7+hltSingleMuIsoL1Filtered+hltSingleMuIsoL2PreFiltered7+hltSingleMuIsoL2IsoFiltered7+muonXrayAtL2iso)
+xRayL3 = cms.Path(hltL1sSingleMuNoIso10+hltSingleMuNoIsoL1Filtered10+hltSingleMuNoIsoL2PreFiltered11+hltSingleMuNoIsoL3PreFiltered13+muonXrayAtL3)
+xRayL3iso = cms.Path(hltL1sSingleMuIso7+hltSingleMuIsoL1Filtered+hltSingleMuIsoL2PreFiltered7+hltSingleMuIsoL2IsoFiltered7+hltSingleMuIsoL3PreFiltered9+hltSingleMuIsoL3IsoFiltered9+muonXrayAtL3)
 
-l2Xray = cms.Path(simParticle+hltL1sSingleMuNoIso+hltSingleMuNoIsoL1Filtered+associatedMuonXrayAtL2+associatedAnyXrayAtL2+associatedMuonXrayAtL2noUpdate+hltSingleMuNoIsoL2PreFiltered+associatedAnyXrayAtL2Cand)
-#l2XrayIso = cms.Path(simParticle+hltL1sSingleMuIso+hltSingleMuIsoL1Filtered+  +hltSingleMuIsoL2PreFiltered+associatedAnyXrayAtL2Cand)
+l2Xray = cms.Path(simParticle+hltL1sSingleMuNoIso10+hltSingleMuNoIsoL1Filtered10+associatedMuonXrayAtL2+associatedAnyXrayAtL2+associatedMuonXrayAtL2noUpdate+hltSingleMuNoIsoL2PreFiltered11+associatedAnyXrayAtL2Cand)
+#l2XrayIso = cms.Path(simParticle+hltL1sSingleMuIso7+hltSingleMuIsoL1Filtered+  +hltSingleMuIsoL2PreFiltered7+associatedAnyXrayAtL2Cand)
 
-l3Xray = cms.Path(simParticle+hltL1sSingleMuNoIso+hltSingleMuNoIsoL1Filtered+hltSingleMuNoIsoL2PreFiltered+associatedMuonXrayAtL3+associatedAnyXrayAtL3+associatedAnyXrayAtL3byHits+hltSingleMuNoIsoL3PreFiltered+associatedAnyXrayAtL3Cand+associatedAnyXrayAtL3CandbyHits)
-#l3XrayIso = cms.Path(simParticle+hltL1sSingleMuIso+hltSingleMuIsoL1Filtered+hltSingleMuIsoL2PreFiltered+associatedMuonXrayAtL3+associatedAnyXrayAtL3+associatedAnyXrayAtL3byHits+hltSingleMuIsoL3PreFiltered+associatedAnyXrayAtL3Cand+associatedAnyXrayAtL3CandbyHits)
+l3Xray = cms.Path(simParticle+hltL1sSingleMuNoIso10+hltSingleMuNoIsoL1Filtered10+hltSingleMuNoIsoL2PreFiltered11+associatedMuonXrayAtL3+associatedAnyXrayAtL3+associatedAnyXrayAtL3byHits+hltSingleMuNoIsoL3PreFiltered13+associatedAnyXrayAtL3Cand+associatedAnyXrayAtL3CandbyHits)
+#l3XrayIso = cms.Path(simParticle+hltL1sSingleMuIso7+hltSingleMuIsoL1Filtered+hltSingleMuIsoL2PreFiltered7+associatedMuonXrayAtL3+associatedAnyXrayAtL3+associatedAnyXrayAtL3byHits+hltSingleMuIsoL3PreFiltered9+associatedAnyXrayAtL3Cand+associatedAnyXrayAtL3CandbyHits)
 
 # 
 # include "HLTrigger/Muon/data/PathSingleMu_1032_Iso.cff"
 # path xRayL1 = { hltSingleMuIsoLevel1 & hltSingleMuIsoL1Filtered & muonXrayAtL1 }
-# path xRayL2 = { hltSingleMuIsoL2PreFiltered & muonXrayAtL2 }
-# path xRayL2iso = { hltSingleMuIsoL2PreFiltered & muonXrayAtL2iso }
-# path xRayL3 = { hltSingleMuIsoL3PreFiltered & muonXrayAtL3 }
-# path xRayL3iso = { hltSingleMuIsoL3PreFiltered & muonXrayAtL3iso }
+# path xRayL2 = { hltSingleMuIsoL2PreFiltered7 & muonXrayAtL2 }
+# path xRayL2iso = { hltSingleMuIsoL2PreFiltered7 & muonXrayAtL2iso }
+# path xRayL3 = { hltSingleMuIsoL3PreFiltered9 & muonXrayAtL3 }
+# path xRayL3iso = { hltSingleMuIsoL3PreFiltered9 & muonXrayAtL3iso }
 #
 saver = cms.EndPath(dqmSaver)
 
