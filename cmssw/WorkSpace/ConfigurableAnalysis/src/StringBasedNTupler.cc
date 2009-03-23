@@ -17,6 +17,7 @@
 
 #include "DataFormats/L1Trigger/interface/L1ParticleMap.h"
 
+#include <DataFormats/METReco/interface/MET.h>
 
 //--------------------------------------------------------------------------------
 //just define here a list of objects you would like to be able to have a branch of
@@ -38,6 +39,7 @@ TreeBranch::value TreeBranch::branch(const edm::Event& iEvent){
   else ANOTHER_CLASS(l1extra::L1ParticleMap);
   else ANOTHER_CLASS(reco::Vertex);
   else ANOTHER_CLASS(pat::GenericParticle);
+  else ANOTHER_CLASS(reco::MET);
   else {
     edm::LogError("TreeBranch")<<branchName()<<" failed to recognized class type: "<<class_;
     return TreeBranch::value(new std::vector<float>());
