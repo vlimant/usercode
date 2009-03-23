@@ -1049,7 +1049,7 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
                         'theta:theta',
                         'status:status', 
                         'energy:energy',
-                        'charge:charge'
+                        'charge:charge',
                         'mother_id:mother.pdgId',
                         'mother_pt:mother.pt', 
                         'grandmother_id:mother.mother.pdgId',
