@@ -9,7 +9,8 @@ basicKinematicLeaves = cms.PSet(
     py = cms.string('py'),
     eta = cms.string('eta'),
     theta = cms.string('theta'),
-    et = cms.string('et')
+    et = cms.string('et'),
+    energy = cms.string('energy')
 )
 TriggerPSets = cms.PSet(
 
