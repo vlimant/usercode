@@ -912,6 +912,21 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
                 ),
                 Class = cms.string('pat::MET')
             ),
+
+            tcmets = cms.PSet(
+                  src = cms.InputTag("tcMet"),
+                  leaves = cms.PSet(
+                      vars = cms.vstring('et:et',
+                                         'phi:phi',
+                                         'ex:px',
+                                         'ey:py',
+                                         'sumEt:sumEt',
+                                         )
+                      ),
+                  Class = cms.string('reco::MET')
+            ),
+                                                                        
+
             ccjets = cms.PSet(
                 src = cms.string('ccjets'),
                 leaves = cms.PSet(
