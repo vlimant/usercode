@@ -9,37 +9,38 @@
 #include "DataFormats/PatCandidates/interface/Hemisphere.h"
 #include "DataFormats/PatCandidates/interface/GenericParticle.h"
 
-#include <DataFormats/BeamSpot/interface/BeamSpot.h>
-
+#include "DataFormats/BeamSpot/interface/BeamSpot.h"
 #include "SimDataFormats/Track/interface/SimTrack.h"
-
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
-
 #include "DataFormats/L1Trigger/interface/L1ParticleMap.h"
-
-#include <DataFormats/METReco/interface/MET.h>
+#include "DataFormats/METReco/interface/MET.h"
+//#include "SimDataFormats/GeneratorProducts/interface/HepMCProduct.h"
+#include "SimDataFormats/HepMCProduct/interface/HepMCProduct.h"
 
 //--------------------------------------------------------------------------------
 //just define here a list of objects you would like to be able to have a branch of
 //--------------------------------------------------------------------------------
-#define ANOTHER_CLASS(C) if (class_==#C) return StringBranchHelper<C>(*this, iEvent)()
+#define ANOTHER_VECTOR_CLASS(C) if (class_==#C) return StringBranchHelper<C>(*this, iEvent)()
+#define ANOTHER_CLASS(C) if (class_==#C) return StringLeaveHelper<C>(*this, iEvent)()
 
 TreeBranch::value TreeBranch::branch(const edm::Event& iEvent){
-  ANOTHER_CLASS(pat::Jet);
-  else ANOTHER_CLASS(pat::Muon);
-  else ANOTHER_CLASS(pat::Electron);
-  else ANOTHER_CLASS(pat::MET);
-  else ANOTHER_CLASS(pat::Tau);
-  else ANOTHER_CLASS(pat::Hemisphere);
-  else ANOTHER_CLASS(pat::Photon);
-  else ANOTHER_CLASS(reco::Muon);
-  else ANOTHER_CLASS(reco::Track);
-  else ANOTHER_CLASS(SimTrack);
-  else ANOTHER_CLASS(reco::GenParticle);
-  else ANOTHER_CLASS(l1extra::L1ParticleMap);
-  else ANOTHER_CLASS(reco::Vertex);
-  else ANOTHER_CLASS(pat::GenericParticle);
-  else ANOTHER_CLASS(reco::MET);
+  ANOTHER_VECTOR_CLASS(pat::Jet);
+  else ANOTHER_VECTOR_CLASS(pat::Muon);
+  else ANOTHER_VECTOR_CLASS(pat::Electron);
+  else ANOTHER_VECTOR_CLASS(pat::MET);
+  else ANOTHER_VECTOR_CLASS(pat::Tau);
+  else ANOTHER_VECTOR_CLASS(pat::Hemisphere);
+  else ANOTHER_VECTOR_CLASS(pat::Photon);
+  else ANOTHER_VECTOR_CLASS(reco::Muon);
+  else ANOTHER_VECTOR_CLASS(reco::Track);
+  else ANOTHER_VECTOR_CLASS(SimTrack);
+  else ANOTHER_VECTOR_CLASS(reco::GenParticle);
+  else ANOTHER_VECTOR_CLASS(l1extra::L1ParticleMap);
+  else ANOTHER_VECTOR_CLASS(reco::Vertex);
+  else ANOTHER_VECTOR_CLASS(pat::GenericParticle);
+  else ANOTHER_VECTOR_CLASS(reco::MET);
+  else ANOTHER_CLASS(edm::HepMCProduct);
+else ANOTHER_CLASS(reco::BeamSpot);
   else {
     edm::LogError("TreeBranch")<<branchName()<<" failed to recognized class type: "<<class_;
     return TreeBranch::value(new std::vector<float>());

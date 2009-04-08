@@ -70,6 +70,41 @@ class TreeBranch {
   std::vector<float> * dataHolderPtr_;
 };
 
+
+template <typename Object>
+class StringLeaveHelper {
+ public:
+  typedef TreeBranch::value value;
+  value operator()() { return value_;}
+
+  StringLeaveHelper(const TreeBranch & B, const edm::Event& iEvent)
+    {
+      const float defaultValue = 0.;
+      //    grab the object
+      edm::Handle<Object> oH;
+      iEvent.getByLabel(B.src(), oH);
+      //empty vector if product not found
+      if (oH.failedToGet()){
+	edm::LogError("StringBranchHelper")<<"cannot open: "<<B.src();
+	std::auto_ptr<std::vector<float> > ret(new std::vector<float>());
+      }
+      else{
+	//parser for the object expression
+	StringObjectFunction<Object> expr(B.expr());
+	//allocate enough memory for the data holder
+	value_.reset(new std::vector<float>(1));
+	try{
+	  (*value_)[0]=(expr)(*oH);
+	}catch(...){
+	  LogDebug("StringLeaveHelper")<<"could not evaluate expression: "<<B.expr()<<" on class: "<<B.className();
+	  (*value_)[0]=defaultValue;
+	}
+      }
+    }
+ private:
+  value value_;
+};
+
 template <typename Object, typename Collection=std::vector<Object> >
 class StringBranchHelper {
 public:
