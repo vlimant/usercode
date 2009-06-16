@@ -14,7 +14,7 @@
 //
 // Original Author:  "Thomas Danielson"
 //         Created:  Thu May  8 12:05:03 CDT 2008
-// $Id$
+// $Id: MuonHLTTreeUtility.cc,v 1.3 2009/06/16 22:47:22 tdaniels Exp $
 //
 //
 
@@ -116,7 +116,7 @@
 
 #include "RecoMuon/MuonXRay/interface/IDconverttoBinNum.h"
 #include "RecoMuon/MuonXRay/interface/MotherSearch.h"
-#include "RecoMuon/MuonXRay/interface/DQMHelp"
+#include "RecoMuon/MuonXRay/interface/DQMHelper.h"
 #include "DataFormats/RecoCandidate/interface/RecoChargedCandidateFwd.h"
 #include "DataFormats/RecoCandidate/interface/RecoChargedCandidate.h"
 
