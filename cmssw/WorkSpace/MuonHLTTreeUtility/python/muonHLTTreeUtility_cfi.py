@@ -22,6 +22,10 @@ hltMuonTreeMaker = cms.EDAnalyzer("IsoMuAnalyzer",
     l2MuonLabel = cms.InputTag("hltL2Muons","UpdatedAtVtx"),
     propagatorName = cms.string('SteppingHelixPropagatorAlong'),
     l1MuonLabel = cms.InputTag("hltL1extraParticles"),
+    trackLabel = cms.InputTag("hltL3TkTracksFromL2"),
+    candLabel = cms.InputTag("hltL3TrackCandidateFromL2"),
+    l3SeedLabel = cms.InputTag("hltL3TrajectorySeed"),
+                                  
     trackCutsPSet = cms.PSet(
         ConeSizes = cms.vdouble(0.24, 0.24, 0.24, 0.24, 0.24, 
             0.24, 0.24, 0.24, 0.24, 0.24, 
