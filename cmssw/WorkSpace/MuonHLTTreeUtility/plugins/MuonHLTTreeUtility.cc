@@ -14,7 +14,7 @@
 //
 // Original Author:  "Thomas Danielson"
 //         Created:  Thu May  8 12:05:03 CDT 2008
-// $Id$
+// $Id: MuonHLTTreeUtility.cc,v 1.1 2009/03/05 14:01:14 vlimant Exp $
 //
 //
 
@@ -91,7 +91,7 @@
 
 #include "SimDataFormats/TrackingAnalysis/interface/TrackingParticleFwd.h"
 #include "SimDataFormats/TrackingAnalysis/interface/TrackingVertex.h"
-#include "SimDataFormats/HepMCProduct/interface/HepMCProduct.h"
+#include "SimDataFormats/GeneratorProducts/interface/HepMCProduct.h"
 #include "HepMC/GenEvent.h"
 #include "TLorentzVector.h"
 
@@ -918,7 +918,7 @@ void IsoMuAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
   if (triggerResults->state(indexDiMuIso) == 1) l3DiMuIsoTriggered = 1;
   else l3DiMuIsoTriggered = 0;
 
-  for (int i = 0; i < triggerResults->size(); i++) {
+  for (unsigned int i = 0; i < triggerResults->size(); i++) {
     (*triggerDecisions).push_back(triggerResults->state(i));
     (*triggerNames).push_back(namesOfTriggers.triggerName(i));
   }
@@ -1096,7 +1096,7 @@ void IsoMuAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
 	(*l3AssociationVar).push_back(tp.begin()->second);
        
 	int particle_ID = trp->pdgId();
-	int myBin = wantMotherBin.GetBinNum(particle_ID);
+	//int myBin = wantMotherBin.GetBinNum(particle_ID);
 	
 	if(abs(particle_ID) == 13){
 	  // put in the associated pt,eta,phi
@@ -1398,7 +1398,7 @@ void IsoMuAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
 
     // Determine whether this L2 muon seeds L3
     int seedsL3 = 0;
-    for (int i = 0; i < indexL2SeedingL3->size(); i++) {
+    for (unsigned int i = 0; i < indexL2SeedingL3->size(); i++) {
       if (iL2 == indexL2SeedingL3->at(i)) seedsL3 = 1;
     }
     (*l2SeedsL3).push_back(seedsL3);
@@ -1437,7 +1437,7 @@ void IsoMuAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
         (*l2AssociationVar).push_back(tp.begin()->second);
 
 	int particle_ID = trp->pdgId();
-	int myBin = wantMotherBin.GetBinNum(particle_ID);
+	//int myBin = wantMotherBin.GetBinNum(particle_ID);
 
 	if(abs(particle_ID) == 13){
           // put in the associated pt,eta,phi
@@ -1582,7 +1582,7 @@ void IsoMuAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
     if (itL1->isRPC()) (*l1IsRPC).push_back(1);
     else (*l1IsRPC).push_back(0);
     int seedsL2 = 0;
-    for (int i = 0; i < indexL1SeedingL2->size(); i++) {
+    for (unsigned int i = 0; i < indexL1SeedingL2->size(); i++) {
       if (iL1 == indexL1SeedingL2->at(i)) seedsL2 = 1;
     }
     (*l1SeedsL2).push_back(seedsL2);
@@ -1596,7 +1596,7 @@ void IsoMuAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
   //  for (TrackingParticleCollection::const_iterator trp = (*TPtracks).begin();
   //       trp != (*TPtracks).end(); ++trp) {
 
-  for (int iSim = 0; iSim != (*TPtracks).size(); iSim++) {
+  for (unsigned int iSim = 0; iSim != (*TPtracks).size(); iSim++) {
     
     TrackingParticleRef trp(TPtracks, iSim);
     int particle_ID = trp->pdgId();
