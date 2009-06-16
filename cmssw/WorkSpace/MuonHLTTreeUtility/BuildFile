@@ -1,5 +1,4 @@
 <use name=clhep>
-<use name=root>
 <use name=FWCore/Framework>
 <use name=FWCore/PluginManager>
 <use name=FWCore/ParameterSet>
@@ -23,18 +22,17 @@
 <use name=PhysicsTools/IsolationAlgos>
 <use name=RecoMuon/MuonIsolation>
 <use name=RecoMuon/TrackingTools>
-<use name=SimDataFormats/HepMCProduct>
+<use name=SimDataFormats/GeneratorProducts>
 <use name=SimDataFormats/Track>
 <use name=SimDataFormats/TrackingAnalysis>
 <use name=SimDataFormats/Vertex>
 <use name=SimGeneral/HepPDTRecord>
 <use name=SimTracker/Records>
 <use name=SimTracker/TrackAssociation>
-<use name=TrackingTools/PatternTools>
 <use name=TrackingTools/GeomPropagators>
 <use name=TrackingTools/TransientTrackingRecHit>
 <use name=TrackingTools/Records>
-<use name=TrackingTools/TrajectoryParameterization>
+<use name=TrackingTools/TrajectoryParametrization>
 <use name=DataFormats/GeometryVector>
 <use name=TrackingTools/TrajectoryState>
 <use name=TrackingTools/PatternTools>

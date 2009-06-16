@@ -13,7 +13,7 @@
 //
 // Original Author:  Finn Rebassoo
 //         Created:  Tue Jan  8 17:56:28 CST 2008
-// $Id: MuonXRay.cc,v 1.3 2008/08/27 06:56:36 vlimant Exp $
+// $Id: MuonXRay.cc,v 1.1 2009/03/05 11:54:08 vlimant Exp $
 //
 //
 
@@ -31,7 +31,7 @@
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "SimDataFormats/Track/interface/SimTrackContainer.h"
 #include "SimDataFormats/Vertex/interface/SimVertexContainer.h"
-#include <SimDataFormats/HepMCProduct/interface/HepMCProduct.h>
+#include <SimDataFormats/GeneratorProducts/interface/HepMCProduct.h>
 #include "HepMC/GenEvent.h"
 #include "TLorentzVector.h"
 #include "TH1F.h"

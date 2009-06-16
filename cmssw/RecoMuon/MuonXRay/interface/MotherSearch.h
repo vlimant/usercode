@@ -1,6 +1,6 @@
 #include "SimDataFormats/Track/interface/SimTrackContainer.h"
 #include "SimDataFormats/Vertex/interface/SimVertexContainer.h"
-#include <SimDataFormats/HepMCProduct/interface/HepMCProduct.h>
+#include <SimDataFormats/GeneratorProducts/interface/HepMCProduct.h>
 #include "HepMC/GenEvent.h"
 #include "TLorentzVector.h"
 #include "FWCore/MessageLogger/interface/MessageLogger.h"

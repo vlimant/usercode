@@ -13,7 +13,7 @@
 //
 // Original Author:  Finn Rebassoo
 //         Created:  Wed Oct  3 16:40:27 CDT 2007
-// $Id: AssociatedMuonXRay.cc,v 1.4 2008/08/27 06:56:36 vlimant Exp $
+// $Id: AssociatedMuonXRay.cc,v 1.1 2009/03/05 11:54:08 vlimant Exp $
 //
 //
 
@@ -52,7 +52,7 @@
 
 #include "SimDataFormats/TrackingAnalysis/interface/TrackingParticleFwd.h"
 #include "SimDataFormats/TrackingAnalysis/interface/TrackingVertex.h"
-#include "SimDataFormats/HepMCProduct/interface/HepMCProduct.h"
+#include "SimDataFormats/GeneratorProducts/interface/HepMCProduct.h"
 #include "HepMC/GenEvent.h"
 #include "TLorentzVector.h"
 
