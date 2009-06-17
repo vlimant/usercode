@@ -1,1 +1,0 @@
-module demo = TrajectoryOrTrackCandidateTeller { InputTag input = hltL3TrackCandidateFromL2Opt1 }
