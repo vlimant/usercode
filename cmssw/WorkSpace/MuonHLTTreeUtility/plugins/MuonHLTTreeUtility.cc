@@ -1,10 +1,10 @@
 
 // -*- C++ -*-
 //
-// Package:    IsoMuAnalyzer
-// Class:      IsoMuAnalyzer
+// Package:    MuonHLTTreeUtility
+// Class:      MuonHLTTreeUtility
 // 
-/**\class IsoMuAnalyzer IsoMuAnalyzer.cc Workspace/IsoMuAnalyzer/src/IsoMuAnalyzer.cc
+/**\class MuonHLTTreeUtility MuonHLTTreeUtility.cc Workspace/MuonHLTTreeUtility/src/MuonHLTTreeUtility.cc
 
  Description: <one line class summary>
 
@@ -14,7 +14,7 @@
 //
 // Original Author:  "Thomas Danielson"
 //         Created:  Thu May  8 12:05:03 CDT 2008
-// $Id: MuonHLTTreeUtility.cc,v 1.4 2009/06/16 22:48:42 tdaniels Exp $
+// $Id: MuonHLTTreeUtility.cc,v 1.5 2009/06/17 08:01:57 vlimant Exp $
 //
 //
 
@@ -140,10 +140,10 @@
 // class decleration
 //
 
-class IsoMuAnalyzer : public edm::EDAnalyzer {
+class MuonHLTTreeUtility : public edm::EDAnalyzer {
 public:
-  explicit IsoMuAnalyzer(const edm::ParameterSet&);
-  ~IsoMuAnalyzer();
+  explicit MuonHLTTreeUtility(const edm::ParameterSet&);
+  ~MuonHLTTreeUtility();
   
   
 private:
@@ -527,11 +527,11 @@ double pt90(const reco::TrackRef & tk, const edm::Event & ev){
 //
 // constructors and destructor
 //
-IsoMuAnalyzer::IsoMuAnalyzer(const edm::ParameterSet& iConfig):
+MuonHLTTreeUtility::MuonHLTTreeUtility(const edm::ParameterSet& iConfig):
   wantMotherBin(iConfig.getParameter<edm::ParameterSet>("IDconverttoBinNum"))
 {
 
-  edm::LogInfo("IsoMuAnalyzer") << "into the constructor.";
+  edm::LogInfo("MuonHLTTreeUtility") << "into the constructor.";
 
   l1Label = iConfig.getParameter<edm::InputTag>("l1MuonLabel");
   l2Label = iConfig.getParameter<edm::InputTag>("l2MuonLabel");
@@ -543,17 +543,17 @@ IsoMuAnalyzer::IsoMuAnalyzer(const edm::ParameterSet& iConfig):
   trackingParticleLabel = iConfig.getParameter<edm::InputTag>("trackingParticleLabel");
   bsSrc = iConfig.getParameter<edm::InputTag>("beamSpotLabel");
 
-  edm::LogInfo("IsoMuAnalyzer") << "got the first block of things.  Now getting errorMatrixPset.";
+  edm::LogInfo("MuonHLTTreeUtility") << "got the first block of things.  Now getting errorMatrixPset.";
   errorMatrixPset = iConfig.getParameter<edm::ParameterSet>("matrixPset");
-  edm::LogInfo("IsoMuAnalyzer") << "Initializing the matrix rescaler.";
+  edm::LogInfo("MuonHLTTreeUtility") << "Initializing the matrix rescaler.";
   theErrorMatrix = new MuonErrorMatrix(errorMatrixPset);
-  edm::LogInfo("IsoMuAnalyzer") << "Getting muonServiceParameters.";
+  edm::LogInfo("MuonHLTTreeUtility") << "Getting muonServiceParameters.";
   muonServiceParams = iConfig.getParameter<edm::ParameterSet>("ServiceParameters");
-  edm::LogInfo("IsoMuAnalyzer") << "Getting thePropagatorName.";
+  edm::LogInfo("MuonHLTTreeUtility") << "Getting thePropagatorName.";
   thePropagatorName = iConfig.getParameter<std::string>("propagatorName");
-  edm::LogInfo("IsoMuAnalyzer") << "Getting theAdjustAtIP.";
+  edm::LogInfo("MuonHLTTreeUtility") << "Getting theAdjustAtIP.";
   theAdjustAtIp = errorMatrixPset.getParameter<bool>("atIP");
-  edm::LogInfo("IsoMuAnalyzer") << "And onwards...";
+  edm::LogInfo("MuonHLTTreeUtility") << "And onwards...";
 
   // Get our module timing things
 
@@ -831,7 +831,7 @@ IsoMuAnalyzer::IsoMuAnalyzer(const edm::ParameterSet& iConfig):
 }
 
 
-IsoMuAnalyzer::~IsoMuAnalyzer()
+MuonHLTTreeUtility::~MuonHLTTreeUtility()
 {
  
    // do anything here that needs to be done at desctruction time
@@ -845,11 +845,11 @@ IsoMuAnalyzer::~IsoMuAnalyzer()
 //
 
 // ------------ method called to for each event  ------------
-void IsoMuAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
+void MuonHLTTreeUtility::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
   using namespace edm;
 
-  edm::LogInfo("IsoMuAnalyzer") << "Beginning of the loop.";
+  edm::LogInfo("MuonHLTTreeUtility") << "Beginning of the loop.";
 
   //get the mag field and the beamspot
   iSetup.get<IdealMagneticFieldRecord>().get(field);
@@ -925,24 +925,24 @@ void IsoMuAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
   }
   else {
     nL3TracksFromL2 = -1;
-    edm::LogInfo("IsoMuAnalyzer") << "no l3 tracks";
+    edm::LogInfo("MuonHLTTreeUtility") << "no l3 tracks";
   }
   if (!l3MuonCands.failedToGet()) {
     nL3Cands = l3MuonCands->size();
   }
   else {
     nL3Cands = -1;
-    edm::LogInfo("IsoMuAnalyzer") << "we have no cands";
+    edm::LogInfo("MuonHLTTreeUtility") << "we have no cands";
   }
   if (!l3Seeds.failedToGet()) { // do we have L3 seeds?
     nL3Seeds = l3Seeds->size();
   }
   else {
     nL3Seeds = -1;
-    edm::LogInfo("IsoMuAnalyzer") << "We have no seeds";
+    edm::LogInfo("MuonHLTTreeUtility") << "We have no seeds";
   }
 
-  //  edm::LogInfo("IsoMuAnalyzer") << "How many L1, L2, L3 do we have? " << nL1 << " " << nL2 << " " << nL3;
+  //  edm::LogInfo("MuonHLTTreeUtility") << "How many L1, L2, L3 do we have? " << nL1 << " " << nL2 << " " << nL3;
 
   //ISO variables go here
   caloDepositExtractor->fillVetos(iEvent,iSetup,*l2Muons);
@@ -1039,8 +1039,8 @@ void IsoMuAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
   unsigned int indexSingleMuNoIso = namesOfTriggers.triggerIndex(singleMuNonIsoTriggerName);
   unsigned int indexDiMuIso = namesOfTriggers.triggerIndex(diMuIsoTriggerName );
   unsigned int indexDiMuNoIso = namesOfTriggers.triggerIndex(diMuNonIsoTriggerName); 
-  //  edm::LogInfo("IsoMuAnalyzer") << "Trying to get the trigger decisions.";
-  //  edm::LogInfo("IsoMuAnalyzer") << "Indexes: " << indexSingleMuIso << " " << indexSingleMuNoIso << " " << indexDiMuIso << " " << indexDiMuNoIso;
+  //  edm::LogInfo("MuonHLTTreeUtility") << "Trying to get the trigger decisions.";
+  //  edm::LogInfo("MuonHLTTreeUtility") << "Indexes: " << indexSingleMuIso << " " << indexSingleMuNoIso << " " << indexDiMuIso << " " << indexDiMuNoIso;
   if (triggerResults->index(indexSingleMuNoIso) > 6) l1SingleMuNonIsoTriggered = 1;
   else l1SingleMuNonIsoTriggered = 0;
   if (triggerResults->index(indexSingleMuNoIso) > 20) l2SingleMuNonIsoTriggered = 1;
@@ -1265,9 +1265,9 @@ void IsoMuAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
 	  if (fabs(trp->phi() - refL3->phi()) > 1) {
 	    //Note: keeping this in.  This happens sometimes when the associator used is the 
 	    //steppingHelixPropagatorAny
-	    edm::LogInfo("IsoMuAnalyzer") << "Something's gone wrong here. First our indexes";
-	    edm::LogInfo("IsoMuAnalyzer") << "iL3, sim_index = " << iL3 <<" " << sim_index;
-	    edm::LogInfo("IsoMuAnalyzer") << "What about recSimMatch vs trp phi?" << l3RecSimMatch->phi() <<" " << trp->phi();
+	    edm::LogInfo("MuonHLTTreeUtility") << "Something's gone wrong here. First our indexes";
+	    edm::LogInfo("MuonHLTTreeUtility") << "iL3, sim_index = " << iL3 <<" " << sim_index;
+	    edm::LogInfo("MuonHLTTreeUtility") << "What about recSimMatch vs trp phi?" << l3RecSimMatch->phi() <<" " << trp->phi();
 	  }
 	  // put in the detIDs for this sim muon
 	  std::vector<int> *idsForSimL3 = new std::vector<int>;
@@ -1442,7 +1442,7 @@ void IsoMuAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
     std::string trackBuilderName = "WithTrackAngle";
     iSetup.get<TransientRecHitRecord>().get(trackBuilderName,trackBuilder);
     
-    edm::LogInfo("IsoMuAnalyzer") << "iterating over tracking rechits";
+    edm::LogInfo("MuonHLTTreeUtility") << "iterating over tracking rechits";
     for (trackingRecHit_iterator tkHit = refTk->recHitsBegin(); tkHit != refTk->recHitsEnd(); ++tkHit) {     
       if ((*tkHit)->isValid()) {
 	(*idsForThisTk).push_back((*tkHit)->geographicalId().rawId());
@@ -1454,10 +1454,10 @@ void IsoMuAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
 	  (*yForThisTk).push_back(globTk->globalPosition().y());
 	  (*zForThisTk).push_back(globTk->globalPosition().z());
 	}
-	else edm::LogInfo("IsoMuAnalyzer") << "rechit found in detector " << (*tkHit)->geographicalId().det();
+	else edm::LogInfo("MuonHLTTreeUtility") << "rechit found in detector " << (*tkHit)->geographicalId().det();
       }
     }
-    edm::LogInfo("IsoMuAnalyzer") << "iteration finished";
+    edm::LogInfo("MuonHLTTreeUtility") << "iteration finished";
     
     (*l3TrackDetIds).insert(std::make_pair(iTk,*idsForThisTk));
     (*l3TrackSubdetIds).insert(std::make_pair(iTk,*subidsForThisTk));
@@ -1496,9 +1496,9 @@ void IsoMuAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
 	  if (fabs(trp->phi() - refTk->phi()) > 1) {
 	    //Note: keeping this in.  This happens sometimes when the associator used is the
 	    //steppingHelixPropagatorAny
-	    edm::LogInfo("IsoMuAnalyzer") << "Something's gone wrong here. First our indexes";
-	    edm::LogInfo("IsoMuAnalyzer") << "iTk, sim_index = " << iTk <<" " << sim_index;
-	    edm::LogInfo("IsoMuAnalyzer") << "What about recSimMatch vs trp phi?" << tkRecSimMatch->phi() <<" " << trp->phi();
+	    edm::LogInfo("MuonHLTTreeUtility") << "Something's gone wrong here. First our indexes";
+	    edm::LogInfo("MuonHLTTreeUtility") << "iTk, sim_index = " << iTk <<" " << sim_index;
+	    edm::LogInfo("MuonHLTTreeUtility") << "What about recSimMatch vs trp phi?" << tkRecSimMatch->phi() <<" " << trp->phi();
 	  }
 	  // put in the detIDs for this sim muon
 	  std::vector<int> *idsForSimTk = new std::vector<int>;
@@ -1639,7 +1639,7 @@ void IsoMuAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
     (*l2QoverpError).push_back(refL2->qoverpError());
     (*l2ErrorMatrix).push_back(refL2->covariance());
     // Filling in THE muon error matrix
-    //    edm::LogInfo("IsoMuAnalyzer") << "Trying to fill the muon error matrix.";
+    //    edm::LogInfo("MuonHLTTreeUtility") << "Trying to fill the muon error matrix.";
 
     std::vector<double> *matrixValuesForThisL2 = new std::vector<double>;
     std::vector<int> *idsForThisL2 = new std::vector<int>;
@@ -1973,13 +1973,13 @@ void IsoMuAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
   //  for (TrackingParticleCollection::const_iterator trp = (*TPtracks).begin();
   //       trp != (*TPtracks).end(); ++trp) {
 
-  //  edm::LogInfo("IsoMuAnalyzer") << "total number of sim particles = " << (*TPtracks).size();
+  //  edm::LogInfo("MuonHLTTreeUtility") << "total number of sim particles = " << (*TPtracks).size();
   
   for (unsigned int iSim = 0; iSim != (*TPtracks).size(); iSim++) {
     
     TrackingParticleRef trp(TPtracks, iSim);
     int particle_ID = trp->pdgId();
-    //    if (abs(particle_ID) != 13) edm::LogInfo("IsoMuAnalyzer") << "we have a non-muon in the collection.";
+    //    if (abs(particle_ID) != 13) edm::LogInfo("MuonHLTTreeUtility") << "we have a non-muon in the collection.";
     (*simMuonPt).push_back(trp->pt());
     (*simMuonEta).push_back(trp->eta());
     (*simMuonPhi).push_back(trp->phi());
@@ -2086,7 +2086,7 @@ void IsoMuAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
 	}
       }
       else { // Something went wrong
-	edm::LogInfo("IsoMuAnalyzer")<<"rt.size = 0, but l3SimRec finds trp";
+	edm::LogInfo("MuonHLTTreeUtility")<<"rt.size = 0, but l3SimRec finds trp";
 	(*simToL3Associated).push_back(0);
 	(*simToL3AssociationVar).push_back(-999);
 	(*simToL3RecoIndex).push_back(-999);
@@ -2109,7 +2109,7 @@ void IsoMuAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
         }
       }
       else { // Something went wrong
-	edm::LogInfo("IsoMuAnalyzer")<<"rt.size = 0, but l3SimRec finds trp";
+	edm::LogInfo("MuonHLTTreeUtility")<<"rt.size = 0, but l3SimRec finds trp";
         (*simToTkAssociated).push_back(0);
         (*simToTkAssociationVar).push_back(-999);
         (*simToTkRecoIndex).push_back(-999);
@@ -2132,7 +2132,7 @@ void IsoMuAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
 	}
       }
       else { // Something went wrong
-	edm::LogInfo("IsoMuAnalyzer")<<"rt.size = 0, but l2SimRec finds trp";
+	edm::LogInfo("MuonHLTTreeUtility")<<"rt.size = 0, but l2SimRec finds trp";
 	(*simToL2Associated).push_back(0);
 	(*simToL2AssociationVar).push_back(-999);
 	(*simToL2RecoIndex).push_back(-999);
@@ -2382,7 +2382,7 @@ void IsoMuAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
 
 // ------------ method called once each job just before starting event loop  ------------
 void 
-IsoMuAnalyzer::beginJob(const edm::EventSetup&)
+MuonHLTTreeUtility::beginJob(const edm::EventSetup&)
 {
 
   theFile = new TFile("HLTMuonTree.root","recreate");
@@ -2833,25 +2833,25 @@ IsoMuAnalyzer::beginJob(const edm::EventSetup&)
   MuTrigMC->Branch("simToL2AssociationVar",&simToL2AssociationVar);
   MuTrigMC->Branch("simToL2RecoIndex",&simToL2RecoIndex);
 
-  edm::LogInfo("IsoMuAnalyzer")<<"beginJob executed.  Problems not from here.";
+  edm::LogInfo("MuonHLTTreeUtility")<<"beginJob executed.  Problems not from here.";
 
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
 void 
-IsoMuAnalyzer::endJob() {
+MuonHLTTreeUtility::endJob() {
 
-  edm::LogInfo("IsoMuAnalyzer")<<"Starting to write the trees.  Changing to directory";
+  edm::LogInfo("MuonHLTTreeUtility")<<"Starting to write the trees.  Changing to directory";
   theFile->cd();
-  edm::LogInfo("IsoMuAnalyzer")<<"Starting to write the trees.  Writing MuTrigData";
+  edm::LogInfo("MuonHLTTreeUtility")<<"Starting to write the trees.  Writing MuTrigData";
   MuTrigData->Write();
-  edm::LogInfo("IsoMuAnalyzer")<<"Starting to write the trees.  Writing MuTrigMC";
+  edm::LogInfo("MuonHLTTreeUtility")<<"Starting to write the trees.  Writing MuTrigMC";
   MuTrigMC->Write();
-  edm::LogInfo("IsoMuAnalyzer")<<"Finished writing trees.  Closing file.";
+  edm::LogInfo("MuonHLTTreeUtility")<<"Finished writing trees.  Closing file.";
   theFile->Close();
-  edm::LogInfo("IsoMuAnalyzer")<<"All done.  Nothing left to do.";
+  edm::LogInfo("MuonHLTTreeUtility")<<"All done.  Nothing left to do.";
 
 }
 
 //define this as a plug-in
-DEFINE_FWK_MODULE(IsoMuAnalyzer);
+DEFINE_FWK_MODULE(MuonHLTTreeUtility);

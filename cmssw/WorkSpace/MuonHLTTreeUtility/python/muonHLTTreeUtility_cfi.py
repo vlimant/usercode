@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 
-hltMuonTreeMaker = cms.EDAnalyzer("IsoMuAnalyzer",
+hltMuonTreeMaker = cms.EDAnalyzer("MuonHLTTreeUtility",
     trackExtractorPSet = cms.PSet(
         Diff_z = cms.double(0.2),
         inputTrackCollection = cms.InputTag("hltPixelTracks"),
