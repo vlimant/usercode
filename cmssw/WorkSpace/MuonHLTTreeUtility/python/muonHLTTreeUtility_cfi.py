@@ -156,6 +156,7 @@ hltMuonTreeMaker = cms.EDAnalyzer("IsoMuAnalyzer",
     diMuNonIsoTriggerName = cms.string('HLT_DoubleMu3'),
     l2MuonSeeds = cms.InputTag("hltL2MuonSeeds"),
     l3AssociatorName = cms.string('AssociatorByDeltaR1.0'),
+    tkAssociatorName = cms.string('AssociatorByDeltaR1.0'),                                  
     matrixPset = cms.PSet(
         action = cms.string('use'),
         atIP = cms.bool(True),
