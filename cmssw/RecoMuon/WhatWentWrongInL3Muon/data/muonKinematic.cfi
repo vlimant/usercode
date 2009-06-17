@@ -1,5 +1,0 @@
-module muonKinematic = MuonKinematics  {
-	InputTag HEPsourceLabel = source
-	double etaMin = 1.0 
-	double etaMax = 1.5
-}
