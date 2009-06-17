@@ -45,8 +45,10 @@ tpMuon.src = cms.InputTag('mytrackingParticles')
 
 
 #define the basic sequence of modules for muon HLT reconstruction
-from HLTrigger.Configuration.HLT_2E30_cff import HLTBeginSequence,HLTL2muonrecoSequence,HLTL2muonisorecoSequence,HLTL3muonrecoSequence,HLTL3muonisorecoSequence
-muonHLTreco = cms.Sequence(HLTBeginSequence+HLTL2muonrecoSequence+HLTL2muonisorecoSequence+HLTL3muonrecoSequence+HLTL3muonisorecoSequence)
+def muonHLTrecoSequence(process):
+    #from HLTrigger.Configuration.HLT_2E30_cff import HLTBeginSequence,HLTL2muonrecoSequence,HLTL2muonisorecoSequence,HLTL3muonrecoSequence,HLTL3muonisorecoSequence
+    muonHLTreco = cms.Sequence(process.HLTBeginSequence+process.HLTL2muonrecoSequence+process.HLTL2muonisorecoSequence+process.HLTL3muonrecoSequence+process.HLTL3muonisorecoSequence)
+    return (muonHLTreco)
 
 #redo the tracking particle
 from Configuration.StandardSequences.MixingNoPileUp_cff import *
@@ -75,7 +77,7 @@ RandomNumberGeneratorService = cms.Service("RandomNumberGeneratorService",
 #reDIGI_Path = cms.Paht( !tkSimDigiLinkAreThere + trdigi )
 
 
-MHTU_Path = cms.Path( muonHLTreco + tpProduction ) 
+MHTU_Path = cms.Path( tpProduction ) 
 
 #has to be in the endapth so that it can get the TriggerResults object
 TimerService = cms.Service("TimerService",useCPUtime = cms.untracked.bool(True))
@@ -86,3 +88,18 @@ MHTU_EndPath = cms.EndPath( hltTimer * hltMuonTreeMaker )
 #MHTUSchedule = cms.Schedule( reDIGI_Path + MHTU_Path )
 MHTUSchedule = cms.Schedule( MHTU_Path )
 #remember to extend with the EndPath
+
+def insertMHTU(process):
+    process.load('Workspace.MuonHLTTreeUtility.muonHLTTreeUtility_cff')
+    process.muonHLTreco = muonHLTrecoSequence(process)
+    process.MHTU_Path+=process.muonHLTreco
+    import FWCore.ParameterSet.SequenceTypes
+    for p in process.schedule:
+        if (p.__class__==FWCore.ParameterSet.SequenceTypes.EndPath):
+            process.schedule.insert(process.schedule.index(p), process.MHTU_Path )
+            break
+    process.schedule.append( process.MHTU_EndPath )
+
+    ##actually do the --no_output option
+    if (hasattr(process,"out_step")):
+        process.schedule.remove(process.out_step)
