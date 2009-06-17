@@ -14,7 +14,7 @@
 //
 // Original Author:  "Thomas Danielson"
 //         Created:  Thu May  8 12:05:03 CDT 2008
-// $Id: MuonHLTTreeUtility.cc,v 1.3 2009/06/16 22:47:22 tdaniels Exp $
+// $Id: MuonHLTTreeUtility.cc,v 1.4 2009/06/16 22:48:42 tdaniels Exp $
 //
 //
 
@@ -69,7 +69,7 @@
 #include "TrackingTools/TrajectoryState/interface/FreeTrajectoryState.h"
 #include "TrackingTools/TrajectoryState/interface/TrajectoryStateOnSurface.h"
 #include "TrackingTools/TrajectoryState/interface/TrajectoryStateTransform.h"
-#include "TrackingTools/PatternTools/interface/TrajectoryStateClosestToBeamLineBuilder.h"
+#include "TrackingTools/PatternTools/interface/TSCBLBuilderNoMaterial.h"
 #include "TrackingTools/TrajectoryParametrization/interface/CurvilinearTrajectoryError.h"
 #include "TrackingTools/GeomPropagators/interface/StateOnTrackerBound.h"
 #include "TrackingTools/GeomPropagators/interface/Propagator.h"
@@ -1316,7 +1316,7 @@ void IsoMuAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
 				    GlobalVector(isimtk->momentum().x(),isimtk->momentum().y(),isimtk->momentum().z()),
 				    TrackCharge(trp->charge()),
 				    field.product());
-		  TrajectoryStateClosestToBeamLineBuilder tscblBuilder;
+		  TSCBLBuilderNoMaterial tscblBuilder;
 		  TrajectoryStateClosestToBeamLine tsAtClosestApproach = tscblBuilder(ftsAtProduction,bs);//as in TrackProducerAlgorithm
 		  GlobalPoint v1 = tsAtClosestApproach.trackStateAtPCA().position();
 		  GlobalVector p = tsAtClosestApproach.trackStateAtPCA().momentum();
@@ -1525,7 +1525,7 @@ void IsoMuAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
 				    GlobalVector(isimtk->momentum().x(),isimtk->momentum().y(),isimtk->momentum().z()),
 				    TrackCharge(trp->charge()),
 				    field.product());
-		  TrajectoryStateClosestToBeamLineBuilder tscblBuilder;
+		  TSCBLBuilderNoMaterial tscblBuilder;
 		  TrajectoryStateClosestToBeamLine tsAtClosestApproach = tscblBuilder(ftsAtProduction,bs);//as in TrackProducerAlgorithm
 		  GlobalPoint v1 = tsAtClosestApproach.trackStateAtPCA().position();
 		  GlobalVector p = tsAtClosestApproach.trackStateAtPCA().momentum();
@@ -1868,7 +1868,7 @@ void IsoMuAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
 				    GlobalVector(isimtk->momentum().x(),isimtk->momentum().y(),isimtk->momentum().z()),
 				    TrackCharge(trp->charge()),
 				    field.product());
-		  TrajectoryStateClosestToBeamLineBuilder tscblBuilder;
+		  TSCBLBuilderNoMaterial tscblBuilder;
 		  TrajectoryStateClosestToBeamLine tsAtClosestApproach = tscblBuilder(ftsAtProduction,bs);//as in TrackProducerAlgorithm
 		  GlobalPoint v1 = tsAtClosestApproach.trackStateAtPCA().position();
 		  GlobalVector p = tsAtClosestApproach.trackStateAtPCA().momentum();
@@ -2025,7 +2025,7 @@ void IsoMuAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
 			  GlobalVector(isimtk->momentum().x(),isimtk->momentum().y(),isimtk->momentum().z()),
 			  TrackCharge(trp->charge()),
 			  field.product());
-	TrajectoryStateClosestToBeamLineBuilder tscblBuilder;
+	TSCBLBuilderNoMaterial tscblBuilder;
 	TrajectoryStateClosestToBeamLine tsAtClosestApproach = tscblBuilder(ftsAtProduction,bs);//as in TrackProducerAlgorithm
 	GlobalPoint v1 = tsAtClosestApproach.trackStateAtPCA().position();
 	GlobalVector p = tsAtClosestApproach.trackStateAtPCA().momentum();
