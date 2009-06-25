@@ -758,6 +758,32 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
 
 
 
+            beamSpot = cms.PSet(
+            src = cms.InputTag("offlineBeamSpot"),
+            leaves = cms.PSet(
+                vars = cms.vstring(
+                     'x:position.x',
+                     'y:position.y',
+                     'z:position.z',
+                     'x0Error:x0Error',
+                     'y0Error:y0Error',
+                     'z0Error:z0Error',
+                     'sigmaZ:sigmaZ',
+                     'sigmaZ0Error:sigmaZ0Error',
+                     'dxdz:dxdz',
+                     'dxdzError:dxdzError',
+                     'dydz:dydz',
+                     'dydzError:dydzError',
+                     'beamWidth:BeamWidth',
+                     'beamWidthError:BeamWidthError'
+                       )
+                ),
+            Class = cms.string('reco::BeamSpot')
+            ),
+                                                                              
+
+
+
             hemi = cms.PSet(
                 src = cms.InputTag("selectedLayer1Hemispheres"),
                 leaves = cms.PSet(
@@ -1103,7 +1129,9 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
                         'innerHitZ:innerPosition.z', 
                         'outerHitX:outerPosition.x', 
                         'outerHitY:outerPosition.y', 
-                        'outerHitZ:outerPosition.z'
+                        'outerHitZ:outerPosition.z',
+                        'highPurity:quality("highPurity")               
+                                       
                                        )
                 ),
                 Class = cms.string('reco::Track')
@@ -1201,7 +1229,7 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
                         'parton_Energy:genParton.energy', 
                         'parton_mass:genParton.mass',  
                         'parton_motherID:genParton.mother.pdgId',
-                        'parton_grandmotherID:genParton.mother.mother.pdgId',
+#                        'parton_grandmotherID:genParton.mother.mother.pdgId',
                         'gen_et:genJet.et', 
                         'gen_pt:genJet.pt', 
                         'gen_eta:genJet.eta', 

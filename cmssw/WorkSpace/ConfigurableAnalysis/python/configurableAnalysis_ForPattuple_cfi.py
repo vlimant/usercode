@@ -759,6 +759,31 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
            ),
 
 
+            beamSpot = cms.PSet(
+            src = cms.InputTag("offlineBeamSpot"),
+            leaves = cms.PSet(
+                vars = cms.vstring(
+                     'x:position.x',
+                     'y:position.y',
+                     'z:position.z',
+                     'x0Error:x0Error',
+                     'y0Error:y0Error',
+                     'z0Error:z0Error',
+                     'sigmaZ:sigmaZ',
+                     'sigmaZ0Error:sigmaZ0Error',
+                     'dxdz:dxdz',
+                     'dxdzError:dxdzError',
+                     'dydz:dydz',
+                     'dydzError:dydzError',
+                     'beamWidth:BeamWidth',
+                     'beamWidthError:BeamWidthError'
+                       )
+                ),
+            Class = cms.string('reco::BeamSpot')
+            ),
+                                                                              
+
+
 
 #            hemi = cms.PSet(
 #                src = cms.InputTag("allLayer1Hemispheres"),
