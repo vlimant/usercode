@@ -14,8 +14,7 @@
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 #include "DataFormats/L1Trigger/interface/L1ParticleMap.h"
 #include "DataFormats/METReco/interface/MET.h"
-//#include "SimDataFormats/GeneratorProducts/interface/HepMCProduct.h"
-#include "SimDataFormats/HepMCProduct/interface/HepMCProduct.h"
+#include "SimDataFormats/GeneratorProducts/interface/HepMCProduct.h"
 
 //--------------------------------------------------------------------------------
 //just define here a list of objects you would like to be able to have a branch of

@@ -10,7 +10,7 @@ DEFINE_SEAL_MODULE();
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 #include "PhysicsTools/UtilAlgos/interface/ObjectSelector.h"
 #include "PhysicsTools/UtilAlgos/interface/SortCollectionSelector.h"
-#include "PhysicsTools/Utilities/interface/PtComparator.h"
+#include "CommonTools/Utils/interface/PtComparator.h"
 
 typedef ObjectSelector<SortCollectionSelector<reco::GenParticleCollection,GreaterByPt<reco::GenParticle> > > GenParticleSorterByPt;
 

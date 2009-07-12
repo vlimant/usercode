@@ -1131,9 +1131,8 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
                         'outerHitX:outerPosition.x', 
                         'outerHitY:outerPosition.y', 
                         'outerHitZ:outerPosition.z',
-                        'highPurity:quality("highPurity")               
-                                       
-                                       )
+                        'highPurity:quality("highPurity")'
+                        )
                 ),
                 Class = cms.string('reco::Track')
             ),

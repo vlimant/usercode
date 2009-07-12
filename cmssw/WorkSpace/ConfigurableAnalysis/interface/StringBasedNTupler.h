@@ -18,8 +18,8 @@
 
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
-#include "PhysicsTools/Utilities/interface/StringObjectFunction.h"
-#include "PhysicsTools/Utilities/interface/StringCutObjectSelector.h"
+#include "CommonTools/Utils/interface/StringObjectFunction.h"
+#include "CommonTools/Utils/interface/StringCutObjectSelector.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
