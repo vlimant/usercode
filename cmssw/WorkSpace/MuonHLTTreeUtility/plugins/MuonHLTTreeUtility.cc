@@ -14,7 +14,7 @@
 //
 // Original Author:  "Thomas Danielson"
 //         Created:  Thu May  8 12:05:03 CDT 2008
-// $Id: MuonHLTTreeUtility.cc,v 1.5 2009/06/17 08:01:57 vlimant Exp $
+// $Id: MuonHLTTreeUtility.cc,v 1.6 2009/06/17 09:36:59 vlimant Exp $
 //
 //
 
@@ -942,15 +942,19 @@ void MuonHLTTreeUtility::analyze(const edm::Event& iEvent, const edm::EventSetup
     edm::LogInfo("MuonHLTTreeUtility") << "We have no seeds";
   }
 
-  //  edm::LogInfo("MuonHLTTreeUtility") << "How many L1, L2, L3 do we have? " << nL1 << " " << nL2 << " " << nL3;
+  edm::LogInfo("MuonHLTTreeUtility") << "How many L1, L2, L3 do we have? " << nL1 << " " << nL2 << " " << nL3;
 
   //ISO variables go here
   caloDepositExtractor->fillVetos(iEvent,iSetup,*l2Muons);
   trackDepositExtractor->fillVetos(iEvent,iSetup,*l3Muons);
 
+  edm::LogInfo("MuonHLTTreeUtility") << "vetoe filled";
+
   reco::IsoDeposit::Vetos trackVetos;
   typedef std::vector< std::pair<reco::TrackRef,reco::IsoDeposit> > MuonsWithDeposits;
   MuonsWithDeposits muonsWithDeposits;
+
+  edm::LogInfo("MuonHLTTreeUtility") << "deposit objects created.";
 
   // get hold of the TriggerResults objects
   edm::Handle<TriggerResults> triggerResults;
@@ -958,6 +962,8 @@ void MuonHLTTreeUtility::analyze(const edm::Event& iEvent, const edm::EventSetup
   TriggerNames namesOfTriggers(*triggerResults);
 
   // Right, that's the setup done.  Now let's put in our execution times.
+
+  edm::LogInfo("MuonHLTTreeUtility") << "doing the module timing.";
 
   unsigned nTotalModules = evtTime->size();
   totalMuonHLTTime = 0;
@@ -1035,47 +1041,68 @@ void MuonHLTTreeUtility::analyze(const edm::Event& iEvent, const edm::EventSetup
     }
   }
 
+  edm::LogInfo("MuonHLTTreeUtility") << "checking what filter passed.";
+
   unsigned int indexSingleMuIso = namesOfTriggers.triggerIndex(singleMuIsoTriggerName );
   unsigned int indexSingleMuNoIso = namesOfTriggers.triggerIndex(singleMuNonIsoTriggerName);
   unsigned int indexDiMuIso = namesOfTriggers.triggerIndex(diMuIsoTriggerName );
   unsigned int indexDiMuNoIso = namesOfTriggers.triggerIndex(diMuNonIsoTriggerName); 
   //  edm::LogInfo("MuonHLTTreeUtility") << "Trying to get the trigger decisions.";
-  //  edm::LogInfo("MuonHLTTreeUtility") << "Indexes: " << indexSingleMuIso << " " << indexSingleMuNoIso << " " << indexDiMuIso << " " << indexDiMuNoIso;
-  if (triggerResults->index(indexSingleMuNoIso) > 6) l1SingleMuNonIsoTriggered = 1;
-  else l1SingleMuNonIsoTriggered = 0;
-  if (triggerResults->index(indexSingleMuNoIso) > 20) l2SingleMuNonIsoTriggered = 1;
-  else l2SingleMuNonIsoTriggered = 0;
-  if (triggerResults->state(indexSingleMuNoIso) == 1) l3SingleMuNonIsoTriggered = 1;
-  else l3SingleMuNonIsoTriggered = 0;
-  if (triggerResults->index(indexSingleMuIso) > 6) l1SingleMuIsoTriggered = 1;
-  else l1SingleMuIsoTriggered = 0;
-  if (triggerResults->index(indexSingleMuIso) > 20) l2SingleMuIsoPreTriggered = 1;
-  else l2SingleMuIsoPreTriggered = 0;
-  if (triggerResults->index(indexSingleMuIso) > 34) l2SingleMuIsoTriggered = 1;
-  else l2SingleMuIsoTriggered = 0;
-  if (triggerResults->index(indexSingleMuIso) > 44) l3SingleMuIsoPreTriggered = 1;
-  else l3SingleMuIsoPreTriggered = 0;
-  if (triggerResults->state(indexSingleMuIso) == 1) l3SingleMuIsoTriggered = 1;
-  else l3SingleMuIsoTriggered = 0;
+  edm::LogInfo("MuonHLTTreeUtility") << "Indexes: " << indexSingleMuIso << " " << indexSingleMuNoIso << " " << indexDiMuIso << " " << indexDiMuNoIso;
 
-
-
-  if (triggerResults->index(indexDiMuNoIso) > 6) l1DiMuNonIsoTriggered = 1;
-  else l1DiMuNonIsoTriggered = 0;
-  if (triggerResults->index(indexDiMuNoIso) > 20) l2DiMuNonIsoTriggered = 1;
-  else l2DiMuNonIsoTriggered = 0;
-  if (triggerResults->state(indexDiMuNoIso) == 1) l3DiMuNonIsoTriggered = 1;
-  else l3DiMuNonIsoTriggered = 0;
-  if (triggerResults->index(indexDiMuIso) > 6) l1DiMuIsoTriggered = 1;
-  else l1DiMuIsoTriggered = 0;
-  if (triggerResults->index(indexDiMuIso) > 20) l2DiMuIsoPreTriggered = 1;
-  else l2DiMuIsoPreTriggered = 0;
-  if (triggerResults->index(indexDiMuIso) > 34) l2DiMuIsoTriggered = 1;
-  else l2DiMuIsoTriggered = 0;
-  if (triggerResults->index(indexDiMuIso) > 44) l3DiMuIsoPreTriggered = 1;
-  else l3DiMuIsoPreTriggered = 0;
-  if (triggerResults->state(indexDiMuIso) == 1) l3DiMuIsoTriggered = 1;
-  else l3DiMuIsoTriggered = 0;
+  if (indexSingleMuNoIso<namesOfTriggers.size()){
+    if (triggerResults->index(indexSingleMuNoIso) > 6) l1SingleMuNonIsoTriggered = 1;
+    else l1SingleMuNonIsoTriggered = 0;
+    if (triggerResults->index(indexSingleMuNoIso) > 20) l2SingleMuNonIsoTriggered = 1;
+    else l2SingleMuNonIsoTriggered = 0;
+    if (triggerResults->state(indexSingleMuNoIso) == 1) l3SingleMuNonIsoTriggered = 1;
+    else l3SingleMuNonIsoTriggered = 0;
+  }
+  else
+    edm::LogError("MuonHLTTreeUtility")<<singleMuNonIsoTriggerName<<" is not a valid trigger name here.";
+  
+  if (indexSingleMuIso<namesOfTriggers.size()){
+    if (triggerResults->index(indexSingleMuIso) > 6) l1SingleMuIsoTriggered = 1;
+    else l1SingleMuIsoTriggered = 0;
+    if (triggerResults->index(indexSingleMuIso) > 20) l2SingleMuIsoPreTriggered = 1;
+    else l2SingleMuIsoPreTriggered = 0;
+    if (triggerResults->index(indexSingleMuIso) > 34) l2SingleMuIsoTriggered = 1;
+    else l2SingleMuIsoTriggered = 0;
+    if (triggerResults->index(indexSingleMuIso) > 44) l3SingleMuIsoPreTriggered = 1;
+    else l3SingleMuIsoPreTriggered = 0;
+    if (triggerResults->state(indexSingleMuIso) == 1) l3SingleMuIsoTriggered = 1;
+    else l3SingleMuIsoTriggered = 0;
+  }
+  else
+    edm::LogError("MuonHLTTreeUtility")<<singleMuIsoTriggerName<<" is not a valid trigger name here.";
+  
+  if (indexDiMuIso<namesOfTriggers.size()){
+    if (triggerResults->index(indexDiMuNoIso) > 6) l1DiMuNonIsoTriggered = 1;
+    else l1DiMuNonIsoTriggered = 0;
+    if (triggerResults->index(indexDiMuNoIso) > 20) l2DiMuNonIsoTriggered = 1;
+    else l2DiMuNonIsoTriggered = 0;
+    if (triggerResults->state(indexDiMuNoIso) == 1) l3DiMuNonIsoTriggered = 1;
+    else l3DiMuNonIsoTriggered = 0;
+  }
+  else
+    edm::LogError("MuonHLTTreeUtility")<<diMuNonIsoTriggerName<<" is not a valid trigger name here.";
+  
+  if (indexDiMuIso<namesOfTriggers.size()){
+    if (triggerResults->index(indexDiMuIso) > 6) l1DiMuIsoTriggered = 1;
+    else l1DiMuIsoTriggered = 0;
+    if (triggerResults->index(indexDiMuIso) > 20) l2DiMuIsoPreTriggered = 1;
+    else l2DiMuIsoPreTriggered = 0;
+    if (triggerResults->index(indexDiMuIso) > 34) l2DiMuIsoTriggered = 1;
+    else l2DiMuIsoTriggered = 0;
+    if (triggerResults->index(indexDiMuIso) > 44) l3DiMuIsoPreTriggered = 1;
+    else l3DiMuIsoPreTriggered = 0;
+    if (triggerResults->state(indexDiMuIso) == 1) l3DiMuIsoTriggered = 1;
+    else l3DiMuIsoTriggered = 0;
+  }
+  else
+    edm::LogError("MuonHLTTreeUtility")<<diMuIsoTriggerName<<" is not a valid trigger name here.";
+  
+  edm::LogInfo("MuonHLTTreeUtility") << "done.";
 
   for (unsigned int i = 0; i < triggerResults->size(); i++) {
     (*triggerDecisions).push_back(triggerResults->state(i));
@@ -1085,6 +1112,8 @@ void MuonHLTTreeUtility::analyze(const edm::Event& iEvent, const edm::EventSetup
   edm::Handle<reco::MuonTrackLinksCollection> l3ToL2Links;
   iEvent.getByLabel(theLinkLabel, l3ToL2Links);
 
+  edm::LogInfo("MuonHLTTreeUtility") << "loop over L3s";
+  
   for(int iL3 = 0;iL3!=nL3;++iL3){
     reco::TrackRef refL3(l3Muons, iL3);
     
