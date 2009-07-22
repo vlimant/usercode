@@ -14,7 +14,7 @@
 //
 // Original Author:  "Thomas Danielson"
 //         Created:  Thu May  8 12:05:03 CDT 2008
-// $Id: MuonHLTTreeUtility.cc,v 1.6 2009/06/17 09:36:59 vlimant Exp $
+// $Id: MuonHLTTreeUtility.cc,v 1.7 2009/07/21 17:33:28 vlimant Exp $
 //
 //
 
@@ -1164,35 +1164,37 @@ void MuonHLTTreeUtility::analyze(const edm::Event& iEvent, const edm::EventSetup
     iSetup.get<TransientRecHitRecord>().get(muonBuilderName,muonBuilder);
 
     for (trackingRecHit_iterator l3Hit = refL3->recHitsBegin(); l3Hit != refL3->recHitsEnd(); ++l3Hit) {
-      (*idsForThisL3).push_back((*l3Hit)->geographicalId().rawId());
-      (*subidsForThisL3).push_back((*l3Hit)->geographicalId().subdetId());
-      (*detsForThisL3).push_back((*l3Hit)->geographicalId().det());
-      (*statusForThisL3).push_back((*l3Hit)->type());
-      if ((*l3Hit)->geographicalId().det() == 1) { // Tracker
-	TransientTrackingRecHit::RecHitPointer globL3 = trackBuilder->build(&**l3Hit);
-	(*xForThisL3).push_back(globL3->globalPosition().x());
-	(*yForThisL3).push_back(globL3->globalPosition().y());
-	(*zForThisL3).push_back(globL3->globalPosition().z());
-      }
-      else if ((*l3Hit)->geographicalId().det() == 2) { // Muon System
-	nMuHitsForThisL3++;
-	TransientTrackingRecHit::RecHitPointer globL3 = muonBuilder->build(&**l3Hit);
-	(*xForThisL3).push_back(globL3->globalPosition().x());
-	(*yForThisL3).push_back(globL3->globalPosition().y());
-	(*zForThisL3).push_back(globL3->globalPosition().z());
-	// number station goes here
-	if ( (*l3Hit)->geographicalId().subdetId() == 1) { // DT hit 
-	  const DTChamberId& id = DTChamberId((*l3Hit)->geographicalId());
-	  (*stationsForThisL3).push_back(id.station());
+      if ((*l3Hit)->isValid()) {
+	(*idsForThisL3).push_back((*l3Hit)->geographicalId().rawId());
+	(*subidsForThisL3).push_back((*l3Hit)->geographicalId().subdetId());
+	(*detsForThisL3).push_back((*l3Hit)->geographicalId().det());
+	(*statusForThisL3).push_back((*l3Hit)->type());
+	if ((*l3Hit)->geographicalId().det() == 1) { // Tracker
+	  TransientTrackingRecHit::RecHitPointer globL3 = trackBuilder->build(&**l3Hit);
+	  (*xForThisL3).push_back(globL3->globalPosition().x());
+	  (*yForThisL3).push_back(globL3->globalPosition().y());
+	  (*zForThisL3).push_back(globL3->globalPosition().z());
 	}
-        if ( (*l3Hit)->geographicalId().subdetId() == 2) { // CSC hit
-          const CSCDetId& id = CSCDetId((*l3Hit)->geographicalId());
-          (*stationsForThisL3).push_back(id.station());
-        }
-        if ( (*l3Hit)->geographicalId().subdetId() == 3) { // RPC hit
-          const RPCDetId& id = RPCDetId((*l3Hit)->geographicalId());
-          (*stationsForThisL3).push_back(id.station());
-        }
+	else if ((*l3Hit)->geographicalId().det() == 2) { // Muon System
+	  nMuHitsForThisL3++;
+	  TransientTrackingRecHit::RecHitPointer globL3 = muonBuilder->build(&**l3Hit);
+	  (*xForThisL3).push_back(globL3->globalPosition().x());
+	  (*yForThisL3).push_back(globL3->globalPosition().y());
+	  (*zForThisL3).push_back(globL3->globalPosition().z());
+	  // number station goes here
+	  if ( (*l3Hit)->geographicalId().subdetId() == 1) { // DT hit 
+	    const DTChamberId& id = DTChamberId((*l3Hit)->geographicalId());
+	    (*stationsForThisL3).push_back(id.station());
+	  }
+	  if ( (*l3Hit)->geographicalId().subdetId() == 2) { // CSC hit
+	    const CSCDetId& id = CSCDetId((*l3Hit)->geographicalId());
+	    (*stationsForThisL3).push_back(id.station());
+	  }
+	  if ( (*l3Hit)->geographicalId().subdetId() == 3) { // RPC hit
+	    const RPCDetId& id = RPCDetId((*l3Hit)->geographicalId());
+	    (*stationsForThisL3).push_back(id.station());
+	  }
+	}
       }
     }
     
@@ -1746,30 +1748,32 @@ void MuonHLTTreeUtility::analyze(const edm::Event& iEvent, const edm::EventSetup
     iSetup.get<TransientRecHitRecord>().get(muonBuilderName,muonBuilder);
 
     for (trackingRecHit_iterator l2Hit = refL2->recHitsBegin(); l2Hit != refL2->recHitsEnd(); ++l2Hit) {
-      (*idsForThisL2).push_back((*l2Hit)->geographicalId().rawId());
-      (*subidsForThisL2).push_back((*l2Hit)->geographicalId().subdetId());
-      (*detsForThisL2).push_back((*l2Hit)->geographicalId().det());
-      (*statusForThisL2).push_back((*l2Hit)->type());
-      if ((*l2Hit)->geographicalId().det() == 2) { // Muon System
-	nMuHitsForThisL2++;
-	TransientTrackingRecHit::RecHitPointer globL2 = muonBuilder->build(&**l2Hit);
-        (*xForThisL2).push_back(globL2->globalPosition().x());
-        (*yForThisL2).push_back(globL2->globalPosition().y());
-        (*zForThisL2).push_back(globL2->globalPosition().z());
-	if ( (*l2Hit)->geographicalId().subdetId() == 1) { // DT hit
-          const DTChamberId& id = DTChamberId((*l2Hit)->geographicalId());
-          (*stationsForThisL2).push_back(id.station());
-        }
-        if ( (*l2Hit)->geographicalId().subdetId() == 2) { // CSC hit
-          const CSCDetId& id = CSCDetId((*l2Hit)->geographicalId());
-          (*stationsForThisL2).push_back(id.station());
-        }
-        if ( (*l2Hit)->geographicalId().subdetId() == 3) { // RPC hit
-          const RPCDetId& id = RPCDetId((*l2Hit)->geographicalId());
-          (*stationsForThisL2).push_back(id.station());
-        }
+      if ((*l2Hit)->isValid()) {
+	(*idsForThisL2).push_back((*l2Hit)->geographicalId().rawId());
+	(*subidsForThisL2).push_back((*l2Hit)->geographicalId().subdetId());
+	(*detsForThisL2).push_back((*l2Hit)->geographicalId().det());
+	(*statusForThisL2).push_back((*l2Hit)->type());
+	if ((*l2Hit)->geographicalId().det() == 2) { // Muon System
+	  nMuHitsForThisL2++;
+	  TransientTrackingRecHit::RecHitPointer globL2 = muonBuilder->build(&**l2Hit);
+	  (*xForThisL2).push_back(globL2->globalPosition().x());
+	  (*yForThisL2).push_back(globL2->globalPosition().y());
+	  (*zForThisL2).push_back(globL2->globalPosition().z());
+	  if ( (*l2Hit)->geographicalId().subdetId() == 1) { // DT hit
+	    const DTChamberId& id = DTChamberId((*l2Hit)->geographicalId());
+	    (*stationsForThisL2).push_back(id.station());
+	  }
+	  if ( (*l2Hit)->geographicalId().subdetId() == 2) { // CSC hit
+	    const CSCDetId& id = CSCDetId((*l2Hit)->geographicalId());
+	    (*stationsForThisL2).push_back(id.station());
+	  }
+	  if ( (*l2Hit)->geographicalId().subdetId() == 3) { // RPC hit
+	    const RPCDetId& id = RPCDetId((*l2Hit)->geographicalId());
+	    (*stationsForThisL2).push_back(id.station());
+	  }
+	}
+	else edm::LogError(theCategory)<<"Hits for L2 muon outside muon system.";
       }
-      else edm::LogError(theCategory)<<"Hits for L2 muon outside muon system.";
     }
 
     (*l2DetIds).insert(std::make_pair(iL2,*idsForThisL2));
@@ -2007,7 +2011,7 @@ void MuonHLTTreeUtility::analyze(const edm::Event& iEvent, const edm::EventSetup
   for (unsigned int iSim = 0; iSim != (*TPtracks).size(); iSim++) {
     
     TrackingParticleRef trp(TPtracks, iSim);
-    int particle_ID = trp->pdgId();
+    //int particle_ID = trp->pdgId();
     //    if (abs(particle_ID) != 13) edm::LogInfo("MuonHLTTreeUtility") << "we have a non-muon in the collection.";
     (*simMuonPt).push_back(trp->pt());
     (*simMuonEta).push_back(trp->eta());
