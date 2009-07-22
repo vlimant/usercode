@@ -14,7 +14,7 @@
 //
 // Original Author:  "Thomas Danielson"
 //         Created:  Thu May  8 12:05:03 CDT 2008
-// $Id: MuonHLTTreeUtility.cc,v 1.7 2009/07/21 17:33:28 vlimant Exp $
+// $Id: MuonHLTTreeUtility.cc,v 1.8 2009/07/22 15:30:31 klukas Exp $
 //
 //
 
@@ -448,6 +448,8 @@ private:
   std::string diMuIsoTriggerName;
   std::string diMuNonIsoTriggerName; 
 
+  std::string outputFileName;
+
   edm::InputTag l1Label;
   edm::InputTag l2Label;
   edm::InputTag l3Label;
@@ -532,6 +534,8 @@ MuonHLTTreeUtility::MuonHLTTreeUtility(const edm::ParameterSet& iConfig):
 {
 
   edm::LogInfo("MuonHLTTreeUtility") << "into the constructor.";
+
+  outputFileName = iConfig.getUntrackedParameter<std::string>("outputFileName");
 
   l1Label = iConfig.getParameter<edm::InputTag>("l1MuonLabel");
   l2Label = iConfig.getParameter<edm::InputTag>("l2MuonLabel");
@@ -2418,7 +2422,7 @@ void
 MuonHLTTreeUtility::beginJob(const edm::EventSetup&)
 {
 
-  theFile = new TFile("HLTMuonTree.root","recreate");
+  theFile = new TFile(outputFileName.c_str(),"recreate");
   theFile->cd();
   
   MuTrigData = new TTree("MuTrigData","MuTrigData");

@@ -1,6 +1,7 @@
 import FWCore.ParameterSet.Config as cms
 
 hltMuonTreeMaker = cms.EDAnalyzer("MuonHLTTreeUtility",
+    outputFileName = cms.untracked.string("HLTMuonTree.root"),
     trackExtractorPSet = cms.PSet(
         Diff_z = cms.double(0.2),
         inputTrackCollection = cms.InputTag("hltPixelTracks"),
