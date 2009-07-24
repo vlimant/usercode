@@ -86,7 +86,7 @@ class StringLeaveHelper {
       //empty vector if product not found
       if (oH.failedToGet()){
 	edm::LogError("StringBranchHelper")<<"cannot open: "<<B.src();
-	std::auto_ptr<std::vector<float> > ret(new std::vector<float>());
+	value_.reset(new std::vector<float>(0));
       }
       else{
 	//parser for the object expression
@@ -120,7 +120,7 @@ public:
       //empty vector if product not found
       if (oH.failedToGet()){
 	edm::LogError("StringBranchHelper")<<"cannot open: "<<B.src();
-	std::auto_ptr<std::vector<float> > ret(new std::vector<float>());
+	value_.reset(new std::vector<float>());
       }
       else{
 	//parser for the object expression
