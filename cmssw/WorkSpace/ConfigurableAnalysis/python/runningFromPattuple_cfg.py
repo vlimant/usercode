@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 
-process = cms.Process("PAT")
+process = cms.Process("PATfb")
 
 # initialize MessageLogger and output report
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
@@ -21,18 +21,20 @@ process.source = cms.Source("PoolSource",
      fileNames = cms.untracked.vstring(
    # 'file:/afs/cern.ch/cms/PRS/top/cmssw-data/relval200-for-pat-testing/FullSimTTBar-2_1_X_2008-07-08_STARTUP_V4-AODSIM.100.root'
 #  'file:/afs/cern.ch/user/h/hegner/scratch0/PAT/testPatTuple_recHits_221.root'  
-"rfio:/castor/cern.ch/user/f/fronga/data/SUSY_LM0_229_SUSYPAT_V5_v1-patLayer1_1.root"
+#"rfio:/castor/cern.ch/user/f/fronga/data/SUSY_LM0_229_SUSYPAT_V5_v1-patLayer1_1.root"
+"rfio:/castor/cern.ch/user/b/bostock/Validation3/PATLayer1_Output_fromAOD_3_1_2_pho_1.root"
 #'/store/relval/CMSSW_2_2_3/RelValLM1_sfts/GEN-SIM-RECO/IDEAL_V11_v4/0003/4E82B5E1-BFCB-DD11-AEA2-001D09F24D8A.root'
 #POOLSOURCE
     )
 )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100))
 #process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(MAXEVENTS) )
 
 process.load("Configuration.StandardSequences.Geometry_cff")
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 #process.GlobalTag.globaltag = cms.string('STARTUP_V4::All')
-process.GlobalTag.globaltag = 'IDEAL_V11::All'
+#process.GlobalTag.globaltag = 'IDEAL_V11::All'
+process.GlobalTag.globaltag = cms.string('MC_31X_V1::All')
 process.load('Configuration/StandardSequences/MagneticField_38T_cff')
 #process.load("Configuration.StandardSequences.MagneticField_cff")
 

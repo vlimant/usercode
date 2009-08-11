@@ -702,13 +702,13 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
         )
     ),
     Variables = cms.PSet(
-        TriggerPSets,
+        TriggerPSets#,
 
-        L1Bit = cms.PSet(
-            src = cms.InputTag("hltGtDigis"),
-            method = cms.string('ComputedVariable'),
-            computer = cms.string('L1BitComputer')
-            )#,
+#        L1Bit = cms.PSet(
+#            src = cms.InputTag("hltGtDigis"),
+#            method = cms.string('ComputedVariable'),
+#            computer = cms.string('L1BitComputer')
+#            )#,
 
      #   csaWeight = cms.PSet(
      #       src = cms.InputTag("csaweightproducer","weight"),
@@ -725,16 +725,19 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
     flows = cms.vstring('minSelection'),
     InputTags = cms.PSet(
         genParticles = cms.InputTag("genParticles"),
-        mets = cms.InputTag("selectedLayer1METs"),
+#        mets = cms.InputTag("selectedLayer1METs"),
+        mets = cms.InputTag("layer1METs"),
         genMuons = cms.InputTag("genMuons"),
-        ccjets = cms.InputTag("patcrosscleaner","ccJets"),
+#        ccjets = cms.InputTag("patcrosscleaner","ccJets"),
         genElectrons = cms.InputTag("genElectrons"),
-        electrons = cms.InputTag("selectedLayer1Electrons"),
-        ccmets = cms.InputTag("patcrosscleaner","ccMETs"),
-        muons = cms.InputTag("selectedLayer1Muons"),
-        jets = cms.InputTag("selectedLayer1Jets"),
-        ccmuons = cms.InputTag("patcrosscleaner","ccMuons"),
-        ccelectrons = cms.InputTag("patcrosscleaner","ccElectrons"),
+        electrons = cms.InputTag("cleanLayer1Electrons"),#changed from allLayer1Electrons
+#        ccmets = cms.InputTag("patcrosscleaner","ccMETs"),
+#        muons = cms.InputTag("selectedLayer1Muons"),
+        muons = cms.InputTag("cleanLayer1Muons"),#changed from allLayer1Muons
+#        jets = cms.InputTag("allLayer1JetsIC5"),#changed to line below 
+        jets = cms.InputTag("cleanLayer1Jets"),
+#        ccmuons = cms.InputTag("patcrosscleaner","ccMuons"),
+#        ccelectrons = cms.InputTag("patcrosscleaner","ccElectrons"),
         genJets = cms.InputTag("iterativeCone5GenJetsNoNuBSM")
     ),
     Ntupler = cms.PSet(
@@ -742,7 +745,7 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
             treeName = cms.string('eventB'),
 
             pv = cms.PSet(
-                 src = cms.InputTag("offlinePrimaryVertices"),
+                src = cms.InputTag("offlinePrimaryVertices"),
                  leaves = cms.PSet(
                        vars = cms.vstring(
                           'x:x',
@@ -757,9 +760,8 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
            ),
 
 
-
-            beamSpot = cms.PSet(
-            src = cms.InputTag("offlineBeamSpot"),
+           beamSpot = cms.PSet(  
+           src = cms.InputTag("offlineBeamSpot"),
             leaves = cms.PSet(
                 vars = cms.vstring(
                      'x:position.x',
@@ -774,8 +776,12 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
                      'dxdzError:dxdzError',
                      'dydz:dydz',
                      'dydzError:dydzError',
-                     'beamWidth:BeamWidth',
-                     'beamWidthError:BeamWidthError'
+                     'beamWidthX:BeamWidthX',#addedFB
+                     'beamWidthY:BeamWidthY',#addedFB
+                     #'beamWidth:BeamWidth',
+                     'beamWidthXError:BeamWidthXError',#addedFB
+                     'beamWidthYError:BeamWidthYError'#addedFB
+                     #'beamWidthError:BeamWidthError'
                        )
                 ),
             Class = cms.string('reco::BeamSpot')
@@ -784,13 +790,13 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
 
 
 
-            hemi = cms.PSet(
-                src = cms.InputTag("selectedLayer1Hemispheres"),
-                leaves = cms.PSet(
-                    basicKinematicLeaves
-                ),
-                Class = cms.string('pat::Hemisphere')
-            ),
+#            hemi = cms.PSet(
+#                src = cms.InputTag("allLayer1Hemispheres"),
+#                leaves = cms.PSet(
+#                    basicKinematicLeaves
+#                ),
+#                Class = cms.string('pat::Hemisphere')
+#            ),
             mus = cms.PSet(
                 src = cms.string('muons'),
                 leaves = cms.PSet(
@@ -924,9 +930,31 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
                 ),
                 Class = cms.string('pat::Muon')
             ),
-            mets = cms.PSet(
-                src = cms.InputTag("selectedLayer1METs"),
-                leaves = cms.PSet(
+
+
+
+#            mets_SC5 = cms.PSet(
+#                src = cms.InputTag("allLayer1METsSC5"),
+#                leaves = cms.PSet(
+#                    vars = cms.vstring('et:et', 
+#                        'phi:phi', 
+#                        'ex:px', 
+#                        'ey:py', 
+#                        'gen_et:genMET.et', 
+#                        'gen_phi:genMET.phi', 
+#                        'sumEt:sumEt', 
+#                        'unCPhi:uncorrectedPhi', 
+#                        'unCPt:uncorrectedPt')
+#                ),
+#                Class = cms.string('pat::MET')
+#            ),
+
+
+
+                 mets = cms.PSet(
+#                src = cms.InputTag("allLayer1METsIC5"),#vhanged to line below
+                  src = cms.InputTag("layer1METs"),
+                   leaves = cms.PSet(
                     vars = cms.vstring('et:et', 
                         'phi:phi', 
                         'ex:px', 
@@ -940,33 +968,33 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
                 ),
                 Class = cms.string('pat::MET')
             ),
-
-            tcmets = cms.PSet(
-                  src = cms.InputTag("tcMet"),
-                  leaves = cms.PSet(
-                      vars = cms.vstring('et:et',
-                                         'phi:phi',
-                                         'ex:px',
-                                         'ey:py',
-                                         'sumEt:sumEt',
-                                         )
-                      ),
-                  Class = cms.string('reco::MET')
-            ),
+#57
+#            tcmets = cms.PSet(
+#                  src = cms.InputTag("allLayer1METstcMET"),
+#                  leaves = cms.PSet(
+#                      vars = cms.vstring('et:et',
+#                                         'phi:phi',
+#                                         'ex:px',
+#                                         'ey:py',
+#                                         'sumEt:sumEt',
+#                                         )
+#                      ),
+#                  Class = cms.string('pat::MET')
+#            ),
                                                                         
 
-            ccjets = cms.PSet(
-                src = cms.string('ccjets'),
-                leaves = cms.PSet(
-                    basicKinematicLeaves,
-
-                    vars = cms.vstring(#'energy:energy', 
-                        'mass:mass')
-                ),
-                Class = cms.string('pat::Jet')
-            ),
+#            ccjets = cms.PSet(
+#                src = cms.string('ccjets'),
+#                leaves = cms.PSet(
+#                    basicKinematicLeaves,
+#
+#                    vars = cms.vstring(#'energy:energy', 
+#                        'mass:mass')
+#                ),
+#                Class = cms.string('pat::Jet')
+#            ),
             photons = cms.PSet(
-                src = cms.InputTag("selectedLayer1Photons"),
+                src = cms.InputTag("cleanLayer1Photons"),#clean<=>all
                 leaves = cms.PSet(
                     basicKinematicLeaves,
                     vars= cms.vstring('hadOverEM:hadronicOverEm',
@@ -979,23 +1007,48 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
                                       'tIso:trackIso',
                                       'ecalIso:ecalIso',
                                       'hcalIso:hcalIso',
-                                      'isoEcalRecHit:isolationEcalRecHit',
-                                      'isoHcalRecHit:isolationHcalRecHit',
-                                      'isoSolidTrkCone:isolationSolidTrkCone',
-                                      'isoHollowTrkCone:isolationHollowTrkCone',
-                                      'nTrkSolidCone:nTrkSolidCone',
-                                      'nTrkHollowCone:nTrkHollowCone',
-                                      'isAlsoElectron:isAlsoElectron',
+                                      
+                                      #'isoEcalRecHit:isolationEcalRecHit',
+                                      #'isoHcalRecHit:isolationHcalRecHit',
+                                      #'isoSolidTrkCone:isolationSolidTrkCone',
+                                      #'isoHollowTrkCone:isolationHollowTrkCone',
+                                      #'nTrkSolidCone:nTrkSolidCone',
+                                      #'nTrkHollowCone:nTrkHollowCone',
+                                      
+                                      'isoEcalRecHitDR04:ecalRecHitSumEtConeDR04',
+                                      'isoHcalRecHitDR04:hcalTowerSumEtConeDR04',
+                                      'isoSolidTrkConeDR04:trkSumPtSolidConeDR04',
+                                      'isoHollowTrkConeDR04:trkSumPtHollowConeDR04',
+                                      'nTrkSolidConeDR04:nTrkSolidConeDR04',
+                                      'nTrkHollowConeDR04:nTrkSolidConeDR04',
+                                      'isoEcalRecHitDR03:ecalRecHitSumEtConeDR03',
+                                      'isoHcalRecHitDR03:hcalTowerSumEtConeDR03',
+                                      'isoSolidTrkConeDR03:trkSumPtSolidConeDR03',
+                                      'isoHollowTrkConeDR03:trkSumPtHollowConeDR03',
+                                      'nTrkSolidConeDR03:nTrkSolidConeDR03',
+                                      'nTrkHollowConeDR03:nTrkSolidConeDR03',
+                                      
+
+                                      #'isAlsoElectron:isAlsoElectron',
+                                      'isAlsoElectron:isElectron',
+                                      
                                       'hasPixelSeed:hasPixelSeed',
-                                      'isConverted:isConverted',
+                                      #'isConverted:isConverted',
+                                      'isConverted:isConvertedPhoton',
                                       'isEBGap:isEBGap',
                                       'isEEGap:isEEGap',
                                       'isEBEEGap:isEBEEGap',
-                                      'isEBPho:isEBPho',
-                                      'isEEPho:isEEPho',
-                                      'isLooseEM:isLooseEM',
-                                      'isLoosePhoton:isLoosePhoton',
-                                      'isTightPhoton:isTightPhoton',
+                                      'isEBPho:isEB',#changed from isEBPho
+                                      'isEEPho:isEE',#changed from isEEPho
+                                      #'isLooseEM:isLooseEM',
+                                      #'isLoosePhoton:isLoosePhoton',
+                                      #'isTightPhoton:isTightPhoton',
+                                      'isLoosePhoton:photonID("PhotonCutBasedIDLoose")',
+                                      'isTightPhoton:photonID("PhotonCutBasedIDLoose")',
+                                      #Currently (28-07) all photons are defined as LooseEM, but this will be added again as
+                                      # they are going to relax pre-selection cuts on the photon 
+                                      #'isLooseEM:photonID()',
+                                      
                                       'r9:r9',
                                       'gen_et:genPhoton.et',
                                       'gen_eta:genPhoton.eta',
@@ -1061,6 +1114,7 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
                         'numOfDaughters:numberOfDaughters')
                 ),
                 selection = cms.string('status!=3 & (pdgId=13 | pdgId=-13) & pt>10'),
+#                selection = cms.string('status!=3 & (pdgId=13 | pdgId=-13)'),
                 Class = cms.string('reco::GenParticle')
             ),
             mc_electrons = cms.PSet(
@@ -1088,6 +1142,7 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
                         'numOfDaughters:numberOfDaughters')
                 ),
                 selection = cms.string('status!=3 & (pdgId=11 | pdgId=-11) & pt>10'),
+#                selection = cms.string('status!=3 & (pdgId=11 | pdgId=-11)'),
                 Class = cms.string('reco::GenParticle')
             ),
 #            L1Triggerbits = cms.PSet(
@@ -1132,7 +1187,7 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
                         'outerHitY:outerPosition.y', 
                         'outerHitZ:outerPosition.z',
                         'highPurity:quality("highPurity")'
-                        )
+                                       )
                 ),
                 Class = cms.string('reco::Track')
             ),
@@ -1188,7 +1243,9 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
                         'dPhiOut:deltaPhiSeedClusterTrackAtCalo', 
                         'numvalhits:gsfTrack.numberOfValidHits', 
                         'numlosthits:gsfTrack.numberOfLostHits', 
-                        'numCluster:numberOfClusters', 
+                        #'numCluster:numberOfClusters', 
+                        'basicClustersSize:basicClustersSize',
+                        
                         'tk_pt:gsfTrack.pt', 
                         'tk_phi:gsfTrack.phi', 
                         'tk_eta:gsfTrack.eta', 
@@ -1217,6 +1274,86 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
                 ),
                 Class = cms.string('pat::Electron')
             ),
+
+
+
+#            jets_SC5 = cms.PSet(
+#                src = cms.InputTag("allLayer1JetsSC5"),
+#                leaves = cms.PSet(
+#                    basicKinematicLeaves,
+#                    vars = cms.vstring('parton_Id:genParton.pdgId',
+#                        'parton_motherId:genParton.mother.pdgId', 
+#                        'parton_pt:genParton.pt', 
+#                        'parton_phi:genParton.phi', 
+#                        'parton_eta:genParton.eta', 
+#                        'parton_Energy:genParton.energy', 
+#                        'parton_mass:genParton.mass',  
+#                        'parton_motherID:genParton.mother.pdgId',
+##                        'parton_grandmotherID:genParton.mother.mother.pdgId',
+#                        'gen_et:genJet.et', 
+#                        'gen_pt:genJet.pt', 
+#                        'gen_eta:genJet.eta', 
+#                        'gen_phi:genJet.phi', 
+#                        'gen_mass:genJet.mass', 
+#                        'gen_Energy:genJet.energy', 
+#                        'gen_Id:genJet.pdgId', 
+#                        'gen_motherID:genJet.mother.pdgId', 
+#                        'gen_threeCharge:genJet.threeCharge',
+#                        'partonFlavour:partonFlavour',  #TL add
+#                        'btag_TC_highPur:bDiscriminator("trackCountingHighPurBJetTags")', # TL add: b-tagging info (9lines)
+#                        'btag_TC_highEff:bDiscriminator("trackCountingHighEffBJetTags")',
+#                        'btag_jetProb:bDiscriminator("jetProbabilityBJetTags")',
+#                        'btag_jetBProb:bDiscriminator("jetBProbabilityBJetTags")',
+#                        'btag_softEle:bDiscriminator("softElectronBJetTags")',
+#                        'btag_softMuon:bDiscriminator("softMuonBJetTags")',
+#                        'btag_softMuonNoIP:bDiscriminator("softMuonNoIPBJetTags")',
+#                        'btag_secVertex:bDiscriminator("simpleSecondaryVertexBJetTags")',
+#                        #'btag_combinedSV_likelihood:bDiscriminator("combinedSVBJetTags")', #more sophisticated btagging
+#                       #'btag_combinedSV_MVA:bDiscriminator("combinedSVMVABJetTags")',
+#                                       
+#                        'chgEmE:chargedEmEnergy', 
+#                        'chgHadE:chargedHadronEnergy', 
+#                        'chgMuE:chargedMuEnergy', 
+#                        'chg_Mult:chargedMultiplicity', 
+#                        'neutralEmE:neutralEmEnergy', 
+#                        'neutralHadE:neutralHadronEnergy', 
+#                        'neutral_Mult:neutralMultiplicity', 
+#                        'mu_Mult:muonMultiplicity', 
+###                        'corr_fctr_def:correctionFactor(1)', 
+###                        'corr_fctr_b:correctionFactor(4)', 
+#                        'emf:emEnergyFraction', 
+#                        'ehf:energyFractionHadronic', 
+#                        'n60:n60', 
+#                        'n90:n90', 
+#                        'area:towersArea', 
+##                        'max_em:maxEInEmTowers#', 
+##                        'max_had:maxEInHadTowers', 
+##                        'Energy:energy', 
+#                        'mass:mass'#,
+##                        'nC_Energy:noCorrJet.energy',
+##			'nC_mass:noCorrJet.mass',
+##			'nC_et:noCorrJet.et',
+##			'nC_pt:noCorrJet.pt',
+##			'nC_px:noCorrJet.px',
+##			'nC_py:noCorrJet.py',	
+##			'nC_pz:noCorrJet.pz',	
+##			'nC_eta:noCorrJet.eta',	
+##			'nC_phi:noCorrJet.phi'#,	
+#			#'nC_theta:noCorrJet.theta'
+#			#'nC_emf:noCorrJet.emEnergyFraction',
+#                        #'nC_ehf:noCorrJet.energyFractionHadronic',
+#                        #'nC_n60:noCorrJet.n60',
+#                        #'nC_n90:noCorrJet.n90',
+#                        #'nC_area:noCorrJet.towersArea',
+#                        #'nC_max_em:noCorrJet.maxEInEmTowers',
+#                        #'nC_max_had:noCorrJet.maxEInHadTowers'               
+#                                       )
+#                ),
+#                Class = cms.string('pat::Jet')
+#            ),#
+
+
+
             jets = cms.PSet(
                 src = cms.string('jets'),
                 leaves = cms.PSet(
@@ -1239,7 +1376,7 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
                         'gen_Id:genJet.pdgId', 
                         'gen_motherID:genJet.mother.pdgId', 
                         'gen_threeCharge:genJet.threeCharge',
-                        'partonFlavour:partonFlavour', # TL add
+                        'partonFlavour:partonFlavour',  #TL add
                         'btag_TC_highPur:bDiscriminator("trackCountingHighPurBJetTags")', # TL add: b-tagging info (9lines)
                         'btag_TC_highEff:bDiscriminator("trackCountingHighEffBJetTags")',
                         'btag_jetProb:bDiscriminator("jetProbabilityBJetTags")',
@@ -1290,32 +1427,32 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
                                        )
                 ),
                 Class = cms.string('pat::Jet')
-            ),
-            ccmuons = cms.PSet(
-                src = cms.string('ccmuons'),
-                leaves = cms.PSet(
-                    basicKinematicLeaves
-                ),
-                Class = cms.string('pat::Muon')
-            ),
-            ccelectrons = cms.PSet(
-                src = cms.string('ccelectrons'),
-                leaves = cms.PSet(
-                    basicKinematicLeaves
-                ),
-                Class = cms.string('pat::Electron')
-            ),
-            ccmets = cms.PSet(
-                src = cms.string('ccmets'),
-                leaves = cms.PSet(
-                    vars = cms.vstring('et:et', 
-                        'phi:phi', 
-                        'px:px', 
-                        'py:py', 
-                        'status:status')
-                ),
-                Class = cms.string('pat::MET')
-            )
+            )#,
+#            ccmuons = cms.PSet(
+#                src = cms.string('ccmuons'),
+#                leaves = cms.PSet(
+#                    basicKinematicLeaves
+#                ),
+#                Class = cms.string('pat::Muon')
+#            ),
+#            ccelectrons = cms.PSet(
+#                src = cms.string('ccelectrons'),
+#                leaves = cms.PSet(
+#                    basicKinematicLeaves
+#                ),
+#                Class = cms.string('pat::Electron')
+#            ),
+#            ccmets = cms.PSet(
+#                src = cms.string('ccmets'),
+#                leaves = cms.PSet(
+#                    vars = cms.vstring('et:et', 
+#                        'phi:phi', 
+#                        'px:px', 
+#                        'py:py', 
+#                        'status:status')
+#                ),
+#                Class = cms.string('pat::MET')
+#            )
          ),
         ComponentName = cms.string('CompleteNTupler'),
         useTFileService = cms.bool(True), ## false for EDM; true for non EDM
