@@ -14,7 +14,7 @@
 //
 // Original Author:  "Thomas Danielson"
 //         Created:  Thu May  8 12:05:03 CDT 2008
-// $Id: MuonHLTTreeUtility.cc,v 1.8 2009/07/22 15:30:31 klukas Exp $
+// $Id: MuonHLTTreeUtility.cc,v 1.9 2009/07/22 15:40:02 klukas Exp $
 //
 //
 
@@ -874,6 +874,7 @@ void MuonHLTTreeUtility::analyze(const edm::Event& iEvent, const edm::EventSetup
 
   iEvent.getByLabel(l1Label,l1Muons);
   iEvent.getByLabel(l2Label,l2Muons);
+  if (l2Muons.failedToGet()) edm::LogInfo("MuonHLTTreeUtility") << "Failed to get L2.";
   iEvent.getByLabel(l3Label,l3Muons);
   iEvent.getByLabel(trackLabel,l3MuonTracks);
   iEvent.getByLabel(candLabel,l3MuonCands);
@@ -921,9 +922,28 @@ void MuonHLTTreeUtility::analyze(const edm::Event& iEvent, const edm::EventSetup
 
   // Begin entering muon quantities.  Number of muons at each level.
   // These will be the loop limits over L1, L2, and L3.
-  nL1 = l1Muons->size();
-  nL2 = l2Muons->size();
-  nL3 = l3Muons->size();
+  if (!l1Muons.failedToGet()) {
+    nL1 = l1Muons->size();
+  }
+  else {
+    nL1 = -1;
+    edm::LogInfo("MuonHLTTreeUtility") << "no L1";
+  }
+  if (!l2Muons.failedToGet()) {
+    nL2 = l2Muons->size();
+  }
+  else {
+    nL2 = -1;
+    edm::LogInfo("MuonHLTTreeUtility") << "no L2";
+  }
+  if (!l3Muons.failedToGet()) {
+    nL3 = l3Muons->size();
+  }
+  else {
+    nL3 = -1;
+    edm::LogInfo("MuonHLTTreeUtility") << "no L3";
+  }
+
   if (!l3MuonTracks.failedToGet()) {
     nL3TracksFromL2 = l3MuonTracks->size();
   }
@@ -952,7 +972,7 @@ void MuonHLTTreeUtility::analyze(const edm::Event& iEvent, const edm::EventSetup
   caloDepositExtractor->fillVetos(iEvent,iSetup,*l2Muons);
   trackDepositExtractor->fillVetos(iEvent,iSetup,*l3Muons);
 
-  edm::LogInfo("MuonHLTTreeUtility") << "vetoe filled";
+  edm::LogInfo("MuonHLTTreeUtility") << "vetoes filled";
 
   reco::IsoDeposit::Vetos trackVetos;
   typedef std::vector< std::pair<reco::TrackRef,reco::IsoDeposit> > MuonsWithDeposits;
@@ -1353,19 +1373,28 @@ void MuonHLTTreeUtility::analyze(const edm::Event& iEvent, const edm::EventSetup
 				    field.product());
 		  TSCBLBuilderNoMaterial tscblBuilder;
 		  TrajectoryStateClosestToBeamLine tsAtClosestApproach = tscblBuilder(ftsAtProduction,bs);//as in TrackProducerAlgorithm
-		  GlobalPoint v1 = tsAtClosestApproach.trackStateAtPCA().position();
-		  GlobalVector p = tsAtClosestApproach.trackStateAtPCA().momentum();
-		  GlobalPoint v(v1.x()-bs.x0(),v1.y()-bs.y0(),v1.z()-bs.z0());
+		  if (tsAtClosestApproach.isValid()) {
+		    GlobalPoint v1 = tsAtClosestApproach.trackStateAtPCA().position();
+		    GlobalVector p = tsAtClosestApproach.trackStateAtPCA().momentum();
+		    GlobalPoint v(v1.x()-bs.x0(),v1.y()-bs.y0(),v1.z()-bs.z0());
 		  
-		  double qoverpSim = tsAtClosestApproach.trackStateAtPCA().charge()/p.mag();
-		  double lambdaSim = M_PI/2-p.theta();
-		  double dxySim    = (-v.x()*sin(p.phi())+v.y()*cos(p.phi()));
-		  double dzSim     = v.z() - (v.x()*p.x()+v.y()*p.y())/p.perp() * p.z()/p.perp();
-		  
-		  (*l3AssociatedSimMuonDsz).push_back(dzSim);
-		  (*l3AssociatedSimMuonDxy).push_back(dxySim);
-		  (*l3AssociatedSimMuonLambda).push_back(lambdaSim);
-		  (*l3AssociatedSimMuonQoverP).push_back(qoverpSim);
+		    double qoverpSim = tsAtClosestApproach.trackStateAtPCA().charge()/p.mag();
+		    double lambdaSim = M_PI/2-p.theta();
+		    double dxySim    = (-v.x()*sin(p.phi())+v.y()*cos(p.phi()));
+		    double dzSim     = v.z() - (v.x()*p.x()+v.y()*p.y())/p.perp() * p.z()/p.perp();
+		    
+		    (*l3AssociatedSimMuonDsz).push_back(dzSim);
+		    (*l3AssociatedSimMuonDxy).push_back(dxySim);
+		    (*l3AssociatedSimMuonLambda).push_back(lambdaSim);
+		    (*l3AssociatedSimMuonQoverP).push_back(qoverpSim);
+		  }
+
+		  else {
+		    (*l3AssociatedSimMuonDsz).push_back(-999);
+                    (*l3AssociatedSimMuonDxy).push_back(-999);
+                    (*l3AssociatedSimMuonLambda).push_back(-999);
+                    (*l3AssociatedSimMuonQoverP).push_back(-999);
+		  }
 
 		  //calculate mother hood
 		  MotherSearch mother(&*isimtk, SimTk, SimVtx, hepmc);
@@ -1562,20 +1591,30 @@ void MuonHLTTreeUtility::analyze(const edm::Event& iEvent, const edm::EventSetup
 				    field.product());
 		  TSCBLBuilderNoMaterial tscblBuilder;
 		  TrajectoryStateClosestToBeamLine tsAtClosestApproach = tscblBuilder(ftsAtProduction,bs);//as in TrackProducerAlgorithm
-		  GlobalPoint v1 = tsAtClosestApproach.trackStateAtPCA().position();
-		  GlobalVector p = tsAtClosestApproach.trackStateAtPCA().momentum();
-		  GlobalPoint v(v1.x()-bs.x0(),v1.y()-bs.y0(),v1.z()-bs.z0());
+		  if (tsAtClosestApproach.isValid()) {
+		    GlobalPoint v1 = tsAtClosestApproach.trackStateAtPCA().position();
+		    GlobalVector p = tsAtClosestApproach.trackStateAtPCA().momentum();
+		    GlobalPoint v(v1.x()-bs.x0(),v1.y()-bs.y0(),v1.z()-bs.z0());
+		    
+		    double qoverpSim = tsAtClosestApproach.trackStateAtPCA().charge()/p.mag();
+		    double lambdaSim = M_PI/2-p.theta();
+		    double dxySim    = (-v.x()*sin(p.phi())+v.y()*cos(p.phi()));
+		    double dzSim     = v.z() - (v.x()*p.x()+v.y()*p.y())/p.perp() * p.z()/p.perp();
+		    
+		    (*l3TrackAssociatedSimMuonDsz).push_back(dzSim);
+		    (*l3TrackAssociatedSimMuonDxy).push_back(dxySim);
+		    (*l3TrackAssociatedSimMuonLambda).push_back(lambdaSim);
+		    (*l3TrackAssociatedSimMuonQoverP).push_back(qoverpSim);
+		  }		  
 		  
-		  double qoverpSim = tsAtClosestApproach.trackStateAtPCA().charge()/p.mag();
-		  double lambdaSim = M_PI/2-p.theta();
-		  double dxySim    = (-v.x()*sin(p.phi())+v.y()*cos(p.phi()));
-		  double dzSim     = v.z() - (v.x()*p.x()+v.y()*p.y())/p.perp() * p.z()/p.perp();
-		  
-		  (*l3TrackAssociatedSimMuonDsz).push_back(dzSim);
-		  (*l3TrackAssociatedSimMuonDxy).push_back(dxySim);
-		  (*l3TrackAssociatedSimMuonLambda).push_back(lambdaSim);
-		  (*l3TrackAssociatedSimMuonQoverP).push_back(qoverpSim);
-		  
+		  else {
+                    (*l3TrackAssociatedSimMuonDsz).push_back(-999);
+                    (*l3TrackAssociatedSimMuonDxy).push_back(-999);
+                    (*l3TrackAssociatedSimMuonLambda).push_back(-999);
+                    (*l3TrackAssociatedSimMuonQoverP).push_back(-999);
+                  }
+
+
 		  //calculate mother hood
 		  MotherSearch mother(&*isimtk, SimTk, SimVtx, hepmc);
 		  //FIXME, use reco::Particle mother.mother();
@@ -1907,19 +1946,29 @@ void MuonHLTTreeUtility::analyze(const edm::Event& iEvent, const edm::EventSetup
 				    field.product());
 		  TSCBLBuilderNoMaterial tscblBuilder;
 		  TrajectoryStateClosestToBeamLine tsAtClosestApproach = tscblBuilder(ftsAtProduction,bs);//as in TrackProducerAlgorithm
-		  GlobalPoint v1 = tsAtClosestApproach.trackStateAtPCA().position();
-		  GlobalVector p = tsAtClosestApproach.trackStateAtPCA().momentum();
-		  GlobalPoint v(v1.x()-bs.x0(),v1.y()-bs.y0(),v1.z()-bs.z0());
-		  
-		  double qoverpSim = tsAtClosestApproach.trackStateAtPCA().charge()/p.mag();
-		  double lambdaSim = M_PI/2-p.theta();
-		  double dxySim    = (-v.x()*sin(p.phi())+v.y()*cos(p.phi()));
-		  double dzSim     = v.z() - (v.x()*p.x()+v.y()*p.y())/p.perp() * p.z()/p.perp();
-		  
-		  (*l2AssociatedSimMuonDsz).push_back(dzSim);
-		  (*l2AssociatedSimMuonDxy).push_back(dxySim);
-		  (*l2AssociatedSimMuonLambda).push_back(lambdaSim);
-		  (*l2AssociatedSimMuonQoverP).push_back(qoverpSim);
+		  if (tsAtClosestApproach.isValid()) {
+		    GlobalPoint v1 = tsAtClosestApproach.trackStateAtPCA().position();
+		    GlobalVector p = tsAtClosestApproach.trackStateAtPCA().momentum();
+		    GlobalPoint v(v1.x()-bs.x0(),v1.y()-bs.y0(),v1.z()-bs.z0());
+		    
+		    double qoverpSim = tsAtClosestApproach.trackStateAtPCA().charge()/p.mag();
+		    double lambdaSim = M_PI/2-p.theta();
+		    double dxySim    = (-v.x()*sin(p.phi())+v.y()*cos(p.phi()));
+		    double dzSim     = v.z() - (v.x()*p.x()+v.y()*p.y())/p.perp() * p.z()/p.perp();
+		    
+		    (*l2AssociatedSimMuonDsz).push_back(dzSim);
+		    (*l2AssociatedSimMuonDxy).push_back(dxySim);
+		    (*l2AssociatedSimMuonLambda).push_back(lambdaSim);
+		    (*l2AssociatedSimMuonQoverP).push_back(qoverpSim);
+		  }
+                  else {
+                    (*l2AssociatedSimMuonDsz).push_back(-999);
+                    (*l2AssociatedSimMuonDxy).push_back(-999);
+                    (*l2AssociatedSimMuonLambda).push_back(-999);
+                    (*l2AssociatedSimMuonQoverP).push_back(-999);
+                  }
+
+
 		  //calculate mother hood
 		  MotherSearch mother(&*isimtk, SimTk, SimVtx, hepmc);
 		  //FIXME, use reco::Particle mother.mother();
@@ -2064,19 +2113,29 @@ void MuonHLTTreeUtility::analyze(const edm::Event& iEvent, const edm::EventSetup
 			  field.product());
 	TSCBLBuilderNoMaterial tscblBuilder;
 	TrajectoryStateClosestToBeamLine tsAtClosestApproach = tscblBuilder(ftsAtProduction,bs);//as in TrackProducerAlgorithm
-	GlobalPoint v1 = tsAtClosestApproach.trackStateAtPCA().position();
-	GlobalVector p = tsAtClosestApproach.trackStateAtPCA().momentum();
-	GlobalPoint v(v1.x()-bs.x0(),v1.y()-bs.y0(),v1.z()-bs.z0());
-	
-	double qoverpSim = tsAtClosestApproach.trackStateAtPCA().charge()/p.mag();
-	double lambdaSim = M_PI/2-p.theta();
-	double dxySim    = (-v.x()*sin(p.phi())+v.y()*cos(p.phi()));
-	double dzSim     = v.z() - (v.x()*p.x()+v.y()*p.y())/p.perp() * p.z()/p.perp();
-	
-	(*simMuonDsz).push_back(dzSim);
-	(*simMuonDxy).push_back(dxySim);
-	(*simMuonLambda).push_back(lambdaSim);
-	(*simMuonQoverP).push_back(qoverpSim);
+	if (tsAtClosestApproach.isValid()) {
+	  GlobalPoint v1 = tsAtClosestApproach.trackStateAtPCA().position();
+	  GlobalVector p = tsAtClosestApproach.trackStateAtPCA().momentum();
+	  GlobalPoint v(v1.x()-bs.x0(),v1.y()-bs.y0(),v1.z()-bs.z0());
+	  
+	  double qoverpSim = tsAtClosestApproach.trackStateAtPCA().charge()/p.mag();
+	  double lambdaSim = M_PI/2-p.theta();
+	  double dxySim    = (-v.x()*sin(p.phi())+v.y()*cos(p.phi()));
+	  double dzSim     = v.z() - (v.x()*p.x()+v.y()*p.y())/p.perp() * p.z()/p.perp();
+	  
+	  (*simMuonDsz).push_back(dzSim);
+	  (*simMuonDxy).push_back(dxySim);
+	  (*simMuonLambda).push_back(lambdaSim);
+	  (*simMuonQoverP).push_back(qoverpSim);
+	}
+	else {
+	  (*simMuonDsz).push_back(-999);
+	  (*simMuonDxy).push_back(-999);
+	  (*simMuonLambda).push_back(-999);
+	  (*simMuonQoverP).push_back(-999);
+	}
+
+
 	//calculate mother hood
 	MotherSearch mother(&*isimtk, SimTk, SimVtx, hepmc);
 	if (mother.IsValid()){

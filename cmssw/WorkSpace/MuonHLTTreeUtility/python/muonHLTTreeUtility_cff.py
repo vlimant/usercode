@@ -59,17 +59,17 @@ tkSimDigiLinkAreThere = cms.EDFilter("IsProductAvailable",
                                      src = cms.InputTag('')
                                      )
 from SimTracker.Configuration.SimTracker_cff import *
-#from IOMC.RandomEngine.IOMC_cff import *
+from IOMC.RandomEngine.IOMC_cff import *
 RandomNumberGeneratorService = cms.Service("RandomNumberGeneratorService",
                                            restoreStateLabel = cms.untracked.string('randomEngineStateProducer'),
                                            simSiPixelDigis = cms.PSet(
-                                             initialSeed = cms.untracked.uint32(1234567),
-                                             engineName = cms.untracked.string('HepJamesRandom')
-                                             ),
+    initialSeed = cms.untracked.uint32(1234567),
+    engineName = cms.untracked.string('HepJamesRandom')
+    ),
                                            simSiStripDigis = cms.PSet(
-                                             initialSeed = cms.untracked.uint32(1234567),
-                                             engineName = cms.untracked.string('HepJamesRandom')
-                                             )
+    initialSeed = cms.untracked.uint32(1234567),
+    engineName = cms.untracked.string('HepJamesRandom')
+    )
                                            )
 
 #from Validation.RecoMuon.associators_cff import tpToL3MuonAssociation,tpToL2MuonAssociation
