@@ -14,7 +14,7 @@
 //
 // Original Author:  "Thomas Danielson"
 //         Created:  Thu May  8 12:05:03 CDT 2008
-// $Id: MuonHLTTreeUtility.cc,v 1.9 2009/07/22 15:40:02 klukas Exp $
+// $Id: MuonHLTTreeUtility.cc,v 1.10 2009/08/17 22:25:39 tdaniels Exp $
 //
 //
 
@@ -129,6 +129,7 @@
 #include "RecoMuon/L3MuonIsolationProducer/src/L3NominalEfficiencyConfigurator.h"
 #include "RecoMuon/MuonIsolation/interface/Cuts.h"
 #include "DataFormats/RecoCandidate/interface/IsoDeposit.h"
+#include "DataFormats/RecoCandidate/interface/IsoDepositFwd.h"
 #include "RecoMuon/MuonIsolation/interface/Range.h"
 
 #ifdef __CINT__ 
@@ -321,6 +322,7 @@ private:
   std::map<int,std::vector<int> > *l2MuStationNumber;
   // L2 muon isolation quantities
   std::vector<double> *l2CalIsoDeposit;
+  std::vector<double> *l2CalIsoDepositUser;
   // L2 track fitting and error matrix: note that phi is already in there...
   std::vector<double> *l2Dsz;
   std::vector<double> *l2DszError;
@@ -489,6 +491,7 @@ private:
   reco::isodeposit::IsoDepositExtractor* trackDepositExtractor;
   std::string calExtractorName;
   std::string L3IsoTrackCollectionName;
+  edm::InputTag L2CalIsoDepositTag;
   edm::ParameterSet calExtractorPSet;
   edm::ParameterSet trackExtractorPSet;
   edm::ParameterSet trackCutsPSet;
@@ -592,6 +595,7 @@ MuonHLTTreeUtility::MuonHLTTreeUtility(const edm::ParameterSet& iConfig):
   trackExtractorPSet = iConfig.getParameter<edm::ParameterSet>("trackExtractorPSet");
   trackCutsPSet = iConfig.getParameter<edm::ParameterSet>("trackCutsPSet");
   // Read in the ISO quantities from L2 (CAL) and L3 (track)
+   L2CalIsoDepositTag = iConfig.getParameter<edm::InputTag>("l2CalIsoDepositLabel");
   calExtractorName = calExtractorPSet.getParameter<std::string>("calName");
   L3IsoTrackCollectionName = trackExtractorPSet.getParameter<std::string>("ComponentName");
   // we have our L3 extractor PSet.  Use that to get the pixel tracks.
@@ -764,6 +768,7 @@ MuonHLTTreeUtility::MuonHLTTreeUtility(const edm::ParameterSet& iConfig):
   l2RecHitsZ = new std::map<int,std::vector<double> >;
 
   l2CalIsoDeposit = 0;
+  l2CalIsoDepositUser = 0;
 
   l2Dsz = 0;
   l2DszError = 0;
@@ -969,6 +974,8 @@ void MuonHLTTreeUtility::analyze(const edm::Event& iEvent, const edm::EventSetup
   edm::LogInfo("MuonHLTTreeUtility") << "How many L1, L2, L3 do we have? " << nL1 << " " << nL2 << " " << nL3;
 
   //ISO variables go here
+  Handle<edm::ValueMap<reco::IsoDeposit> > l2CalIsoDepMap;
+  iEvent.getByLabel(L2CalIsoDepositTag, l2CalIsoDepMap);
   caloDepositExtractor->fillVetos(iEvent,iSetup,*l2Muons);
   trackDepositExtractor->fillVetos(iEvent,iSetup,*l3Muons);
 
@@ -1869,12 +1876,14 @@ void MuonHLTTreeUtility::analyze(const edm::Event& iEvent, const edm::EventSetup
     }
     
     // get the Calorimeter isolation deposits for this L2 muon
-    reco::IsoDeposit calDeposit = caloDepositExtractor->deposit(iEvent, iSetup, *refL2);
+    reco::IsoDeposit calDepositUser = caloDepositExtractor->deposit(iEvent, iSetup, *refL2);
     // cutting for the L2 muon isolation
     muonisolation::Cuts::CutSpec calo_cuts_here = L2IsoCalCuts(refL2->eta());
     // and deposit for the L2 muon isolation
     double conesize = calo_cuts_here.conesize;
-    (*l2CalIsoDeposit).push_back(calDeposit.depositWithin(conesize));
+    (*l2CalIsoDepositUser).push_back(calDepositUser.depositWithin(conesize));
+    const reco::IsoDeposit & l2CalIsoDep = (*l2CalIsoDepMap)[refL2];
+    (*l2CalIsoDeposit).push_back(l2CalIsoDep.depositWithin(conesize));
 
     // With the detector-level things filled, time to start doing the associations to sim
     bool associated = false;
@@ -2406,6 +2415,7 @@ void MuonHLTTreeUtility::analyze(const edm::Event& iEvent, const edm::EventSetup
   l2RecHitsZ->clear();
 
   l2CalIsoDeposit->clear();
+  l2CalIsoDepositUser->clear();
 
   l2Dsz->clear();
   l2DszError->clear();
@@ -2636,6 +2646,7 @@ MuonHLTTreeUtility::beginJob(const edm::EventSetup&)
   MuTrigData->Branch("l2NSeeds",&l2NSeeds);
   // L2 Muon Isolation quantities
   MuTrigData->Branch("l2CalIsoDeposit",&l2CalIsoDeposit);
+  MuTrigData->Branch("l2CalIsoDepositUser",&l2CalIsoDepositUser);
   // L2 Muon Track fitting parameters (with phi already declared above)
   MuTrigData->Branch("l2Dsz",&l2Dsz);
   MuTrigData->Branch("l2DszError",&l2DszError);
@@ -2828,6 +2839,7 @@ MuonHLTTreeUtility::beginJob(const edm::EventSetup&)
   MuTrigMC->Branch("l2RecHitsZ",&l2RecHitsZ);
   // L2 Muon Isolation quantities
   MuTrigMC->Branch("l2CalIsoDeposit",&l2CalIsoDeposit);
+  MuTrigMC->Branch("l2CalIsoDepositUser",&l2CalIsoDepositUser);
   // L2 Muon Track fitting parameters (with phi already declared above)
   MuTrigMC->Branch("l2Dsz",&l2Dsz);
   MuTrigMC->Branch("l2DszError",&l2DszError);
