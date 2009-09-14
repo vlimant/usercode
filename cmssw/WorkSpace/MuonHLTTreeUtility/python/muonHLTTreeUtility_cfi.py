@@ -115,6 +115,7 @@ hltMuonTreeMaker = cms.EDAnalyzer("MuonHLTTreeUtility",
     ),
     triggerResults_ = cms.InputTag("TriggerResults","","HLT"),
     linkLabel = cms.InputTag("hltL3Muons"),
+    l2CalIsoDepositLabel = cms.InputTag("hltL2MuonIsolations"),
     calExtractorPSet = cms.PSet(
         DR_Veto_H = cms.double(0.1),
         Vertex_Constraint_Z = cms.bool(False),
