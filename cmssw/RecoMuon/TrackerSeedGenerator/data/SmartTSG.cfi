@@ -1,5 +1,0 @@
-#composite configuration
-PSet SeedGeneratorParameters = {
-	using dualEta
-#	using dualZ
-}
