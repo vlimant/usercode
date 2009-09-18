@@ -16,6 +16,9 @@
 #include "DataFormats/METReco/interface/MET.h"
 #include "SimDataFormats/GeneratorProducts/interface/HepMCProduct.h"
 
+#include "DataFormats/JetReco/interface/CaloJet.h"
+#include "DataFormats/JetReco/interface/GenJet.h"
+
 //--------------------------------------------------------------------------------
 //just define here a list of objects you would like to be able to have a branch of
 //--------------------------------------------------------------------------------
@@ -32,14 +35,16 @@ TreeBranch::value TreeBranch::branch(const edm::Event& iEvent){
   else ANOTHER_VECTOR_CLASS(pat::Photon);
   else ANOTHER_VECTOR_CLASS(reco::Muon);
   else ANOTHER_VECTOR_CLASS(reco::Track);
+  else ANOTHER_VECTOR_CLASS(reco::GsfElectron);
   else ANOTHER_VECTOR_CLASS(SimTrack);
-  else ANOTHER_VECTOR_CLASS(reco::GenParticle);
   else ANOTHER_VECTOR_CLASS(l1extra::L1ParticleMap);
   else ANOTHER_VECTOR_CLASS(reco::Vertex);
   else ANOTHER_VECTOR_CLASS(pat::GenericParticle);
   else ANOTHER_VECTOR_CLASS(reco::MET);
   else ANOTHER_CLASS(edm::HepMCProduct);
-else ANOTHER_CLASS(reco::BeamSpot);
+  else ANOTHER_CLASS(reco::BeamSpot);
+  else ANOTHER_VECTOR_CLASS(reco::CaloJet);
+  else ANOTHER_VECTOR_CLASS(reco::GenJet);
   else {
     edm::LogError("TreeBranch")<<branchName()<<" failed to recognized class type: "<<class_;
     return TreeBranch::value(new std::vector<float>());

@@ -6,6 +6,7 @@
 <use name=PhysicsTools/HepMCCandAlgos>
 <use name=DataFormats/PatCandidates>
 <use name=DataFormats/L1Trigger>
+<use name=DataFormats/JetReco>
 <use name=root>
 
 <export>
@@ -18,5 +19,6 @@
    <use name=PhysicsTools/HepMCCandAlgos>
    <use name=DataFormats/PatCandidates>
    <use name=DataFormats/L1Trigger>
+   <use name=DataFormats/JetReco>
    <use name=root>
 </export>
