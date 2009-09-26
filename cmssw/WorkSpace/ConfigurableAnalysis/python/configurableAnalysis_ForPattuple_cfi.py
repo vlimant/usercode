@@ -735,7 +735,7 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
 #        muons = cms.InputTag("selectedLayer1Muons"),
         muons = cms.InputTag("cleanLayer1Muons"),#changed from allLayer1Muons
 #        jets = cms.InputTag("allLayer1JetsIC5"),#changed to line below 
-        jets = cms.InputTag("cleanLayer1Jets"),
+        jets = cms.InputTag("cleanLayer1JetsSC5"),
 #        ccmuons = cms.InputTag("patcrosscleaner","ccMuons"),
 #        ccelectrons = cms.InputTag("patcrosscleaner","ccElectrons"),
         genJets = cms.InputTag("iterativeCone5GenJetsNoNuBSM")
@@ -953,7 +953,7 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
 
                  mets = cms.PSet(
 #                src = cms.InputTag("allLayer1METsIC5"),#vhanged to line below
-                  src = cms.InputTag("layer1METs"),
+                  src = cms.InputTag("layer1METsSC5"),
                    leaves = cms.PSet(
                     vars = cms.vstring('et:et', 
                         'phi:phi', 
@@ -1224,7 +1224,7 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
                         'ecalIso:ecalIso',
                         'hcalIso:hcalIso',
                         'chi2:gsfTrack.chi2', 
-                        'class:classification', 
+#                        'class:classification', 
                         'charge:charge', 
                         'caloEnergy:caloEnergy', 
                         'hadOverEm:hadronicOverEm', 
