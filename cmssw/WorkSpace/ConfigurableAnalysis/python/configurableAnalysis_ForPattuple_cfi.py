@@ -1191,6 +1191,33 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
                 ),
                 Class = cms.string('reco::Track')
             ),
+
+            taus = cms.PSet(
+                              src = cms.InputTag("cleanLayer1Taus"),
+                              leaves = cms.PSet(
+                                  basicKinematicLeaves,
+                                  vars = cms.vstring(
+                                  #                                         'isInEcalCrack:isInEcalCrack',
+                                  'charge:charge',
+                                  'emf:emFraction',
+                                  'hcalTotOverPLead:hcalTotOverPLead',
+                                  'hcalMaxOverPLead:hcalMaxOverPLead',
+                                  'hcal3x3OverPLead:hcal3x3OverPLead',
+                                  'ecalStripSumEOverPLead:ecalStripSumEOverPLead',
+                                  'elecPreIdOutput:electronPreIDOutput',
+                                  'elecPreIdDecision:electronPreIDDecision',
+                                  'leadPFChargedHadrCand_pt:leadPFChargedHadrCand.pt',
+                                  'leadPFChargedHadrCand_eta:leadPFChargedHadrCand.eta',
+                                  'leadPFChargedHadrCand_ECAL_eta:leadPFChargedHadrCand.positionAtECALEntrance.eta',
+                                  'leadPFChargedHadrCand_phi:leadPFChargedHadrCand.phi',
+                                  'isoPFGammaCandsEtSum:isolationPFGammaCandsEtSum',
+                                  'isoPFChargedHadrCandsPtSum:isolationPFChargedHadrCandsPtSum',
+                                  'muDecision:muonDecision'
+                                  )
+                                  ),
+                              Class = cms.string('pat::Tau')
+                              ),
+
             els = cms.PSet(
                 src = cms.string('electrons'),
                 leaves = cms.PSet(
