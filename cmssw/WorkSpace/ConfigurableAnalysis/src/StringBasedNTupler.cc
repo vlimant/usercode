@@ -28,6 +28,7 @@
 TreeBranch::value TreeBranch::branch(const edm::Event& iEvent){
   ANOTHER_VECTOR_CLASS(pat::Jet);
   else ANOTHER_VECTOR_CLASS(pat::Muon);
+  else ANOTHER_VECTOR_CLASS(reco::GenParticle);
   else ANOTHER_VECTOR_CLASS(pat::Electron);
   else ANOTHER_VECTOR_CLASS(pat::MET);
   else ANOTHER_VECTOR_CLASS(pat::Tau);
