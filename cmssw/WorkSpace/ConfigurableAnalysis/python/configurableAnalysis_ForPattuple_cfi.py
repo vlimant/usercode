@@ -968,19 +968,19 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
                 ),
                 Class = cms.string('pat::MET')
             ),
-#57
-#            tcmets = cms.PSet(
-#                  src = cms.InputTag("allLayer1METstcMET"),
-#                  leaves = cms.PSet(
-#                      vars = cms.vstring('et:et',
-#                                         'phi:phi',
-#                                         'ex:px',
-#                                         'ey:py',
-#                                         'sumEt:sumEt',
-#                                         )
-#                      ),
-#                  Class = cms.string('pat::MET')
-#            ),
+
+            tcmets = cms.PSet(
+                  src = cms.InputTag("layer1METsTC"),
+                  leaves = cms.PSet(
+                      vars = cms.vstring('et:et',
+                                         'phi:phi',
+                                         'ex:px',
+                                         'ey:py',
+                                         'sumEt:sumEt',
+                                         )
+                      ),
+                  Class = cms.string('pat::MET')
+            ),
                                                                         
 
 #            ccjets = cms.PSet(
@@ -1304,84 +1304,84 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
 
 
 
-#            jets_SC5 = cms.PSet(
-#                src = cms.InputTag("allLayer1JetsSC5"),
-#                leaves = cms.PSet(
-#                    basicKinematicLeaves,
-#                    vars = cms.vstring('parton_Id:genParton.pdgId',
-#                        'parton_motherId:genParton.mother.pdgId', 
-#                        'parton_pt:genParton.pt', 
-#                        'parton_phi:genParton.phi', 
-#                        'parton_eta:genParton.eta', 
-#                        'parton_Energy:genParton.energy', 
-#                        'parton_mass:genParton.mass',  
-#                        'parton_motherID:genParton.mother.pdgId',
-##                        'parton_grandmotherID:genParton.mother.mother.pdgId',
-#                        'gen_et:genJet.et', 
-#                        'gen_pt:genJet.pt', 
-#                        'gen_eta:genJet.eta', 
-#                        'gen_phi:genJet.phi', 
-#                        'gen_mass:genJet.mass', 
-#                        'gen_Energy:genJet.energy', 
-#                        'gen_Id:genJet.pdgId', 
-#                        'gen_motherID:genJet.mother.pdgId', 
-#                        'gen_threeCharge:genJet.threeCharge',
-#                        'partonFlavour:partonFlavour',  #TL add
-#                        'btag_TC_highPur:bDiscriminator("trackCountingHighPurBJetTags")', # TL add: b-tagging info (9lines)
-#                        'btag_TC_highEff:bDiscriminator("trackCountingHighEffBJetTags")',
-#                        'btag_jetProb:bDiscriminator("jetProbabilityBJetTags")',
-#                        'btag_jetBProb:bDiscriminator("jetBProbabilityBJetTags")',
-#                        'btag_softEle:bDiscriminator("softElectronBJetTags")',
-#                        'btag_softMuon:bDiscriminator("softMuonBJetTags")',
-#                        'btag_softMuonNoIP:bDiscriminator("softMuonNoIPBJetTags")',
-#                        'btag_secVertex:bDiscriminator("simpleSecondaryVertexBJetTags")',
-#                        #'btag_combinedSV_likelihood:bDiscriminator("combinedSVBJetTags")', #more sophisticated btagging
-#                       #'btag_combinedSV_MVA:bDiscriminator("combinedSVMVABJetTags")',
-#                                       
-#                        'chgEmE:chargedEmEnergy', 
-#                        'chgHadE:chargedHadronEnergy', 
-#                        'chgMuE:chargedMuEnergy', 
-#                        'chg_Mult:chargedMultiplicity', 
-#                        'neutralEmE:neutralEmEnergy', 
-#                        'neutralHadE:neutralHadronEnergy', 
-#                        'neutral_Mult:neutralMultiplicity', 
-#                        'mu_Mult:muonMultiplicity', 
-###                        'corr_fctr_def:correctionFactor(1)', 
-###                        'corr_fctr_b:correctionFactor(4)', 
-#                        'emf:emEnergyFraction', 
-#                        'ehf:energyFractionHadronic', 
-#                        'n60:n60', 
-#                        'n90:n90', 
-#                        'area:towersArea', 
-##                        'max_em:maxEInEmTowers#', 
-##                        'max_had:maxEInHadTowers', 
-##                        'Energy:energy', 
-#                        'mass:mass'#,
-##                        'nC_Energy:noCorrJet.energy',
-##			'nC_mass:noCorrJet.mass',
-##			'nC_et:noCorrJet.et',
-##			'nC_pt:noCorrJet.pt',
-##			'nC_px:noCorrJet.px',
-##			'nC_py:noCorrJet.py',	
-##			'nC_pz:noCorrJet.pz',	
-##			'nC_eta:noCorrJet.eta',	
-##			'nC_phi:noCorrJet.phi'#,	
-#			#'nC_theta:noCorrJet.theta'
-#			#'nC_emf:noCorrJet.emEnergyFraction',
-#                        #'nC_ehf:noCorrJet.energyFractionHadronic',
-#                        #'nC_n60:noCorrJet.n60',
-#                        #'nC_n90:noCorrJet.n90',
-#                        #'nC_area:noCorrJet.towersArea',
-#                        #'nC_max_em:noCorrJet.maxEInEmTowers',
-#                        #'nC_max_had:noCorrJet.maxEInHadTowers'               
-#                                       )
-#                ),
-#                Class = cms.string('pat::Jet')
-#            ),#
+            jets_AK5 = cms.PSet(
+                src = cms.InputTag("cleanLayer1JetsAK5"),
+#                src = cms.string('jets'),
+                leaves = cms.PSet(
+                    basicKinematicLeaves,
+                    vars = cms.vstring('parton_Id:genParton.pdgId',
+                        'parton_motherId:genParton.mother.pdgId', 
+                        'parton_pt:genParton.pt', 
+                        'parton_phi:genParton.phi', 
+                        'parton_eta:genParton.eta', 
+                        'parton_Energy:genParton.energy', 
+                        'parton_mass:genParton.mass',  
+                        'parton_motherID:genParton.mother.pdgId',
+#                        'parton_grandmotherID:genParton.mother.mother.pdgId',
+                        'gen_et:genJet.et', 
+                        'gen_pt:genJet.pt', 
+                        'gen_eta:genJet.eta', 
+                        'gen_phi:genJet.phi', 
+                        'gen_mass:genJet.mass', 
+                        'gen_Energy:genJet.energy', 
+                        'gen_Id:genJet.pdgId', 
+                        'gen_motherID:genJet.mother.pdgId', 
+                        'gen_threeCharge:genJet.threeCharge',
+                        'partonFlavour:partonFlavour',  #TL add
+                        'btag_TC_highPur:bDiscriminator("trackCountingHighPurBJetTags")', # TL add: b-tagging info (9lines)
+                        'btag_TC_highEff:bDiscriminator("trackCountingHighEffBJetTags")',
+                        'btag_jetProb:bDiscriminator("jetProbabilityBJetTags")',
+                        'btag_jetBProb:bDiscriminator("jetBProbabilityBJetTags")',
+                        'btag_softEle:bDiscriminator("softElectronBJetTags")',
+                        'btag_softMuon:bDiscriminator("softMuonBJetTags")',
+                        'btag_softMuonNoIP:bDiscriminator("softMuonNoIPBJetTags")',
+                        'btag_secVertex:bDiscriminator("simpleSecondaryVertexBJetTags")',
+                        #'btag_combinedSV_likelihood:bDiscriminator("combinedSVBJetTags")', #more sophisticated btagging
+                       #'btag_combinedSV_MVA:bDiscriminator("combinedSVMVABJetTags")',
+                                       
+                        'chgEmE:chargedEmEnergy', 
+                        'chgHadE:chargedHadronEnergy', 
+                        'chgMuE:chargedMuEnergy', 
+                        'chg_Mult:chargedMultiplicity', 
+                        'neutralEmE:neutralEmEnergy', 
+                        'neutralHadE:neutralHadronEnergy', 
+                        'neutral_Mult:neutralMultiplicity', 
+                        'mu_Mult:muonMultiplicity', 
+##                        'corr_fctr_def:correctionFactor(1)', 
+##                        'corr_fctr_b:correctionFactor(4)', 
+                        'emf:emEnergyFraction', 
+                        'ehf:energyFractionHadronic', 
+                        'n60:n60', 
+                        'n90:n90', 
+                        'area:towersArea', 
+#                        'max_em:maxEInEmTowers#', 
+#                        'max_had:maxEInHadTowers', 
+#                        'Energy:energy', 
+                        'mass:mass'#,
+#                        'nC_Energy:noCorrJet.energy',
+#			'nC_mass:noCorrJet.mass',
+#			'nC_et:noCorrJet.et',
+#			'nC_pt:noCorrJet.pt',
+#			'nC_px:noCorrJet.px',
+#			'nC_py:noCorrJet.py',	
+#			'nC_pz:noCorrJet.pz',	
+#			'nC_eta:noCorrJet.eta',	
+#			'nC_phi:noCorrJet.phi'#,	
+			#'nC_theta:noCorrJet.theta'
+			#'nC_emf:noCorrJet.emEnergyFraction',
+                        #'nC_ehf:noCorrJet.energyFractionHadronic',
+                        #'nC_n60:noCorrJet.n60',
+                        #'nC_n90:noCorrJet.n90',
+                        #'nC_area:noCorrJet.towersArea',
+                        #'nC_max_em:noCorrJet.maxEInEmTowers',
+                        #'nC_max_had:noCorrJet.maxEInHadTowers'               
+                                       )
+                ),
+                Class = cms.string('pat::Jet')
+            ),
 
 
-
-            jets = cms.PSet(
+            jets_SC5 = cms.PSet(
                 src = cms.string('jets'),
                 leaves = cms.PSet(
                     basicKinematicLeaves,
