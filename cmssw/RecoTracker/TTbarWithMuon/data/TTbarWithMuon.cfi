@@ -1,7 +1,0 @@
-module tTbarWithMuon = TTbarWithMuon {
-	InputTag HEPsourceLabel = source
-	#to select decays from specific B hadrons
-	vint32 B_decay = {}
-	# select muon from W decays
-	bool W_decay = true
-}

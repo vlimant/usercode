@@ -1,5 +1,0 @@
-module L3Muons = L3MuonAltProducer {
-    InputTag MuonCollection = L2Muons
-    InputTag RegionalTrackCollection = ctfWithMaterialForMuIsoTracks
-    double MaxChi2PerDofInMatching = 10000.0
-}
