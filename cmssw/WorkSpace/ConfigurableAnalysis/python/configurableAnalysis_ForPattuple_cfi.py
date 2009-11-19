@@ -14,634 +14,307 @@ basicKinematicLeaves = cms.PSet(
 )
 TriggerPSets = cms.PSet(
 
+    #trigger bits 8e29
 
-    #trigger bits
 
-        HLTriggerFirstPath = cms.PSet(
+    HLTriggerFirstPath = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_L1Jet15 = cms.PSet(
+    HLT_L1Jet6U = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_Jet30  = cms.PSet(
+    HLT_Jet15U = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_Jet50  = cms.PSet(
+    HLT_Jet30U = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_Jet80  = cms.PSet(
+    HLT_Jet50U = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_Jet110  = cms.PSet(
+    HLT_FwdJet20U = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_Jet180  = cms.PSet(
+    HLT_DiJetAve15U_8E29 = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_Jet250  = cms.PSet(
+    HLT_DiJetAve30U_8E29 = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_FwdJet20  = cms.PSet(
+    HLT_QuadJet15U = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_DoubleJet150  = cms.PSet(
+    HLT_L1MET20 = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_DoubleJet125_Aco  = cms.PSet(
+    HLT_MET45 = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_DoubleFwdJet50  = cms.PSet(
+    HLT_MET100 = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_DiJetAve15  = cms.PSet(
+    HLT_HT100U = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_DiJetAve30  = cms.PSet(
+    HLT_L1MuOpen = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_DiJetAve50  = cms.PSet(
+    HLT_L1Mu = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_DiJetAve70  = cms.PSet(
+    HLT_L1Mu20 = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_DiJetAve130  = cms.PSet(
+    HLT_L2Mu9 = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_DiJetAve220  = cms.PSet(
+    HLT_L2Mu11 = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_TripleJet85  = cms.PSet(
+    HLT_IsoMu3 = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_QuadJet30  = cms.PSet(
+    HLT_Mu3 = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_QuadJet60  = cms.PSet(
+    HLT_Mu5 = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_SumET120  = cms.PSet(
+    HLT_Mu9 = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_L1MET20  = cms.PSet(
+    HLT_L1DoubleMuOpen = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_MET25  = cms.PSet(
+    HLT_DoubleMu0 = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_MET35  = cms.PSet(
+    HLT_DoubleMu3 = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_MET50  = cms.PSet(
+    HLT_L1SingleEG5 = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_MET65  = cms.PSet(
+    HLT_L1SingleEG8 = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_MET75  = cms.PSet(
+    HLT_Ele10_LW_L1R = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_MET65_HT350  = cms.PSet(
+    HLT_Ele10_LW_EleId_L1R = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_Jet180_MET60  = cms.PSet(
+    HLT_Ele15_LW_L1R = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_Jet60_MET70_Aco  = cms.PSet(
+    HLT_Ele15_SC10_LW_L1R = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_Jet100_MET60_Aco  = cms.PSet(
+    HLT_Ele15_SiStrip_L1R = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_DoubleJet125_MET60  = cms.PSet(
+    HLT_Ele20_LW_L1R = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_DoubleFwdJet40_MET60  = cms.PSet(
+    HLT_L1DoubleEG5 = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_DoubleJet60_MET60_Aco  = cms.PSet(
+    HLT_DoubleEle5_SW_L1R = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_DoubleJet50_MET70_Aco  = cms.PSet(
+    HLT_DoublePhoton5_eeRes_L1R = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_DoubleJet40_MET70_Aco  = cms.PSet(
+    HLT_DoublePhoton5_Jpsi_L1R = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_TripleJet60_MET60  = cms.PSet(
+    HLT_DoublePhoton5_Upsilon_L1R = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_QuadJet35_MET60  = cms.PSet(
+    HLT_Photon10_L1R = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_IsoEle15_L1I  = cms.PSet(
+    HLT_Photon15_L1R = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_IsoEle18_L1R  = cms.PSet(
+    HLT_Photon15_TrackIso_L1R = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_IsoEle15_LW_L1I  = cms.PSet(
+    HLT_Photon15_LooseEcalIso_L1R = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_LooseIsoEle15_LW_L1R  = cms.PSet(
+    HLT_Photon20_L1R = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_Ele10_SW_L1R  = cms.PSet(
+    HLT_Photon30_L1R_8E29 = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_Ele15_SW_L1R  = cms.PSet(
+    HLT_DoublePhoton10_L1R = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_Ele15_LW_L1R  = cms.PSet(
+    HLT_SingleLooseIsoTau20 = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_EM80  = cms.PSet(
+    HLT_DoubleLooseIsoTau15 = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_EM200  = cms.PSet(
+    HLT_BTagMu_Jet10U = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_DoubleIsoEle10_L1I  = cms.PSet(
+    HLT_BTagIP_Jet50U = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_DoubleIsoEle12_L1R  = cms.PSet(
+    HLT_StoppedHSCP_8E29 = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_DoubleIsoEle10_LW_L1I  = cms.PSet(
+    HLT_L1Mu14_L1SingleEG10 = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_DoubleIsoEle12_LW_L1R  = cms.PSet(
+    HLT_L1Mu14_L1SingleJet6U = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_DoubleEle5_SW_L1R  = cms.PSet(
+    HLT_L1Mu14_L1ETM30 = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_DoubleEle10_LW_OnlyPixelM_L1R  = cms.PSet(
+    HLT_ZeroBias = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_DoubleEle10_Z  = cms.PSet(
+    HLT_MinBiasHcal = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_DoubleEle6_Exclusive  = cms.PSet(
+    HLT_MinBiasEcal = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_IsoPhoton30_L1I  = cms.PSet(
+    HLT_MinBiasPixel = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_IsoPhoton10_L1R  = cms.PSet(
+    HLT_MinBiasPixel_Trk5 = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_IsoPhoton15_L1R  = cms.PSet(
+    HLT_CSCBeamHalo = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_IsoPhoton20_L1R  = cms.PSet(
+    HLT_CSCBeamHaloOverlapRing1 = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_IsoPhoton25_L1R  = cms.PSet(
+    HLT_CSCBeamHaloOverlapRing2 = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_IsoPhoton40_L1R  = cms.PSet(
+    HLT_CSCBeamHaloRing2or3 = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_Photon15_L1R  = cms.PSet(
+    HLT_BackwardBSC = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_Photon25_L1R  = cms.PSet(
+    HLT_ForwardBSC = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_DoubleIsoPhoton20_L1I  = cms.PSet(
+    HLT_TrackerCosmics = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_DoubleIsoPhoton20_L1R  = cms.PSet(
+    HLT_IsoTrack_8E29 = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_DoublePhoton10_Exclusive  = cms.PSet(
+    AlCa_HcalPhiSym = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_L1Mu  = cms.PSet(
+    AlCa_EcalPhiSym = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_L1MuOpen  = cms.PSet(
+    AlCa_EcalPi0_8E29 = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_L2Mu9  = cms.PSet(
+    AlCa_EcalEta_8E29 = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_IsoMu9  = cms.PSet(
+    AlCa_RPCMuonNoHits = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_IsoMu11  = cms.PSet(
+    AlCa_RPCMuonNormalisation = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_IsoMu13  = cms.PSet(
+    HLTriggerFinalPath = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
-        HLT_IsoMu15  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_Mu3  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_Mu5  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_Mu7  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_Mu9  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_Mu11  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_Mu13  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_Mu15  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_Mu15_L1Mu7  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-#These are no longer in HLT_2E30 for 2_2_3
-        HLT_Mu15_Vtx2cm  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_Mu15_Vtx2mm  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_DoubleIsoMu3  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_DoubleMu3  = cms.PSet(
+    HLTAnalyzerEndpath = cms.PSet(
             src = cms.InputTag("TriggerResults","","HLT"),
             method = cms.string('HLTBitVariable')
             ),
 
-        HLT_DoubleMu3_Vtx2cm  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-#This are no longer in HLT_2E30 for 2_2_3
-        HLT_DoubleMu3_Vtx2mm  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-           method = cms.string('HLTBitVariable')
-            ),
-        HLT_DoubleMu3_JPsi  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_DoubleMu3_Upsilon  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_DoubleMu7_Z  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_DoubleMu3_SameSign  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_DoubleMu3_Psi2S  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_BTagIP_Jet180  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_BTagIP_Jet120_Relaxed  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_BTagIP_DoubleJet120  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_BTagIP_DoubleJet60_Relaxed  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_BTagIP_TripleJet70  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_BTagIP_TripleJet40_Relaxed  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_BTagIP_QuadJet40  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_BTagIP_QuadJet30_Relaxed  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_BTagIP_HT470  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_BTagIP_HT320_Relaxed  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_BTagMu_DoubleJet120  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_BTagMu_DoubleJet60_Relaxed  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_BTagMu_TripleJet70  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_BTagMu_TripleJet40_Relaxed  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_BTagMu_QuadJet40  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_BTagMu_QuadJet30_Relaxed  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_BTagMu_HT370  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_BTagMu_HT250_Relaxed  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_DoubleMu3_BJPsi  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_DoubleMu4_BJPsi  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_TripleMu3_TauTo3Mu  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_IsoTau_MET65_Trk20  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_IsoTau_MET35_Trk15_L1MET  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_LooseIsoTau_MET30  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_LooseIsoTau_MET30_L1MET  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_DoubleIsoTau_Trk3  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_DoubleLooseIsoTau  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_IsoEle8_IsoMu7  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_IsoEle10_Mu10_L1R  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_IsoEle12_IsoTau_Trk3  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_IsoEle10_BTagIP_Jet35  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_IsoEle12_Jet40  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_IsoEle12_DoubleJet80  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_IsoEle5_TripleJet30  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_IsoEle12_TripleJet60  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_IsoEle12_QuadJet35  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_IsoMu14_IsoTau_Trk3  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_IsoMu7_BTagIP_Jet35  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_IsoMu7_BTagMu_Jet20  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_IsoMu7_Jet40  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_NoL2IsoMu8_Jet40  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_Mu14_Jet50  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_Mu5_TripleJet30  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_BTagMu_Jet20_Calib  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_ZeroBias  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_MinBias = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_MinBiasHcal  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_MinBiasEca = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_MinBiasPixel  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_MinBiasPixel_Trk5  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_BackwardBSC  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_ForwardBSC = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_CSCBeamHalo  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_CSCBeamHal = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_CSCBeamHaloOverlapRing2  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_CSCBeamHaloRing2or3  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLT_TrackerCosmics  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        AlCa_IsoTrack  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        AlCa_EcalPhiSym  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-###this is added for 2_2_3
-#        AlCa_HcalPhiSym  = cms.PSet(
-#            src = cms.InputTag("TriggerResults","","HLT"),
-#            method = cms.string('HLTBitVariable')
-#            ),
-#to here
-        AlCa_EcalPi0  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-        HLTriggerFinalPath  = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            )
+    
                                                                                                                                                                                                                                                                                                                                       
 
 
@@ -867,6 +540,7 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
                         'cm_ptErr:combinedMuon.ptError', 
                         'cm_etaErr:combinedMuon.etaError', 
                         'cm_phiErr:combinedMuon.phiError', 
+                        'tk_id:track.key',
                         'tk_chi2:track.chi2',
                         'tk_ndof:track.ndof', 
                         'tk_chg:track.charge', 
@@ -951,7 +625,7 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
 
 
 
-                 mets = cms.PSet(
+                 mets_SC5 = cms.PSet(
 #                src = cms.InputTag("allLayer1METsIC5"),#vhanged to line below
                   src = cms.InputTag("layer1METsSC5"),
                    leaves = cms.PSet(
@@ -968,19 +642,40 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
                 ),
                 Class = cms.string('pat::MET')
             ),
-#57
-#            tcmets = cms.PSet(
-#                  src = cms.InputTag("allLayer1METstcMET"),
-#                  leaves = cms.PSet(
-#                      vars = cms.vstring('et:et',
-#                                         'phi:phi',
-#                                         'ex:px',
-#                                         'ey:py',
-#                                         'sumEt:sumEt',
-#                                         )
-#                      ),
-#                  Class = cms.string('pat::MET')
-#            ),
+
+
+                 mets_AK5 = cms.PSet(
+#                src = cms.InputTag("allLayer1METsIC5"),#vhanged to line below
+                  src = cms.InputTag("layer1METsAK5"),
+                   leaves = cms.PSet(
+                    vars = cms.vstring('et:et', 
+                        'phi:phi', 
+                        'ex:px', 
+                        'ey:py', 
+                        'gen_et:genMET.et', 
+                        'gen_phi:genMET.phi',
+                        'sign:metSignificance',
+                        'sumEt:sumEt', 
+                        'unCPhi:uncorrectedPhi', 
+                        'unCPt:uncorrectedPt')
+                ),
+                Class = cms.string('pat::MET')
+            ),
+
+
+
+            tcmets = cms.PSet(
+                  src = cms.InputTag("layer1METsTC"),
+                  leaves = cms.PSet(
+                      vars = cms.vstring('et:et',
+                                         'phi:phi',
+                                         'ex:px',
+                                         'ey:py',
+                                         'sumEt:sumEt',
+                                         )
+                      ),
+                  Class = cms.string('pat::MET')
+            ),
                                                                         
 
 #            ccjets = cms.PSet(
@@ -1191,6 +886,46 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
                 ),
                 Class = cms.string('reco::Track')
             ),
+
+            taus = cms.PSet(
+                              src = cms.InputTag("cleanLayer1Taus"),
+                              leaves = cms.PSet(
+                                  basicKinematicLeaves,
+                                  vars = cms.vstring(
+                                  #                                         'isInEcalCrack:isInEcalCrack',
+                                  'charge:charge',
+                                  'emf:emFraction',
+                                  'hcalTotOverPLead:hcalTotOverPLead',
+                                  'hcalMaxOverPLead:hcalMaxOverPLead',
+                                  'hcal3x3OverPLead:hcal3x3OverPLead',
+                                  'ecalStripSumEOverPLead:ecalStripSumEOverPLead',
+                                  'elecPreIdOutput:electronPreIDOutput',
+                                  'elecPreIdDecision:electronPreIDDecision',
+                                  'leadPFChargedHadrCand_pt:leadPFChargedHadrCand.pt',
+                                  'leadPFChargedHadrCand_charge:leadPFChargedHadrCand.charge',
+                                  'leadPFChargedHadrCand_eta:leadPFChargedHadrCand.eta',
+                                  'leadPFChargedHadrCand_ECAL_eta:leadPFChargedHadrCand.positionAtECALEntrance.eta',
+                                  'leadPFChargedHadrCand_phi:leadPFChargedHadrCand.phi',
+                                  'isoPFGammaCandsEtSum:isolationPFGammaCandsEtSum',
+                                  'isoPFChargedHadrCandsPtSum:isolationPFChargedHadrCandsPtSum',
+                                  'leadingTrackFinding:tauID("leadingTrackFinding")',
+                                  'leadingTrackPtCut:tauID("leadingTrackPtCut")',
+                                  'trackIsolation:tauID("trackIsolation")',
+                                  'ecalIsolation:tauID("ecalIsolation")',
+                                  'byIsolation:tauID("byIsolation")', 
+                                  'againstElectron:tauID("againstElectron")',
+                                  'againstMuon:tauID("againstMuon")',
+                                  'taNC_quarter:tauID("byTaNCfrQuarterPercent")',
+                                  'taNC_one:tauID("byTaNCfrOnePercent")',
+                                  'taNC_half:tauID("byTaNCfrHalfPercent")',
+                                  'taNC_tenth:tauID("byTaNCfrTenthPercent")',
+                                  'muDecision:muonDecision',
+                                  'Nprongs:signalTracks.size'
+                                  )
+                                  ),
+                              Class = cms.string('pat::Tau')
+                              ),
+
             els = cms.PSet(
                 src = cms.string('electrons'),
                 leaves = cms.PSet(
@@ -1245,7 +980,6 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
                         'numlosthits:gsfTrack.numberOfLostHits', 
                         #'numCluster:numberOfClusters', 
                         'basicClustersSize:basicClustersSize',
-                        
                         'tk_pt:gsfTrack.pt', 
                         'tk_phi:gsfTrack.phi', 
                         'tk_eta:gsfTrack.eta', 
@@ -1260,6 +994,23 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
                         'dzError:gsfTrack.dzError', 
                         'etaError:gsfTrack.etaError', 
                         'phiError:gsfTrack.phiError', 
+                        'tk_charge:gsfTrack.charge',
+                        'ctf_tk_id:closestCtfTrackRef.key',
+                        'ctf_tk_charge:closestCtfTrackRef.charge',
+                        'ctf_tk_eta:closestCtfTrackRef.eta',
+                        'ctf_tk_phi:closestCtfTrackRef.phi',
+                        'fbrem:fbrem',
+                        'shFracInnerHits:shFracInnerHits',                        
+                        'dr03EcalRecHitSumEt:dr03EcalRecHitSumEt',
+                        'dr03HcalTowerSumEt:dr03HcalTowerSumEt',
+                        'dr03HcalDepth1TowerSumEt',
+                        'dr03HcalDepth2TowerSumEt',
+                        'dr03TkSumPt',
+                        'dr04EcalRecHitSumEt:dr03EcalRecHitSumEt',
+                        'dr04HcalTowerSumEt:dr03HcalTowerSumEt',
+                        'dr04HcalDepth1TowerSumEt',
+                        'dr04HcalDepth2TowerSumEt',
+                        'dr04TkSumPt',
                         'cpx:trackMomentumAtCalo.x', 
                         'cpy:trackMomentumAtCalo.y', 
                         'cpz:trackMomentumAtCalo.z', 
@@ -1277,84 +1028,84 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
 
 
 
-#            jets_SC5 = cms.PSet(
-#                src = cms.InputTag("allLayer1JetsSC5"),
-#                leaves = cms.PSet(
-#                    basicKinematicLeaves,
-#                    vars = cms.vstring('parton_Id:genParton.pdgId',
-#                        'parton_motherId:genParton.mother.pdgId', 
-#                        'parton_pt:genParton.pt', 
-#                        'parton_phi:genParton.phi', 
-#                        'parton_eta:genParton.eta', 
-#                        'parton_Energy:genParton.energy', 
-#                        'parton_mass:genParton.mass',  
-#                        'parton_motherID:genParton.mother.pdgId',
-##                        'parton_grandmotherID:genParton.mother.mother.pdgId',
-#                        'gen_et:genJet.et', 
-#                        'gen_pt:genJet.pt', 
-#                        'gen_eta:genJet.eta', 
-#                        'gen_phi:genJet.phi', 
-#                        'gen_mass:genJet.mass', 
-#                        'gen_Energy:genJet.energy', 
-#                        'gen_Id:genJet.pdgId', 
-#                        'gen_motherID:genJet.mother.pdgId', 
-#                        'gen_threeCharge:genJet.threeCharge',
-#                        'partonFlavour:partonFlavour',  #TL add
-#                        'btag_TC_highPur:bDiscriminator("trackCountingHighPurBJetTags")', # TL add: b-tagging info (9lines)
-#                        'btag_TC_highEff:bDiscriminator("trackCountingHighEffBJetTags")',
-#                        'btag_jetProb:bDiscriminator("jetProbabilityBJetTags")',
-#                        'btag_jetBProb:bDiscriminator("jetBProbabilityBJetTags")',
-#                        'btag_softEle:bDiscriminator("softElectronBJetTags")',
-#                        'btag_softMuon:bDiscriminator("softMuonBJetTags")',
-#                        'btag_softMuonNoIP:bDiscriminator("softMuonNoIPBJetTags")',
-#                        'btag_secVertex:bDiscriminator("simpleSecondaryVertexBJetTags")',
-#                        #'btag_combinedSV_likelihood:bDiscriminator("combinedSVBJetTags")', #more sophisticated btagging
-#                       #'btag_combinedSV_MVA:bDiscriminator("combinedSVMVABJetTags")',
-#                                       
-#                        'chgEmE:chargedEmEnergy', 
-#                        'chgHadE:chargedHadronEnergy', 
-#                        'chgMuE:chargedMuEnergy', 
-#                        'chg_Mult:chargedMultiplicity', 
-#                        'neutralEmE:neutralEmEnergy', 
-#                        'neutralHadE:neutralHadronEnergy', 
-#                        'neutral_Mult:neutralMultiplicity', 
-#                        'mu_Mult:muonMultiplicity', 
-###                        'corr_fctr_def:correctionFactor(1)', 
-###                        'corr_fctr_b:correctionFactor(4)', 
-#                        'emf:emEnergyFraction', 
-#                        'ehf:energyFractionHadronic', 
-#                        'n60:n60', 
-#                        'n90:n90', 
-#                        'area:towersArea', 
-##                        'max_em:maxEInEmTowers#', 
-##                        'max_had:maxEInHadTowers', 
-##                        'Energy:energy', 
-#                        'mass:mass'#,
-##                        'nC_Energy:noCorrJet.energy',
-##			'nC_mass:noCorrJet.mass',
-##			'nC_et:noCorrJet.et',
-##			'nC_pt:noCorrJet.pt',
-##			'nC_px:noCorrJet.px',
-##			'nC_py:noCorrJet.py',	
-##			'nC_pz:noCorrJet.pz',	
-##			'nC_eta:noCorrJet.eta',	
-##			'nC_phi:noCorrJet.phi'#,	
-#			#'nC_theta:noCorrJet.theta'
-#			#'nC_emf:noCorrJet.emEnergyFraction',
-#                        #'nC_ehf:noCorrJet.energyFractionHadronic',
-#                        #'nC_n60:noCorrJet.n60',
-#                        #'nC_n90:noCorrJet.n90',
-#                        #'nC_area:noCorrJet.towersArea',
-#                        #'nC_max_em:noCorrJet.maxEInEmTowers',
-#                        #'nC_max_had:noCorrJet.maxEInHadTowers'               
-#                                       )
-#                ),
-#                Class = cms.string('pat::Jet')
-#            ),#
+            jets_AK5 = cms.PSet(
+                src = cms.InputTag("cleanLayer1JetsAK5"),
+#                src = cms.string('jets'),
+                leaves = cms.PSet(
+                    basicKinematicLeaves,
+                    vars = cms.vstring('parton_Id:genParton.pdgId',
+                        'parton_motherId:genParton.mother.pdgId', 
+                        'parton_pt:genParton.pt', 
+                        'parton_phi:genParton.phi', 
+                        'parton_eta:genParton.eta', 
+                        'parton_Energy:genParton.energy', 
+                        'parton_mass:genParton.mass',  
+                        'parton_motherID:genParton.mother.pdgId',
+#                        'parton_grandmotherID:genParton.mother.mother.pdgId',
+                        'gen_et:genJet.et', 
+                        'gen_pt:genJet.pt', 
+                        'gen_eta:genJet.eta', 
+                        'gen_phi:genJet.phi', 
+                        'gen_mass:genJet.mass', 
+                        'gen_Energy:genJet.energy', 
+                        'gen_Id:genJet.pdgId', 
+                        'gen_motherID:genJet.mother.pdgId', 
+                        'gen_threeCharge:genJet.threeCharge',
+                        'partonFlavour:partonFlavour',  #TL add
+                        'btag_TC_highPur:bDiscriminator("trackCountingHighPurBJetTags")', # TL add: b-tagging info (9lines)
+                        'btag_TC_highEff:bDiscriminator("trackCountingHighEffBJetTags")',
+                        'btag_jetProb:bDiscriminator("jetProbabilityBJetTags")',
+                        'btag_jetBProb:bDiscriminator("jetBProbabilityBJetTags")',
+                        'btag_softEle:bDiscriminator("softElectronBJetTags")',
+                        'btag_softMuon:bDiscriminator("softMuonBJetTags")',
+                        'btag_softMuonNoIP:bDiscriminator("softMuonNoIPBJetTags")',
+                        'btag_secVertex:bDiscriminator("simpleSecondaryVertexBJetTags")',
+                        #'btag_combinedSV_likelihood:bDiscriminator("combinedSVBJetTags")', #more sophisticated btagging
+                       #'btag_combinedSV_MVA:bDiscriminator("combinedSVMVABJetTags")',
+                                       
+                        'chgEmE:chargedEmEnergy', 
+                        'chgHadE:chargedHadronEnergy', 
+                        'chgMuE:chargedMuEnergy', 
+                        'chg_Mult:chargedMultiplicity', 
+                        'neutralEmE:neutralEmEnergy', 
+                        'neutralHadE:neutralHadronEnergy', 
+                        'neutral_Mult:neutralMultiplicity', 
+                        'mu_Mult:muonMultiplicity', 
+##                        'corr_fctr_def:correctionFactor(1)', 
+##                        'corr_fctr_b:correctionFactor(4)', 
+                        'emf:emEnergyFraction', 
+                        'ehf:energyFractionHadronic', 
+                        'n60:n60', 
+                        'n90:n90', 
+                        'area:towersArea', 
+#                        'max_em:maxEInEmTowers#', 
+#                        'max_had:maxEInHadTowers', 
+#                        'Energy:energy', 
+                        'mass:mass'#,
+#                        'nC_Energy:noCorrJet.energy',
+#			'nC_mass:noCorrJet.mass',
+#			'nC_et:noCorrJet.et',
+#			'nC_pt:noCorrJet.pt',
+#			'nC_px:noCorrJet.px',
+#			'nC_py:noCorrJet.py',	
+#			'nC_pz:noCorrJet.pz',	
+#			'nC_eta:noCorrJet.eta',	
+#			'nC_phi:noCorrJet.phi'#,	
+			#'nC_theta:noCorrJet.theta'
+			#'nC_emf:noCorrJet.emEnergyFraction',
+                        #'nC_ehf:noCorrJet.energyFractionHadronic',
+                        #'nC_n60:noCorrJet.n60',
+                        #'nC_n90:noCorrJet.n90',
+                        #'nC_area:noCorrJet.towersArea',
+                        #'nC_max_em:noCorrJet.maxEInEmTowers',
+                        #'nC_max_had:noCorrJet.maxEInHadTowers'               
+                                       )
+                ),
+                Class = cms.string('pat::Jet')
+            ),
 
 
-
-            jets = cms.PSet(
+            jets_SC5 = cms.PSet(
                 src = cms.string('jets'),
                 leaves = cms.PSet(
                     basicKinematicLeaves,
