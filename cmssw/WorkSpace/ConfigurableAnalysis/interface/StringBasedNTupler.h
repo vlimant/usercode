@@ -232,6 +232,7 @@ class StringBasedNTupler : public NTupler {
 
     ev_ = new uint;
     run_ = new uint;
+    lumiblock_ = new uint;
 
     if (branchesPSet.exists("useTFileService"))
       useTFileService_=branchesPSet.getParameter<bool>("useTFileService");         
@@ -278,6 +279,7 @@ class StringBasedNTupler : public NTupler {
       //extra leaves for event info.
       tree_->Branch("run",run_,"run/i");
       tree_->Branch("event",ev_,"event/i");
+      tree_->Branch("lumiblock",lumiblock_,"lumiblock/i");
 
     }
     else{
@@ -331,6 +333,7 @@ class StringBasedNTupler : public NTupler {
       //fill event info.
       *run_ = iEvent.id().run();
       *ev_ = iEvent.id().event();
+      *lumiblock_ = iEvent.id().luminosityBlock();
 
       if (ownTheTree_){	tree_->Fill(); }
 
@@ -367,6 +370,7 @@ class StringBasedNTupler : public NTupler {
     delete indexDataHolder_;
     delete ev_;
     delete run_;
+    delete lumiblock_;
   }
     
  protected:
@@ -380,6 +384,7 @@ class StringBasedNTupler : public NTupler {
   //event info
   uint * ev_;
   uint * run_;
+  uint * lumiblock_;
 };
 
 
