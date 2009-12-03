@@ -333,7 +333,8 @@ class StringBasedNTupler : public NTupler {
       //fill event info.
       *run_ = iEvent.id().run();
       *ev_ = iEvent.id().event();
-      *lumiblock_ = iEvent.id().luminosityBlock();
+      //      *lumiblock_ = iEvent.id().luminosityBlock();
+      *lumiblock_ = iEvent.luminosityBlock();
 
       if (ownTheTree_){	tree_->Fill(); }
 
