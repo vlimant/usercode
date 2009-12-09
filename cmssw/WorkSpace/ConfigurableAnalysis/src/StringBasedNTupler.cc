@@ -16,6 +16,9 @@
 #include "DataFormats/METReco/interface/MET.h"
 #include "SimDataFormats/GeneratorProducts/interface/HepMCProduct.h"
 
+#include "DataFormats/METReco/interface/HcalNoiseSummary.h"
+#include "DataFormats/METReco/interface/HcalNoiseRBX.h"
+
 #include "DataFormats/JetReco/interface/BasicJet.h"
 #include "DataFormats/JetReco/interface/CaloJet.h"
 #include "DataFormats/JetReco/interface/GenJet.h"
@@ -45,6 +48,8 @@ TreeBranch::value TreeBranch::branch(const edm::Event& iEvent){
   else ANOTHER_VECTOR_CLASS(reco::MET);
   else ANOTHER_CLASS(edm::HepMCProduct);
   else ANOTHER_CLASS(reco::BeamSpot);
+  else ANOTHER_CLASS(HcalNoiseSummary);
+  else ANOTHER_VECTOR_CLASS(reco::HcalNoiseRBX);
   else ANOTHER_VECTOR_CLASS(reco::BasicJet);
   else ANOTHER_VECTOR_CLASS(reco::CaloJet);
   else ANOTHER_VECTOR_CLASS(reco::GenJet);
