@@ -462,6 +462,68 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
                                                                               
 
 
+           hcalNoiseSummary = cms.PSet(  
+           src = cms.InputTag("hcalnoise"),
+            leaves = cms.PSet(
+                vars = cms.vstring(
+                     'passLooseNoiseFilter:passLooseNoiseFilter',
+                     'passTightNoiseFilter:passTightNoiseFilter',
+                     'passHighLevelNoiseFilter:passHighLevelNoiseFilter',
+                     'noiseFilterStatus:noiseFilterStatus',
+                     'noiseType:noiseType',
+                     'eventEMEnergy:eventEMEnergy',
+                     'eventHadEnergy:eventHadEnergy',
+                     'eventTrackEnergy:eventTrackEnergy',
+                     'eventEMFraction:eventEMFraction',
+                     'eventChargeFraction:eventChargeFraction',
+                     'min10GeVHitTime:min10GeVHitTime',
+                     'max10GeVHitTime:max10GeVHitTime',
+                     'rms10GeVHitTime:rms10GeVHitTime',
+                     'min25GeVHitTime:min25GeVHitTime',
+                     'max25GeVHitTime:max25GeVHitTime',
+                     'rms25GeVHitTime:rms25GeVHitTime',
+                     'num10GeVHits:num10GeVHits',
+                     'num25GeVHits:num25GeVHits',
+                     'minE2TS:minE2TS',
+                     'minE10TS:minE10TS',
+                     'minE2Over10TS:minE2Over10TS',
+                     'maxZeros:maxZeros',
+                     'maxHPDHits:maxHPDHits',
+                     'maxRBXHits:maxRBXHits',
+                     'minHPDEMF:minHPDEMF',
+                     'minRBXEMF:minRBXEMF',
+                     'numProblematicRBXs:numProblematicRBXs'
+                       )
+                ),
+            Class = cms.string('HcalNoiseSummary')
+            ),
+
+
+           hcalNoiseRBX = cms.PSet(  
+           src = cms.InputTag("hcalnoise"),
+            leaves = cms.PSet(
+                vars = cms.vstring(
+                     'idnumber:idnumber',
+                     'allChargeTotal:allChargeTotal',
+                     'allChargeHighest2TS:allChargeHighest2TS',
+                     'allChargeHighest3TS:allChargeHighest3TS',
+                     'totalZeros:totalZeros',
+                     'maxZeros:maxZeros',
+                     'recHitEnergy:recHitEnergy(1.5)',
+                     'minRecHitTime:minRecHitTime(20.0)',
+                     'maxRecHitTime:maxRecHitTime(20.0)',
+                     'numRecHits:numRecHits(1.5)',
+                     'caloTowerHadE:caloTowerHadE',
+                     'caloTowerEmE:caloTowerEmE',
+                     'caloTowerTotalE:caloTowerTotalE',
+                     'caloTowerEmFraction:caloTowerEmFraction'
+                       )
+                ),
+            Class = cms.string('reco::HcalNoiseRBX')
+            ),
+
+
+
 
 #            hemi = cms.PSet(
 #                src = cms.InputTag("allLayer1Hemispheres"),
