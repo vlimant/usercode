@@ -233,6 +233,9 @@ class StringBasedNTupler : public NTupler {
     ev_ = new uint;
     run_ = new uint;
     lumiblock_ = new uint;
+    experimentType_ = new uint;
+    bunchCrossing_ = new uint;
+    orbitNumber_ = new uint;
 
     if (branchesPSet.exists("useTFileService"))
       useTFileService_=branchesPSet.getParameter<bool>("useTFileService");         
@@ -280,6 +283,9 @@ class StringBasedNTupler : public NTupler {
       tree_->Branch("run",run_,"run/i");
       tree_->Branch("event",ev_,"event/i");
       tree_->Branch("lumiblock",lumiblock_,"lumiblock/i");
+      tree_->Branch("experimentType",experimentType_,"experimentType/i");
+      tree_->Branch("bunchCrossing",ev_,"bunchCrossing/i");
+      tree_->Branch("orbitNumber",ev_,"orbitNumber/i");
 
     }
     else{
@@ -335,6 +341,9 @@ class StringBasedNTupler : public NTupler {
       *ev_ = iEvent.id().event();
       //      *lumiblock_ = iEvent.id().luminosityBlock();
       *lumiblock_ = iEvent.luminosityBlock();
+      *experimentType_ = iEvent.experimentType();
+      *bunchCrossing_ = iEvent.bunchCrossing();
+      *orbitNumber_ = iEvent.orbitNumber();
 
       if (ownTheTree_){	tree_->Fill(); }
 
@@ -372,6 +381,9 @@ class StringBasedNTupler : public NTupler {
     delete ev_;
     delete run_;
     delete lumiblock_;
+    delete experimentType_;
+    delete bunchCrossing_;
+    delete orbitNumber_;
   }
     
  protected:
@@ -386,6 +398,9 @@ class StringBasedNTupler : public NTupler {
   uint * ev_;
   uint * run_;
   uint * lumiblock_;
+  uint * experimentType_;
+  uint * bunchCrossing_;
+  uint * orbitNumber_;
 };
 
 
