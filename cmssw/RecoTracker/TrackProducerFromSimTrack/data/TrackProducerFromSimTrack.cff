@@ -1,8 +1,0 @@
-#produce the mag field
-include "MagneticField/Engine/data/volumeBasedMagneticField.cfi"
-
-#produce the stepping helix propagator
-include "TrackPropagation/SteppingHelixPropagator/data/SteppingHelixPropagatorAlong.cfi"
-
-#produce the module
-include "RecoTracker/TrackProducerFromSimTrack/data/TrackProducerFromSimTrack.cfi"
