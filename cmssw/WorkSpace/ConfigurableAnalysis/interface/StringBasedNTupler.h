@@ -284,8 +284,8 @@ class StringBasedNTupler : public NTupler {
       tree_->Branch("event",ev_,"event/i");
       tree_->Branch("lumiblock",lumiblock_,"lumiblock/i");
       tree_->Branch("experimentType",experimentType_,"experimentType/i");
-      tree_->Branch("bunchCrossing",ev_,"bunchCrossing/i");
-      tree_->Branch("orbitNumber",ev_,"orbitNumber/i");
+      tree_->Branch("bunchCrossing",bunchCrossing_,"bunchCrossing/i");
+      tree_->Branch("orbitNumber",orbitNumber_,"orbitNumber/i");
 
     }
     else{
