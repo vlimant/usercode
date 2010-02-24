@@ -14,7 +14,7 @@
 //
 // Original Author:  "Thomas Danielson"
 //         Created:  Thu May  8 12:05:03 CDT 2008
-// $Id: MuonHLTTreeUtility.cc,v 1.11 2009/09/14 14:08:33 klukas Exp $
+// $Id: MuonHLTTreeUtility.cc,v 1.12 2009/12/11 13:53:35 tdaniels Exp $
 //
 //
 
@@ -343,6 +343,7 @@ private:
   std::vector<double> *l1Pt;
   std::vector<double> *l1Eta;
   std::vector<double> *l1Phi;
+  std::vector<int> *l1Charge;
   std::vector<int> *l1Quality;
   std::vector<int> *l1IsIso;
   std::vector<int> *l1IsMip;
@@ -831,6 +832,7 @@ MuonHLTTreeUtility::MuonHLTTreeUtility(const edm::ParameterSet& iConfig):
   l1Pt = 0;
   l1Eta = 0;
   l1Phi = 0;
+  l1Charge = 0;
   l1Quality = 0;
   l1IsIso = 0;
   l1IsMip = 0;
@@ -1043,10 +1045,12 @@ void MuonHLTTreeUtility::analyze(const edm::Event& iEvent, const edm::EventSetup
 	(*muonL2RecModuleTimes).insert(std::make_pair(theMuonL2RecModules[j],evtTime->time(i)));
       }
     }
+    //    std::cout << "number of L3 recModules: " << theMuonL3RecModules.size() << std::endl;
     for ( unsigned int j = 0; j != theMuonL3RecModules.size(); ++j ) {
       if ( theMuonL3RecModules[j] == module_name) {
         totalMuonHLTTime+=evtTime->time(i);
 	//        (*muonL3RecModuleTimes).push_back(evtTime->time(i));
+	//	std::cout << theMuonL3RecModules[j] << std::endl;
         (*muonL3RecModuleTimes).insert(std::make_pair(theMuonL3RecModules[j],evtTime->time(i)));
       }
     }
@@ -2070,6 +2074,7 @@ void MuonHLTTreeUtility::analyze(const edm::Event& iEvent, const edm::EventSetup
     (*l1P).push_back(itL1->p());
     (*l1Pt).push_back(itL1->pt());
     (*l1Eta).push_back(itL1->eta());
+    (*l1Charge).push_back(itL1->charge());
     (*l1Phi).push_back(itL1->phi());
     (*l1Quality).push_back(itL1->gmtMuonCand().quality());
     if (itL1->isIsolated()) (*l1IsIso).push_back(1);
@@ -2506,6 +2511,7 @@ void MuonHLTTreeUtility::analyze(const edm::Event& iEvent, const edm::EventSetup
   l1Pt->clear();
   l1Eta->clear();
   l1Phi->clear();
+  l1Charge->clear();
   l1Quality->clear();
   l1IsIso->clear();
   l1IsMip->clear();
@@ -2704,6 +2710,7 @@ MuonHLTTreeUtility::beginJob(const edm::EventSetup&)
   MuTrigData->Branch("l1Pt",&l1Pt);
   MuTrigData->Branch("l1Eta",&l1Eta);
   MuTrigData->Branch("l1Phi",&l1Phi);
+  MuTrigData->Branch("l1Charge",&l1Charge);
   MuTrigData->Branch("l1Quality",&l1Quality);
   MuTrigData->Branch("l1IsIso",&l1IsIso);
   MuTrigData->Branch("l1IsMip",&l1IsMip);
@@ -2888,6 +2895,7 @@ MuonHLTTreeUtility::beginJob(const edm::EventSetup&)
   MuTrigMC->Branch("l1Pt",&l1Pt);
   MuTrigMC->Branch("l1Eta",&l1Eta);
   MuTrigMC->Branch("l1Phi",&l1Phi);
+  MuTrigMC->Branch("l1Charge",&l1Charge);
   MuTrigMC->Branch("l1Quality",&l1Quality);
   MuTrigMC->Branch("l1IsIso",&l1IsIso);
   MuTrigMC->Branch("l1IsMip",&l1IsMip);
