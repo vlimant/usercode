@@ -14,7 +14,7 @@
 //
 // Original Author:  "Thomas Danielson"
 //         Created:  Thu May  8 12:05:03 CDT 2008
-// $Id: MuonHLTTreeUtility.cc,v 1.12 2009/12/11 13:53:35 tdaniels Exp $
+// $Id: MuonHLTTreeUtility.cc,v 1.13 2010/02/24 01:10:56 tdaniels Exp $
 //
 //
 
@@ -148,7 +148,7 @@ public:
   
   
 private:
-  virtual void beginJob(const edm::EventSetup&) ;
+  virtual void beginJob() ;
   virtual void analyze(const edm::Event&, const edm::EventSetup&);
   virtual void endJob() ;
   
@@ -2523,7 +2523,7 @@ void MuonHLTTreeUtility::analyze(const edm::Event& iEvent, const edm::EventSetup
 
 // ------------ method called once each job just before starting event loop  ------------
 void 
-MuonHLTTreeUtility::beginJob(const edm::EventSetup&)
+MuonHLTTreeUtility::beginJob()
 {
 
   theFile = new TFile(outputFileName.c_str(),"recreate");
