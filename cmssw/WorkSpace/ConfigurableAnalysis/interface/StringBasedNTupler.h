@@ -178,6 +178,8 @@ public:
 class StringBasedNTupler : public NTupler {
  public:
   StringBasedNTupler(const edm::ParameterSet& iConfig){
+
+    
     edm::ParameterSet branchesPSet = iConfig.getParameter<edm::ParameterSet>("branchesPSet");
     std::vector<std::string> branches;
     branchesPSet.getParameterSetNames(branches);
@@ -243,10 +245,14 @@ class StringBasedNTupler : public NTupler {
       useTFileService_=iConfig.getParameter<bool>("useTFileService");
 
     if (useTFileService_){
-      if (branchesPSet.exists("treeName"))
+      if (branchesPSet.exists("treeName")){
 	treeName_=branchesPSet.getParameter<std::string>("treeName");
-      else
+	ownTheTree_=true;
+      }
+      else{
 	treeName_=iConfig.getParameter<std::string>("treeName");
+	ownTheTree_=false;
+      }
     }
   }
 
@@ -255,8 +261,23 @@ class StringBasedNTupler : public NTupler {
 
     if (useTFileService_){
       edm::Service<TFileService> fs;      
-      ownTheTree_=true;
-      tree_=fs->make<TTree>(treeName_.c_str(),"StringBasedNTupler tree");
+      if (ownTheTree_){
+	ownTheTree_=true;
+	tree_=fs->make<TTree>(treeName_.c_str(),"StringBasedNTupler tree");
+      }else{
+	TObject * object = fs->file().Get(treeName_.c_str());
+	if (!object){
+	  ownTheTree_=true;
+	  tree_=fs->make<TTree>(treeName_.c_str(),"StringBasedNTupler tree");
+	}
+	tree_=dynamic_cast<TTree*>(object);
+	if (!tree_){
+	  ownTheTree_=true;
+	  tree_=fs->make<TTree>(treeName_.c_str(),"StringBasedNTupler tree");
+	}
+	else	  ownTheTree_=false;
+	
+      }
 
       //reserve memory for the indexes      
       indexDataHolder_ = new uint[branches_.size()];
@@ -346,15 +367,6 @@ class StringBasedNTupler : public NTupler {
       *orbitNumber_ = iEvent.orbitNumber();
 
       if (ownTheTree_){	tree_->Fill(); }
-
-      //de-allocate memory now: allocated in branch(...) and released to the pointer.
-      for(;iB!=iB_end;++iB,++indexOfIndexInDataHolder){
-	std::vector<TreeBranch>::iterator iL=iB->second.begin();
-	std::vector<TreeBranch>::iterator iL_end=iB->second.end();
-	for(;iL!=iL_end;++iL){
-          TreeBranch & b=*iL;
-	  delete b.dataHolderPtr();
-	}}
     }else{
       // loop the automated leafer
       Branches::iterator iB=branches_.begin();
@@ -372,6 +384,23 @@ class StringBasedNTupler : public NTupler {
 	//index should be put only once per branch. doe not really mattter for edm root files
 	std::auto_ptr<uint> maxN(new uint(maxS));
 	iEvent.put(maxN, iB->first);
+      }
+    }
+  }
+
+  void callBack() 
+  {
+    if (useTFileService_){
+      Branches::iterator iB=branches_.begin();
+      Branches::iterator iB_end=branches_.end();
+      //de-allocate memory now: allocated in branch(...) and released to the pointer.
+      for(;iB!=iB_end;++iB){
+	std::vector<TreeBranch>::iterator iL=iB->second.begin();
+	std::vector<TreeBranch>::iterator iL_end=iB->second.end();
+	for(;iL!=iL_end;++iL){
+	  TreeBranch & b=*iL;
+	  delete b.dataHolderPtr();
+	}
       }
     }
   }

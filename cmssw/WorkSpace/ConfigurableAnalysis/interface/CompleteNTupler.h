@@ -2,6 +2,7 @@
 
 #include "Workspace/ConfigurableAnalysis/interface/StringBasedNTupler.h"
 #include "Workspace/ConfigurableAnalysis/interface/VariableNTupler.h"
+#include "Workspace/ConfigurableAnalysis/interface/AdHocNTupler.h"
 
 class CompleteNTupler : public NTupler {
  public:
@@ -14,16 +15,23 @@ class CompleteNTupler : public NTupler {
     uint nLeaves=0;
     nLeaves+=sN->registerleaves(producer);
     nLeaves+=vN->registerleaves(producer);
+    nLeaves+=aN->registerleaves(producer);
     return nLeaves;
   }
   void fill(edm::Event& iEvent){
     sN->fill(iEvent);
     vN->fill(iEvent);
+    aN->fill(iEvent);
+
+    sN->callBack();
+    vN->callBack();
+    aN->callBack();
   }
 
  private:
   StringBasedNTupler * sN;
   VariableNTupler * vN;  
+  AdHocNTupler * aN;
 
 };
 

@@ -59,8 +59,22 @@ class VariableNTupler : public NTupler{
       iterator i=leaves_.begin();
       iterator i_end= leaves_.end();
       edm::Service<TFileService> fs;
-      ownTheTree_=true;
-      tree_=fs->make<TTree>(treeName_.c_str(),"VariableNTuple tree");
+      if (ownTheTree_){
+	ownTheTree_=true;
+	tree_=fs->make<TTree>(treeName_.c_str(),"VariableNTupler tree");
+      }else{
+	TObject * object = fs->file().Get(treeName_.c_str());
+	if (!object){
+	  ownTheTree_=true;
+	  tree_=fs->make<TTree>(treeName_.c_str(),"VariableNTupler tree");
+	}
+	tree_=dynamic_cast<TTree*>(object);
+	if (!tree_){
+	  ownTheTree_=true;
+	  tree_=fs->make<TTree>(treeName_.c_str(),"VariableNTupler tree");
+	}
+	else	  ownTheTree_=false;
+      }
       uint iInDataHolder=0;
       for(;i!=i_end;++i,++iInDataHolder){
 	tree_->Branch(i->first.c_str(), &(dataHolder_[iInDataHolder]), (i->first+"/D").c_str());
@@ -104,6 +118,8 @@ class VariableNTupler : public NTupler{
       }
     }
   }
+  void callBack(){}
+
  protected:
   typedef std::map<std::string, const CachingVariable *>::iterator iterator;
   std::map<std::string, const CachingVariable *> leaves_;

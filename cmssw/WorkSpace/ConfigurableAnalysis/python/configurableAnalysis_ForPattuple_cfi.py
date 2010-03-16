@@ -415,8 +415,7 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
     ),
     Ntupler = cms.PSet(
         branchesPSet = cms.PSet(
-            treeName = cms.string('eventB'),
-
+            #treeName = cms.string('eventB'),
             pv = cms.PSet(
                 src = cms.InputTag("offlinePrimaryVertices"),
                  leaves = cms.PSet(
@@ -1308,11 +1307,12 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
         ComponentName = cms.string('CompleteNTupler'),
         useTFileService = cms.bool(True), ## false for EDM; true for non EDM
 
-        #                string treeName="event"
+        treeName= cms.string("event"),
+        
         variablesPSet = cms.PSet(
             #use all the variables from the PSet above
             allVariables = cms.bool(True),
-            treeName = cms.string('eventV')
+            #treeName = cms.string('event')
         )
     )
 )
