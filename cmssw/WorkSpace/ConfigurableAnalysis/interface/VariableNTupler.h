@@ -68,12 +68,14 @@ class VariableNTupler : public NTupler{
 	  ownTheTree_=true;
 	  tree_=fs->make<TTree>(treeName_.c_str(),"VariableNTupler tree");
 	}
-	tree_=dynamic_cast<TTree*>(object);
-	if (!tree_){
-	  ownTheTree_=true;
-	  tree_=fs->make<TTree>(treeName_.c_str(),"VariableNTupler tree");
+	else{
+	    tree_=dynamic_cast<TTree*>(object);
+	    if (!tree_){
+	      ownTheTree_=true;
+	      tree_=fs->make<TTree>(treeName_.c_str(),"VariableNTupler tree");
+	    }
+	    else	  ownTheTree_=false;
 	}
-	else	  ownTheTree_=false;
       }
       uint iInDataHolder=0;
       for(;i!=i_end;++i,++iInDataHolder){

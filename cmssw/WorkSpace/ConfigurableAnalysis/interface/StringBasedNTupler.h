@@ -270,15 +270,16 @@ class StringBasedNTupler : public NTupler {
 	  ownTheTree_=true;
 	  tree_=fs->make<TTree>(treeName_.c_str(),"StringBasedNTupler tree");
 	}
-	tree_=dynamic_cast<TTree*>(object);
-	if (!tree_){
-	  ownTheTree_=true;
-	  tree_=fs->make<TTree>(treeName_.c_str(),"StringBasedNTupler tree");
+	else{
+	  tree_=dynamic_cast<TTree*>(object);
+	  if (!tree_){
+	    ownTheTree_=true;
+	    tree_=fs->make<TTree>(treeName_.c_str(),"StringBasedNTupler tree");
+	  }
+	  else	  ownTheTree_=false;
 	}
-	else	  ownTheTree_=false;
-	
       }
-
+      
       //reserve memory for the indexes      
       indexDataHolder_ = new uint[branches_.size()];
       // loop the automated leafer
