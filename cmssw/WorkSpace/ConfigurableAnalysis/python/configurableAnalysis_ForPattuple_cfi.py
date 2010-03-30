@@ -335,13 +335,13 @@ eTaxis = cms.PSet(
 configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
     Selections = cms.PSet(
         filters = cms.PSet(
-            leadingMuon = cms.PSet(
-                src = cms.string('muons'),
+#            leadingMuon = cms.PSet(
+#                src = cms.string('muons'),
 #                cut = cms.vstring('pt > 20.0 & abs(eta) < 3.0'),
-                cut = cms.vstring(''),
-                selector = cms.string('patMuonSEventSelector')
+#                cut = cms.vstring(''),
+#                selector = cms.string('patMuonSEventSelector')
 #                selector = cms.string('')
-            )#,
+#            )#,
 #            leadingElectron = cms.PSet(
 #                src = cms.string('electrons'),
 #                cut = cms.vstring('pt > 20.0 & abs(eta) < 3.0'),
@@ -403,12 +403,14 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
         genMuons = cms.InputTag("genMuons"),
 #        ccjets = cms.InputTag("patcrosscleaner","ccJets"),
         genElectrons = cms.InputTag("genElectrons"),
-        electrons = cms.InputTag("cleanLayer1Electrons"),#changed from allLayer1Electrons
+#        electrons = cms.InputTag("cleanLayer1Electrons"),#changed from allLayer1Electrons
+        electrons = cms.InputTag("cleanPatElectrons"),#changed from allLayer1Electrons
 #        ccmets = cms.InputTag("patcrosscleaner","ccMETs"),
 #        muons = cms.InputTag("selectedLayer1Muons"),
-        muons = cms.InputTag("cleanLayer1Muons"),#changed from allLayer1Muons
+#        muons = cms.InputTag("cleanLayer1Muons"),#changed from allLayer1Muons
+        muons = cms.InputTag("cleanPatMuons"),
 #        jets = cms.InputTag("allLayer1JetsIC5"),#changed to line below 
-        jets = cms.InputTag("cleanLayer1JetsSC5"),
+        jets = cms.InputTag("cleanPatJetsSC5Calo"),
 #        ccmuons = cms.InputTag("patcrosscleaner","ccMuons"),
 #        ccelectrons = cms.InputTag("patcrosscleaner","ccElectrons"),
         genJets = cms.InputTag("iterativeCone5GenJetsNoNuBSM")
@@ -699,7 +701,7 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
 
                  mets_SC5 = cms.PSet(
 #                src = cms.InputTag("allLayer1METsIC5"),#vhanged to line below
-                  src = cms.InputTag("layer1METsSC5"),
+                  src = cms.InputTag("patMETsSC5Calo"),
                    leaves = cms.PSet(
                     vars = cms.vstring('et:et', 
                         'phi:phi', 
@@ -718,7 +720,7 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
 
                  mets_AK5 = cms.PSet(
 #                src = cms.InputTag("allLayer1METsIC5"),#vhanged to line below
-                  src = cms.InputTag("layer1METsAK5"),
+                  src = cms.InputTag("patMETsAK5Calo"),
                    leaves = cms.PSet(
                     vars = cms.vstring('et:et', 
                         'phi:phi', 
@@ -737,7 +739,7 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
 
 
             tcmets = cms.PSet(
-                  src = cms.InputTag("layer1METsTC"),
+                  src = cms.InputTag("patMETsTC"),
                   leaves = cms.PSet(
                       vars = cms.vstring('et:et',
                                          'phi:phi',
@@ -761,7 +763,7 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
 #                Class = cms.string('pat::Jet')
 #            ),
             photons = cms.PSet(
-                src = cms.InputTag("cleanLayer1Photons"),#clean<=>all
+                src = cms.InputTag("cleanPatPhotons"),#clean<=>all
                 leaves = cms.PSet(
                     basicKinematicLeaves,
                     vars= cms.vstring('hadOverEM:hadronicOverEm',
@@ -960,7 +962,7 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
             ),
 
             taus = cms.PSet(
-                              src = cms.InputTag("cleanLayer1Taus"),
+                              src = cms.InputTag("cleanPatTaus"),
                               leaves = cms.PSet(
                                   basicKinematicLeaves,
                                   vars = cms.vstring(
@@ -1103,7 +1105,7 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
 
 
             jets_AK5 = cms.PSet(
-                src = cms.InputTag("cleanLayer1JetsAK5"),
+                src = cms.InputTag("cleanPatJetsAK5Calo"),
 #                src = cms.string('jets'),
                 leaves = cms.PSet(
                     basicKinematicLeaves,

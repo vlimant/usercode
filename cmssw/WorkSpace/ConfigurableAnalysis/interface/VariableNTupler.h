@@ -10,7 +10,8 @@
 #include "FWCore/Framework/interface/EDFilter.h"
 #include <FWCore/Framework/interface/ProducerBase.h>
 
-#include "PhysicsTools/UtilAlgos/interface/TFileService.h"
+//#include "PhysicsTools/UtilAlgos/interface/TFileService.h"
+#include "CommonTools/UtilAlgos/interface/TFileService.h"
 #include "TTree.h"
 #include "TBranch.h"
 #include "TFile.h"
