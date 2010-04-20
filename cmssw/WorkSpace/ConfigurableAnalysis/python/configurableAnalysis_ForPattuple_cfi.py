@@ -1311,6 +1311,12 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
         useTFileService = cms.bool(True), ## false for EDM; true for non EDM
 
         #                string treeName="event"
+
+        AdHocNPSet = cms.PSet(
+            treeName = cms.string('eventA')
+            ),
+
+
         variablesPSet = cms.PSet(
             #use all the variables from the PSet above
             allVariables = cms.bool(True),
