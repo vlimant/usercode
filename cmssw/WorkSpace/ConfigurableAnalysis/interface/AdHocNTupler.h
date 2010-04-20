@@ -1,7 +1,9 @@
+#include "DataFormats/PatCandidates/interface/Electron.h"
+
 class AdHocNTupler : public NTupler {
  public:
   AdHocNTupler (const edm::ParameterSet& iConfig){
-    edm::ParameterSet adHocPSet = iConfig.getParameter<edm::ParameterSet>("adHocPSet");
+    edm::ParameterSet adHocPSet = iConfig.getParameter<edm::ParameterSet>("AdHocNPSet");
 
     if (adHocPSet.exists("useTFileService"))
       useTFileService_=adHocPSet.getParameter<bool>("useTFileService");         
@@ -19,11 +21,13 @@ class AdHocNTupler : public NTupler {
       }
     }
     
-    
+    e_leading_pt_ = new double; 
 
   }
 
-  ~AdHocNTupler(){}
+  ~AdHocNTupler(){
+    delete e_leading_pt_;
+  }
 
   uint registerleaves(edm::ProducerBase * producer){
     uint nLeaves=0;
@@ -46,7 +50,7 @@ class AdHocNTupler : public NTupler {
       }
       
       //register the leaves by hand
-      //    tree_->Branch( ..., ... , ...);
+      tree_->Branch("e_leading_pt",e_leading_pt_,"e_leading_pt/d");
 
 
     }
@@ -64,7 +68,18 @@ class AdHocNTupler : public NTupler {
     //open the collection that you want
     //retrieve the objects
     //fill the variable for tree filling 
-    
+
+    edm::Handle< std::vector<pat::Electron> > electrons;
+    iEvent.getByLabel("cleanPatElectrons",electrons);
+
+    double highest_pt_e = 0;
+    for( std::vector<pat::Electron>::const_iterator elec=electrons->begin(); elec!=electrons->end(); ++elec ){
+      double pt = elec->pt();
+      if(pt>highest_pt_e){highest_pt_e=pt;}
+    }
+
+
+    *e_leading_pt_= highest_pt_e;
 
     //fill the tree    
     if (ownTheTree_){ tree_->Fill(); }
@@ -78,5 +93,7 @@ class AdHocNTupler : public NTupler {
   bool ownTheTree_;
   std::string treeName_;
   bool useTFileService_;
+
+  double * e_leading_pt_;
 
 };
