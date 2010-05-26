@@ -1,7 +1,7 @@
 #
 #  SUSY-PAT configuration file
 #
-#  PAT configuration for the SUSY group - 35X series
+#  PAT configuration for the SUSY group - 35X/36X series
 #  More information here:
 #  https://twiki.cern.ch/twiki/bin/view/CMS/SusyPatLayer1DefV8
 #
@@ -21,18 +21,17 @@ process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 
 ## Source
 process.source = cms.Source("PoolSource",
-                            fileNames = cms.untracked.vstring(
-    '/store/relval/CMSSW_3_5_0_pre1/RelValTTbar/GEN-SIM-RECO/STARTUP3X_V14-v1/0006/14920B0A-0DE8-DE11-B138-002618943926.root'
+    fileNames = cms.untracked.vstring(
+      '/store/relval/CMSSW_3_6_0/RelValTTbar/GEN-SIM-RECO/START36_V4-v1/0013/306F945C-9A49-DF11-85F8-0018F3D0965A.root'
     )
-                            )
+)
 ## Maximal Number of Events
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
 
 ## Geometry and Detector Conditions (needed for a few patTuple production steps)
 process.load("Configuration.StandardSequences.Geometry_cff")
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
-#process.GlobalTag.globaltag = cms.string('MC_3XY_V20::All')
-process.GlobalTag.globaltag = cms.string('START3X_V20::All')
+process.GlobalTag.globaltag = cms.string('START36_V4::All')
 process.load("Configuration.StandardSequences.MagneticField_cff")
 
 ## Standard PAT Configuration File
@@ -46,14 +45,15 @@ process.out = cms.OutputModule("PoolOutputModule",
                                SelectEvents   = cms.untracked.PSet( SelectEvents = cms.vstring('p') ),
                                # save PAT Layer 1 output; you need a '*' to
                                # unpack the list of commands 'patEventContent'
-                               outputCommands = cms.untracked.vstring('drop *', *patEventContent )
+                               outputCommands = cms.untracked.vstring('drop *', *patEventContent ) 
                                )
 #process.outpath = cms.EndPath(process.out)
 
 
+
 #-- Meta data to be logged in DBS ---------------------------------------------
 process.configurationMetadata = cms.untracked.PSet(
-    version = cms.untracked.string('$Revision: 1.26 $'),
+    version = cms.untracked.string('$Revision: 1.29 $'),
     name = cms.untracked.string('$Source: /cvs_server/repositories/CMSSW/CMSSW/PhysicsTools/Configuration/test/SUSY_pattuple_cfg.py,v $'),
     annotation = cms.untracked.string('SUSY pattuple definition')
 )
@@ -68,8 +68,10 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 100
 
 #-- Input Source --------------------------------------------------------------
 process.source.fileNames = [
-     '/store/relval/CMSSW_3_5_2/RelValTTbar/GEN-SIM-RECO/MC_3XY_V21-v1/0016/F257D874-3C1E-DF11-AF61-001731A28BE1.root'
-     #'/store/data/BeamCommissioning09/MinimumBias/RAW-RECO/18thFebPreProd_351p1_RecoTracks-v2/0000/FC52ED81-511E-DF11-8743-00237DA13FB6.root'
+     '/store/relval/CMSSW_3_6_0_pre6/RelValProdTTbar/GEN-SIM-RECO/MC_36Y_V4-v1/0011/82DAA1BE-B344-DF11-A116-00304867C0C4.root'
+     #'/store/mc/Spring10/MinBias/GEN-SIM-RECO/START3X_V25B_356ReReco-v1/0007/FE90A396-233C-DF11-8106-002618943898.root'
+     #'/store/data/Commissioning10/MinimumBias/RAW-RECO/Apr1Skim_GOODCOLL-v1/0140/E27B88D1-8040-DF11-B3FC-00261894391B.root'
+     #'file:/tmp/nmohr/356ReRecoMC.root'
     ]
 process.maxEvents.input = 10
 # Due to problem in production of LM samples: same event number appears multiple times
@@ -77,17 +79,19 @@ process.source.duplicateCheckMode = cms.untracked.string('noDuplicateCheck')
 
 #-- Calibration tag -----------------------------------------------------------
 # Should match input file's tag
-process.GlobalTag.globaltag = 'MC_3XY_V24::All'
+process.GlobalTag.globaltag = 'START36_V4::All'
 
 ############################# START SUSYPAT specifics ####################################
 from PhysicsTools.Configuration.SUSY_pattuple_cff import addDefaultSUSYPAT, getSUSY_pattuple_outputCommands
-#Apply SUSYPAT, parameters are: mcInfo, HLT menu, Jet energy corrections, JetCollections
-addDefaultSUSYPAT(process,True,'HLT','Summer09_7TeV_ReReco332',['IC5Calo','SC5Calo','AK5PF','AK5JPT','AK5Track']) 
+#Apply SUSYPAT, parameters are: mcInfo, HLT menu, Jet energy corrections, mcVersion ('35x' for 35x samples, empty string for 36X samples),JetCollections
+addDefaultSUSYPAT(process,True,'HLT','Spring10','35x',['IC5Calo','AK5JPT']) 
 SUSY_pattuple_outputCommands = getSUSY_pattuple_outputCommands( process )
 ############################## END SUSYPAT specifics ####################################
 
+
 #-- configurableAnalysis stuff -------------------------------------------------------
 process.load("Workspace.ConfigurableAnalysis.configurableAnalysis_ForPattuple_cff")
+
 
 #-- Output module configuration -----------------------------------------------
 process.out.fileName = 'SUSYPAT.root'       # <-- CHANGE THIS TO SUIT YOUR NEEDS
@@ -100,7 +104,7 @@ process.out.outputCommands = cms.untracked.vstring('drop *', *SUSY_pattuple_outp
 
 #-- Execution path ------------------------------------------------------------
 # Full path
-process.p = cms.Path( process.seqSUSYDefaultSequence + process.configurableAnalysis )
+process.p = cms.Path( process.susyPatDefaultSequence +process.configurableAnalysis)
 #-- Dump config ------------------------------------------------------------
 file = open('SusyPAT_cfg.py','w')
 file.write(str(process.dumpPython()))
