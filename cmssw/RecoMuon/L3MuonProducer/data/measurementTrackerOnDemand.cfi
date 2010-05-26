@@ -1,5 +1,0 @@
-es_module MeasurementTrackerOnDemand = MeasurementTracker from "RecoTracker/MeasurementDet/data/MeasurementTrackerESProducer.cfi"
-replace MeasurementTrackerOnDemand.ComponentName = "MeasurementTrackerOnDemand"
-replace MeasurementTrackerOnDemand.stripClusterProducer = "SiStripRawToClustersFacility"
-replace MeasurementTrackerOnDemand.Regional = true
-replace MeasurementTrackerOnDemand.OnDemand = true
