@@ -530,13 +530,6 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
 
 
 
-#            hemi = cms.PSet(
-#                src = cms.InputTag("allLayer1Hemispheres"),
-#                leaves = cms.PSet(
-#                    basicKinematicLeaves
-#                ),
-#                Class = cms.string('pat::Hemisphere')
-#            ),
             mus = cms.PSet(
                 src = cms.string('muons'),
                 leaves = cms.PSet(
@@ -681,27 +674,10 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
 
 
 
-#            mets_SC5 = cms.PSet(
-#                src = cms.InputTag("allLayer1METsSC5"),
-#                leaves = cms.PSet(
-#                    vars = cms.vstring('et:et', 
-#                        'phi:phi', 
-#                        'ex:px', 
-#                        'ey:py', 
-#                        'gen_et:genMET.et', 
-#                        'gen_phi:genMET.phi', 
-#                        'sumEt:sumEt', 
-#                        'unCPhi:uncorrectedPhi', 
-#                        'unCPt:uncorrectedPt')
-#                ),
-#                Class = cms.string('pat::MET')
-#            ),
 
-
-
-                 mets_SC5 = cms.PSet(
+                 mets_AK5 = cms.PSet(
 #                src = cms.InputTag("allLayer1METsIC5"),#vhanged to line below
-                  src = cms.InputTag("patMETsSC5Calo"),
+                  src = cms.InputTag("patMETsAK5Calo"),
                    leaves = cms.PSet(
                     vars = cms.vstring('et:et', 
                         'phi:phi', 
@@ -718,9 +694,9 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
             ),
 
 
-                 mets_AK5 = cms.PSet(
+                 pfmets = cms.PSet(
 #                src = cms.InputTag("allLayer1METsIC5"),#vhanged to line below
-                  src = cms.InputTag("patMETsAK5Calo"),
+                  src = cms.InputTag("patMETsPF"),
                    leaves = cms.PSet(
                     vars = cms.vstring('et:et', 
                         'phi:phi', 
@@ -752,16 +728,6 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
             ),
                                                                         
 
-#            ccjets = cms.PSet(
-#                src = cms.string('ccjets'),
-#                leaves = cms.PSet(
-#                    basicKinematicLeaves,
-#
-#                    vars = cms.vstring(#'energy:energy', 
-#                        'mass:mass')
-#                ),
-#                Class = cms.string('pat::Jet')
-#            ),
             photons = cms.PSet(
                 src = cms.InputTag("cleanPatPhotons"),#clean<=>all
                 leaves = cms.PSet(
@@ -817,7 +783,13 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
                                       #Currently (28-07) all photons are defined as LooseEM, but this will be added again as
                                       # they are going to relax pre-selection cuts on the photon 
                                       #'isLooseEM:photonID()',
-                                      
+                                      'maxEnergyXtal:maxEnergyXtal',
+                                      'e1x5:e1x5',
+                                      'e2x5:e2x5',
+                                      'e3x3:e3x3',
+                                      'e5x5:e5x5',
+                                      'sigmaEtaEta:sigmaEtaEta',
+                                      'sigmaIetaIeta:sigmaIetaIeta',
                                       'r9:r9',
                                       'gen_et:genPhoton.et',
                                       'gen_eta:genPhoton.eta',
@@ -828,92 +800,151 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
                     
                 Class = cms.string('pat::Photon')
             ),
-#            mc_doc = cms.PSet(
-#                src = cms.InputTag("genParticles"),
-#                leaves = cms.PSet(
-#                    vars = cms.vstring('id:pdgId', 
-#                        'pt:pt', 
-#                        'px:px', 
-#                        'py:py', 
-#                        'pz:pz',
-#                        'eta:eta',
-#                        'phi:phi',
-#                        'theta:theta', 
-#                        'energy:energy',
-#                        'status:status', 
-#                        'charge:charge', 
-#                        'mother_id:mother.pdgId',
-#                        'grandmother_id:mother.mother.pdgId', 
-#                        'ggrandmother_id:mother.mother.mother.pdgId', 
-#                        'mother_pt:mother.pt',           
-#                        'vertex_x:vertex.x', 
-#                        'vertex_y:vertex.y', 
-#                        'vertex_z:vertex.z', 
-#                        'mass:mass', 
-#                        'numOfDaughters:numberOfDaughters',
-#                        'numOfMothers:numberOfMothers'
-#                                       )
-#                ),
+            mc_doc = cms.PSet(
+                src = cms.InputTag("genParticles"),
+                leaves = cms.PSet(
+                    vars = cms.vstring('id:pdgId', 
+                        'pt:pt', 
+                        'px:px', 
+                        'py:py', 
+                        'pz:pz',
+                        'eta:eta',
+                        'phi:phi',
+                        'theta:theta', 
+                        'energy:energy',
+                        'status:status', 
+                        'charge:charge', 
+                        'mother_id:mother.pdgId',
+                        'grandmother_id:mother.mother.pdgId', 
+                        'ggrandmother_id:mother.mother.mother.pdgId', 
+                        'mother_pt:mother.pt',           
+                        'vertex_x:vertex.x', 
+                        'vertex_y:vertex.y', 
+                        'vertex_z:vertex.z', 
+                        'mass:mass', 
+                        'numOfDaughters:numberOfDaughters',
+                        'numOfMothers:numberOfMothers'
+                                       )
+                ),
 #                selection = cms.string('status = 3&&numberOfMothers!=0'),
-#                selection = cms.string('status=3'),
-#                Class = cms.string('reco::GenParticle')
-#            ),
-#            mc_mus = cms.PSet(
-#                src = cms.InputTag("genParticles"),
-#                leaves = cms.PSet(
-#                    vars = cms.vstring('id:pdgId', 
-#                        'pt:pt', 
-#                        'px:px', 
-#                        'py:py', 
-#                        'pz:pz',
-#                        'eta:eta', 
-#                        'phi:phi',
-#                        'theta:theta', 
-#                        'status:status',
-#                        'energy:energy',
-#                        'charge:charge',
-#                        'mother_id:mother.pdgId',
-#                        'mother_pt:mother.pt', 
-#                        'grandmother_id:mother.mother.pdgId',
-#                        'ggrandmother_id:mother.mother.mother.pdgId',                      
-#                        'vertex_x:vertex.x', 
-#                        'vertex_y:vertex.y', 
-#                        'vertex_z:vertex.z', 
-#                        'mass:mass', 
-#                        'numOfDaughters:numberOfDaughters')
-#                ),
-#                selection = cms.string('status!=3 & (pdgId=13 | pdgId=-13) & pt>10'),
-##                selection = cms.string('status!=3 & (pdgId=13 | pdgId=-13)'),
-#                Class = cms.string('reco::GenParticle')
-#            ),
-#            mc_electrons = cms.PSet(
-#                src = cms.InputTag("genParticles"),
-#                leaves = cms.PSet(
-#                    vars = cms.vstring('id:pdgId', 
-#                        'pt:pt', 
-#                        'px:px', 
-#                        'py:py', 
-#                        'pz:pz', 
-#                        'eta:eta',
-#                        'phi:phi',
-#                        'theta:theta',
-#                        'status:status', 
-#                        'energy:energy',
-#                        'charge:charge',
-#                        'mother_id:mother.pdgId',
-#                        'mother_pt:mother.pt', 
-#                        'grandmother_id:mother.mother.pdgId',
-#                        'ggrandmother_id:mother.mother.mother.pdgId',                                        
-#                        'vertex_x:vertex.x', 
-#                        'vertex_y:vertex.y', 
-#                        'vertex_z:vertex.z', 
-#                        'mass:mass', 
-#                        'numOfDaughters:numberOfDaughters')
-#                ),
-#                selection = cms.string('status!=3 & (pdgId=11 | pdgId=-11) & pt>10'),
+                selection = cms.string('status=3'),
+                Class = cms.string('reco::GenParticle')
+            ),
+            mc_mus = cms.PSet(
+                src = cms.InputTag("genParticles"),
+                leaves = cms.PSet(
+                    vars = cms.vstring('id:pdgId', 
+                        'pt:pt', 
+                        'px:px', 
+                        'py:py', 
+                        'pz:pz',
+                        'eta:eta', 
+                        'phi:phi',
+                        'theta:theta', 
+                        'status:status',
+                        'energy:energy',
+                        'charge:charge',
+                        'mother_id:mother.pdgId',
+                        'mother_pt:mother.pt', 
+                        'grandmother_id:mother.mother.pdgId',
+                        'ggrandmother_id:mother.mother.mother.pdgId',                      
+                        'vertex_x:vertex.x', 
+                        'vertex_y:vertex.y', 
+                        'vertex_z:vertex.z', 
+                        'mass:mass', 
+                        'numOfDaughters:numberOfDaughters')
+                ),
+                selection = cms.string('status!=3 & (pdgId=13 | pdgId=-13) & pt>10'),
+#                selection = cms.string('status!=3 & (pdgId=13 | pdgId=-13)'),
+                Class = cms.string('reco::GenParticle')
+            ),
+            mc_electrons = cms.PSet(
+                src = cms.InputTag("genParticles"),
+                leaves = cms.PSet(
+                    vars = cms.vstring('id:pdgId', 
+                        'pt:pt', 
+                        'px:px', 
+                        'py:py', 
+                        'pz:pz', 
+                        'eta:eta',
+                        'phi:phi',
+                        'theta:theta',
+                        'status:status', 
+                        'energy:energy',
+                        'charge:charge',
+                        'mother_id:mother.pdgId',
+                        'mother_pt:mother.pt', 
+                        'grandmother_id:mother.mother.pdgId',
+                        'ggrandmother_id:mother.mother.mother.pdgId',                                        
+                        'vertex_x:vertex.x', 
+                        'vertex_y:vertex.y', 
+                        'vertex_z:vertex.z', 
+                        'mass:mass', 
+                        'numOfDaughters:numberOfDaughters')
+                ),
+                selection = cms.string('status!=3 & (pdgId=11 | pdgId=-11) & pt>10'),
 #                selection = cms.string('status!=3 & (pdgId=11 | pdgId=-11)'),
-#                Class = cms.string('reco::GenParticle')
-#            ),
+                Class = cms.string('reco::GenParticle')
+            ),
+
+            mc_taus = cms.PSet(
+                src = cms.InputTag("genParticles"),
+                leaves = cms.PSet(
+                    vars = cms.vstring('id:pdgId', 
+                        'pt:pt', 
+                        'px:px', 
+                        'py:py', 
+                        'pz:pz', 
+                        'eta:eta',
+                        'phi:phi',
+                        'theta:theta',
+                        'status:status', 
+                        'energy:energy',
+                        'charge:charge',
+                        'mother_id:mother.pdgId',
+                        'mother_pt:mother.pt', 
+                        'grandmother_id:mother.mother.pdgId',
+                        'ggrandmother_id:mother.mother.mother.pdgId',                                        
+                        'vertex_x:vertex.x', 
+                        'vertex_y:vertex.y', 
+                        'vertex_z:vertex.z', 
+                        'mass:mass', 
+                        'numOfDaughters:numberOfDaughters')
+                ),
+#                selection = cms.string('status!=3 & (pdgId=11 | pdgId=-11) & pt>10'),
+                selection = cms.string('status!=3 & (pdgId=15 | pdgId=-15)'),
+                Class = cms.string('reco::GenParticle')
+            ),
+
+            mc_photons = cms.PSet(
+                src = cms.InputTag("genParticles"),
+                leaves = cms.PSet(
+                    vars = cms.vstring('id:pdgId', 
+                        'pt:pt', 
+                        'px:px', 
+                        'py:py', 
+                        'pz:pz', 
+                        'eta:eta',
+                        'phi:phi',
+                        'theta:theta',
+                        'status:status', 
+                        'energy:energy',
+                        'charge:charge',
+                        'mother_id:mother.pdgId',
+                        'mother_pt:mother.pt', 
+                        'grandmother_id:mother.mother.pdgId',
+                        'ggrandmother_id:mother.mother.mother.pdgId',                                        
+                        'vertex_x:vertex.x', 
+                        'vertex_y:vertex.y', 
+                        'vertex_z:vertex.z', 
+                        'mass:mass', 
+                        'numOfDaughters:numberOfDaughters')
+                ),
+#                selection = cms.string('status!=3 & (pdgId=11 | pdgId=-11) & pt>10'),
+                selection = cms.string('status!=3 & (pdgId=22) & pt>10'),
+                Class = cms.string('reco::GenParticle')
+            ),
+
 #            L1Triggerbits = cms.PSet(
 #                src = cms.InputTag("gtDigis"),
 #                leaves = cms.PSet(
@@ -927,8 +958,14 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
                 src = cms.InputTag("generalTracks"),
                 leaves = cms.PSet(
                     vars = cms.vstring('chi2:chi2', 
+                        'trkExptHitsInner:trackerExpectedHitsInner.numberOfHits',
+                        'trkExptHitsOuter:trackerExpectedHitsOuter.numberOfHits',
+                        'trks_nlayerslost:hitPattern.trackerLayersWithoutMeasurement',
+                        'trks_nlayers:hitPattern.trackerLayersWithMeasurement',
+                        'trksvalidpixelhits:hitPattern.numberOfValidPixelHits',
+                        'trkslostpixelhits:hitPattern.numberOfLostPixelHits',
                         'ndof:ndof', 
-                       'chg:charge', 
+                        'chg:charge', 
                         'pt:pt', 
                         'px:px', 
                         'py:py', 
@@ -962,7 +999,8 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
             ),
 
             taus = cms.PSet(
-                              src = cms.InputTag("cleanPatTaus"),
+               #               src = cms.InputTag("cleanPatTaus"),
+                              src = cms.InputTag("selectedPatTaus"),
                               leaves = cms.PSet(
                                   basicKinematicLeaves,
                                   vars = cms.vstring(
@@ -993,6 +1031,11 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
                                   'taNC_one:tauID("byTaNCfrOnePercent")',
                                   'taNC_half:tauID("byTaNCfrHalfPercent")',
                                   'taNC_tenth:tauID("byTaNCfrTenthPercent")',
+                                  'taNC:tauID("byTaNC")',
+                                  'byIsoUsingLeadingPi:tauID("byIsolationUsingLeadingPion")',
+                                  'tkIsoUsingLeadingPi:tauID("trackIsolationUsingLeadingPion")',
+                                  'ecalIsoUsingLeadingPi:tauID("ecalIsolationUsingLeadingPion")',
+                                  'signalPFChargedHadrCandsSize:signalPFChargedHadrCands.size',
                                   'muDecision:muonDecision',
                                   'Nprongs:signalTracks.size'
                                   )
@@ -1104,8 +1147,11 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
 
 
 
-            jets_AK5 = cms.PSet(
-                src = cms.InputTag("cleanPatJetsAK5Calo"),
+
+
+
+            jets_AK5PF = cms.PSet(
+                src = cms.InputTag("selectedPatJetsPF"),
 #                src = cms.string('jets'),
                 leaves = cms.PSet(
                     basicKinematicLeaves,
@@ -1132,10 +1178,14 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
                         'btag_TC_highEff:bDiscriminator("trackCountingHighEffBJetTags")',
                         'btag_jetProb:bDiscriminator("jetProbabilityBJetTags")',
                         'btag_jetBProb:bDiscriminator("jetBProbabilityBJetTags")',
-                        'btag_softEle:bDiscriminator("softElectronBJetTags")',
+                        'btag_softEle:bDiscriminator("softElectronByPtBJetTags")',
                         'btag_softMuon:bDiscriminator("softMuonBJetTags")',
-                        'btag_softMuonNoIP:bDiscriminator("softMuonNoIPBJetTags")',
-                        'btag_secVertex:bDiscriminator("simpleSecondaryVertexBJetTags")',
+#                        'btag_softMuonNoIP:bDiscriminator("softMuonNoIPBJetTags")',
+#                        'btag_secVertex:bDiscriminator("simpleSecondaryVertexBJetTags")',
+                        'btag_secVertexHighPur:bDiscriminator("simpleSecondaryVertexHighPurBJetTags")',
+                        'btag_secVertexHighEff:bDiscriminator("simpleSecondaryVertexHighEffBJetTags")',
+                        'btag_secVertexCombined:bDiscriminator("combinedSecondaryVertexBJetTags")',
+
                         #'btag_combinedSV_likelihood:bDiscriminator("combinedSVBJetTags")', #more sophisticated btagging
                        #'btag_combinedSV_MVA:bDiscriminator("combinedSVMVABJetTags")',
                                        
@@ -1194,8 +1244,9 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
             ),
 
 
-            jets_SC5 = cms.PSet(
-                src = cms.string('jets'),
+            jets_AK5JPT = cms.PSet(
+                src = cms.InputTag("cleanPatJetsAK5JPT"),
+#                src = cms.string('jets'),
                 leaves = cms.PSet(
                     basicKinematicLeaves,
                     vars = cms.vstring('parton_Id:genParton.pdgId',
@@ -1221,12 +1272,113 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
                         'btag_TC_highEff:bDiscriminator("trackCountingHighEffBJetTags")',
                         'btag_jetProb:bDiscriminator("jetProbabilityBJetTags")',
                         'btag_jetBProb:bDiscriminator("jetBProbabilityBJetTags")',
-                        'btag_softEle:bDiscriminator("softElectronBJetTags")',
+                        'btag_softEle:bDiscriminator("softElectronByPtBJetTags")',
                         'btag_softMuon:bDiscriminator("softMuonBJetTags")',
-                        'btag_softMuonNoIP:bDiscriminator("softMuonNoIPBJetTags")',
-                        'btag_secVertex:bDiscriminator("simpleSecondaryVertexBJetTags")',
+#                        'btag_softMuonNoIP:bDiscriminator("softMuonNoIPBJetTags")',
+#                        'btag_secVertex:bDiscriminator("simpleSecondaryVertexBJetTags")',
                         #'btag_combinedSV_likelihood:bDiscriminator("combinedSVBJetTags")', #more sophisticated btagging
                        #'btag_combinedSV_MVA:bDiscriminator("combinedSVMVABJetTags")',
+                        'btag_secVertexHighPur:bDiscriminator("simpleSecondaryVertexHighPurBJetTags")',
+                        'btag_secVertexHighEff:bDiscriminator("simpleSecondaryVertexHighEffBJetTags")',
+                        'btag_secVertexCombined:bDiscriminator("combinedSecondaryVertexBJetTags")',
+
+                                       
+                        'chgEmE:chargedEmEnergy', 
+                        'chgHadE:chargedHadronEnergy', 
+                        'chgMuE:chargedMuEnergy', 
+                        'chg_Mult:chargedMultiplicity', 
+                        'neutralEmE:neutralEmEnergy', 
+                        'neutralHadE:neutralHadronEnergy', 
+                        'neutral_Mult:neutralMultiplicity', 
+                        'mu_Mult:muonMultiplicity', 
+##                        'corr_fctr_def:correctionFactor(1)', 
+##                        'corr_fctr_b:correctionFactor(4)', 
+                        'emf:emEnergyFraction', 
+                        'ehf:energyFractionHadronic', 
+                        'n60:n60', 
+                        'n90:n90', 
+                        'etaetaMoment:etaetaMoment',
+                        'etaphiMoment:etaphiMoment',
+                        'phiphiMoment:phiphiMoment',
+                        'n90Hits:jetID.n90Hits',
+                        'fHPD:jetID.fHPD',
+                        'fRBX:jetID.fRBX',              
+                        'hitsInN90:jetID.hitsInN90',
+                        'nECALTowers:jetID.nECALTowers',
+                        'nHCALTowers:jetID.nHCALTowers',
+                        'fSubDetector1:jetID.fSubDetector1',
+                        'fSubDetector2:jetID.fSubDetector2',
+                        'fSubDetector3:jetID.fSubDetector3',
+                        'fSubDetector4:jetID.fSubDetector4',
+                        'area:towersArea', 
+#                        'max_em:maxEInEmTowers#', 
+#                        'max_had:maxEInHadTowers', 
+#                        'Energy:energy', 
+                        'mass:mass'#,
+#                        'nC_Energy:noCorrJet.energy',
+#			'nC_mass:noCorrJet.mass',
+#			'nC_et:noCorrJet.et',
+#			'nC_pt:noCorrJet.pt',
+#			'nC_px:noCorrJet.px',
+#			'nC_py:noCorrJet.py',	
+#			'nC_pz:noCorrJet.pz',	
+#			'nC_eta:noCorrJet.eta',	
+#			'nC_phi:noCorrJet.phi'#,	
+			#'nC_theta:noCorrJet.theta'
+			#'nC_emf:noCorrJet.emEnergyFraction',
+                        #'nC_ehf:noCorrJet.energyFractionHadronic',
+                        #'nC_n60:noCorrJet.n60',
+                        #'nC_n90:noCorrJet.n90',
+                        #'nC_area:noCorrJet.towersArea',
+                        #'nC_max_em:noCorrJet.maxEInEmTowers',
+                        #'nC_max_had:noCorrJet.maxEInHadTowers'               
+                                       )
+                ),
+                Class = cms.string('pat::Jet')
+            ),
+
+
+
+
+
+            jets_AK5 = cms.PSet(
+                src = cms.InputTag("cleanPatJetsAK5Calo"),
+#                src = cms.string('jets'),
+                leaves = cms.PSet(
+                    basicKinematicLeaves,
+                    vars = cms.vstring('parton_Id:genParton.pdgId',
+                        'parton_motherId:genParton.mother.pdgId', 
+                        'parton_pt:genParton.pt', 
+                        'parton_phi:genParton.phi', 
+                        'parton_eta:genParton.eta', 
+                        'parton_Energy:genParton.energy', 
+                        'parton_mass:genParton.mass',  
+#                        'parton_motherID:genParton.mother.pdgId',
+#                        'parton_grandmotherID:genParton.mother.mother.pdgId',
+                        'gen_et:genJet.et', 
+                        'gen_pt:genJet.pt', 
+                        'gen_eta:genJet.eta', 
+                        'gen_phi:genJet.phi', 
+                        'gen_mass:genJet.mass', 
+                        'gen_Energy:genJet.energy', 
+                        'gen_Id:genJet.pdgId', 
+                        'gen_motherID:genJet.mother.pdgId', 
+                        'gen_threeCharge:genJet.threeCharge',
+                        'partonFlavour:partonFlavour',  #TL add
+                        'btag_TC_highPur:bDiscriminator("trackCountingHighPurBJetTags")', # TL add: b-tagging info (9lines)
+                        'btag_TC_highEff:bDiscriminator("trackCountingHighEffBJetTags")',
+                        'btag_jetProb:bDiscriminator("jetProbabilityBJetTags")',
+                        'btag_jetBProb:bDiscriminator("jetBProbabilityBJetTags")',
+                        'btag_softEle:bDiscriminator("softElectronByPtBJetTags")',
+                        'btag_softMuon:bDiscriminator("softMuonBJetTags")',
+#                        'btag_softMuonNoIP:bDiscriminator("softMuonNoIPBJetTags")',
+#                        'btag_secVertex:bDiscriminator("simpleSecondaryVertexBJetTags")',
+                        #'btag_combinedSV_likelihood:bDiscriminator("combinedSVBJetTags")', #more sophisticated btagging
+                       #'btag_combinedSV_MVA:bDiscriminator("combinedSVMVABJetTags")',
+                        'btag_secVertexHighPur:bDiscriminator("simpleSecondaryVertexHighPurBJetTags")',
+                        'btag_secVertexHighEff:bDiscriminator("simpleSecondaryVertexHighEffBJetTags")',
+                        'btag_secVertexCombined:bDiscriminator("combinedSecondaryVertexBJetTags")',
+
                                        
                         'chgEmE:chargedEmEnergy', 
                         'chgHadE:chargedHadronEnergy', 
@@ -1281,6 +1433,8 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
                 ),
                 Class = cms.string('pat::Jet')
             )#,
+
+
 #            ccmuons = cms.PSet(
 #                src = cms.string('ccmuons'),
 #                leaves = cms.PSet(
@@ -1312,9 +1466,9 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
 
         #                string treeName="event"
 
-        AdHocNPSet = cms.PSet(
-            treeName = cms.string('eventA')
-            ),
+#        AdHocNPSet = cms.PSet(
+#            treeName = cms.string('eventA')
+#            ),
 
 
         variablesPSet = cms.PSet(
