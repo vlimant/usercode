@@ -3,7 +3,7 @@
 #include "FWCore/Framework/interface/ModuleFactory.h"
 #include "FWCore/ServiceRegistry/interface/ServiceMaker.h"
 
-DEFINE_SEAL_MODULE();
+//DEFINE_SEAL_MODULE();
 
 
 #include "DataFormats/HepMCCandidate/interface/GenParticleFwd.h"
