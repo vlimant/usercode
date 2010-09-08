@@ -22,6 +22,8 @@
 #include "DataFormats/JetReco/interface/BasicJet.h"
 #include "DataFormats/JetReco/interface/CaloJet.h"
 #include "DataFormats/JetReco/interface/GenJet.h"
+#include <DataFormats/CaloRecHit/interface/CaloCluster.h>
+#include <DataFormats/EgammaCandidates/interface/Conversion.h>
 
 //--------------------------------------------------------------------------------
 //just define here a list of objects you would like to be able to have a branch of
@@ -53,6 +55,8 @@ TreeBranch::value TreeBranch::branch(const edm::Event& iEvent){
   else ANOTHER_VECTOR_CLASS(reco::BasicJet);
   else ANOTHER_VECTOR_CLASS(reco::CaloJet);
   else ANOTHER_VECTOR_CLASS(reco::GenJet);
+	else ANOTHER_VECTOR_CLASS(reco::CaloCluster);
+	else ANOTHER_VECTOR_CLASS(reco::Conversion);
   else {
     edm::LogError("TreeBranch")<<branchName()<<" failed to recognized class type: "<<class_;
     return TreeBranch::value(new std::vector<float>());
