@@ -1,325 +1,320 @@
 import FWCore.ParameterSet.Config as cms
 
+#Secondary Vertex name for events RECO after 35X
+secVertexType = 'btag_secVertexHighEff:bDiscriminator("simpleSecondaryVertexHighEffBJetTags")'
+#Secondary Vertex name for events RECO with or before 35X
+#secVertexType = 'btag_secVertexHighEff:bDiscriminator("simpleSecondaryVertexBJetTags")'
+
 basicKinematicLeaves = cms.PSet(
-    status = cms.string('status'),
-    phi = cms.string('phi'),
-    pt = cms.string('pt'),
-    pz = cms.string('pz'),
-    px = cms.string('px'),
-    py = cms.string('py'),
-    eta = cms.string('eta'),
-    theta = cms.string('theta'),
-    et = cms.string('et'),
-    energy = cms.string('energy')
+	status = cms.string('status'),
+	phi = cms.string('phi'),
+	pt = cms.string('pt'),
+	pz = cms.string('pz'),
+	px = cms.string('px'),
+	py = cms.string('py'),
+	eta = cms.string('eta'),
+	theta = cms.string('theta'),
+	et = cms.string('et'),
+	energy = cms.string('energy')
 )
 TriggerPSets = cms.PSet(
-
-    #trigger bits 8e29
-
-
-    HLTriggerFirstPath = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_L1Jet6U = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_Jet15U = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_Jet30U = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_Jet50U = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_FwdJet20U = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_DiJetAve15U_8E29 = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_DiJetAve30U_8E29 = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_QuadJet15U = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_L1MET20 = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_MET45 = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_MET100 = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_HT100U = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_L1MuOpen = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_L1Mu = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_L1Mu20 = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_L2Mu9 = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_L2Mu11 = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_IsoMu3 = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_Mu3 = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_Mu5 = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_Mu9 = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_L1DoubleMuOpen = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_DoubleMu0 = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_DoubleMu3 = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_L1SingleEG5 = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_L1SingleEG8 = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_Ele10_LW_L1R = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_Ele10_LW_EleId_L1R = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_Ele15_LW_L1R = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_Ele15_SC10_LW_L1R = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_Ele15_SiStrip_L1R = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_Ele20_LW_L1R = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_L1DoubleEG5 = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_DoubleEle5_SW_L1R = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_DoublePhoton5_eeRes_L1R = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_DoublePhoton5_Jpsi_L1R = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_DoublePhoton5_Upsilon_L1R = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_Photon10_L1R = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_Photon15_L1R = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_Photon15_TrackIso_L1R = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_Photon15_LooseEcalIso_L1R = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_Photon20_L1R = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_Photon30_L1R_8E29 = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_DoublePhoton10_L1R = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_SingleLooseIsoTau20 = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_DoubleLooseIsoTau15 = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_BTagMu_Jet10U = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_BTagIP_Jet50U = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_StoppedHSCP_8E29 = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_L1Mu14_L1SingleEG10 = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_L1Mu14_L1SingleJet6U = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_L1Mu14_L1ETM30 = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_ZeroBias = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_MinBiasHcal = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_MinBiasEcal = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_MinBiasPixel = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_MinBiasPixel_Trk5 = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_CSCBeamHalo = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_CSCBeamHaloOverlapRing1 = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_CSCBeamHaloOverlapRing2 = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_CSCBeamHaloRing2or3 = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_BackwardBSC = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_ForwardBSC = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_TrackerCosmics = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLT_IsoTrack_8E29 = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    AlCa_HcalPhiSym = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    AlCa_EcalPhiSym = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    AlCa_EcalPi0_8E29 = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    AlCa_EcalEta_8E29 = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    AlCa_RPCMuonNoHits = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    AlCa_RPCMuonNormalisation = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLTriggerFinalPath = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-    HLTAnalyzerEndpath = cms.PSet(
-            src = cms.InputTag("TriggerResults","","HLT"),
-            method = cms.string('HLTBitVariable')
-            ),
-
-    
-                                                                                                                                                                                                                                                                                                                                      
-
-
-
-
+	#trigger bits 8e29
+	HLTriggerFirstPath = cms.PSet(
+		src = cms.InputTag("TriggerResults","","HLT"),
+		method = cms.string('HLTBitVariable')
+	),
+	HLT_L1Jet6U = cms.PSet(
+		src = cms.InputTag("TriggerResults","","HLT"),
+		method = cms.string('HLTBitVariable')
+	),
+	HLT_Jet15U = cms.PSet(
+		src = cms.InputTag("TriggerResults","","HLT"),
+		method = cms.string('HLTBitVariable')
+	),
+	HLT_Jet30U = cms.PSet(
+		src = cms.InputTag("TriggerResults","","HLT"),
+		method = cms.string('HLTBitVariable')
+	),
+	HLT_Jet50U = cms.PSet(
+		src = cms.InputTag("TriggerResults","","HLT"),
+		method = cms.string('HLTBitVariable')
+	),
+	HLT_FwdJet20U = cms.PSet(
+		src = cms.InputTag("TriggerResults","","HLT"),
+		method = cms.string('HLTBitVariable')
+	),
+	HLT_DiJetAve15U_8E29 = cms.PSet(
+		src = cms.InputTag("TriggerResults","","HLT"),
+		method = cms.string('HLTBitVariable')
+	),
+	HLT_DiJetAve30U_8E29 = cms.PSet(
+		src = cms.InputTag("TriggerResults","","HLT"),
+		method = cms.string('HLTBitVariable')
+	),
+	HLT_QuadJet15U = cms.PSet(
+		src = cms.InputTag("TriggerResults","","HLT"),
+		method = cms.string('HLTBitVariable')
+	),
+	HLT_L1MET20 = cms.PSet(
+		src = cms.InputTag("TriggerResults","","HLT"),
+		method = cms.string('HLTBitVariable')
+	),
+	HLT_MET45 = cms.PSet(
+		src = cms.InputTag("TriggerResults","","HLT"),
+		method = cms.string('HLTBitVariable')
+	),
+	HLT_MET100 = cms.PSet(
+		src = cms.InputTag("TriggerResults","","HLT"),
+		method = cms.string('HLTBitVariable')
+	),
+	HLT_HT100U = cms.PSet(
+		src = cms.InputTag("TriggerResults","","HLT"),
+		method = cms.string('HLTBitVariable')
+	),
+	HLT_L1MuOpen = cms.PSet(
+		src = cms.InputTag("TriggerResults","","HLT"),
+		method = cms.string('HLTBitVariable')
+	),
+	HLT_L1Mu = cms.PSet(
+		src = cms.InputTag("TriggerResults","","HLT"),
+		method = cms.string('HLTBitVariable')
+	),
+	HLT_L1Mu20 = cms.PSet(
+	        src = cms.InputTag("TriggerResults","","HLT"),
+	        method = cms.string('HLTBitVariable')
+	        ),
+	HLT_L2Mu9 = cms.PSet(
+	        src = cms.InputTag("TriggerResults","","HLT"),
+	        method = cms.string('HLTBitVariable')
+	        ),
+	HLT_L2Mu11 = cms.PSet(
+	        src = cms.InputTag("TriggerResults","","HLT"),
+	        method = cms.string('HLTBitVariable')
+	        ),
+	HLT_IsoMu3 = cms.PSet(
+	        src = cms.InputTag("TriggerResults","","HLT"),
+	        method = cms.string('HLTBitVariable')
+	        ),
+	HLT_Mu3 = cms.PSet(
+	        src = cms.InputTag("TriggerResults","","HLT"),
+	        method = cms.string('HLTBitVariable')
+	        ),
+	HLT_Mu5 = cms.PSet(
+	        src = cms.InputTag("TriggerResults","","HLT"),
+	        method = cms.string('HLTBitVariable')
+	        ),
+	HLT_Mu9 = cms.PSet(
+	        src = cms.InputTag("TriggerResults","","HLT"),
+	        method = cms.string('HLTBitVariable')
+	        ),
+	HLT_L1DoubleMuOpen = cms.PSet(
+	        src = cms.InputTag("TriggerResults","","HLT"),
+	        method = cms.string('HLTBitVariable')
+	        ),
+	HLT_DoubleMu0 = cms.PSet(
+	        src = cms.InputTag("TriggerResults","","HLT"),
+	        method = cms.string('HLTBitVariable')
+	        ),
+	HLT_DoubleMu3 = cms.PSet(
+	        src = cms.InputTag("TriggerResults","","HLT"),
+	        method = cms.string('HLTBitVariable')
+	        ),
+	HLT_L1SingleEG5 = cms.PSet(
+	        src = cms.InputTag("TriggerResults","","HLT"),
+	        method = cms.string('HLTBitVariable')
+	        ),
+	HLT_L1SingleEG8 = cms.PSet(
+	        src = cms.InputTag("TriggerResults","","HLT"),
+	        method = cms.string('HLTBitVariable')
+	        ),
+	HLT_Ele10_LW_L1R = cms.PSet(
+	        src = cms.InputTag("TriggerResults","","HLT"),
+	        method = cms.string('HLTBitVariable')
+	        ),
+	HLT_Ele10_LW_EleId_L1R = cms.PSet(
+	        src = cms.InputTag("TriggerResults","","HLT"),
+	        method = cms.string('HLTBitVariable')
+	        ),
+	HLT_Ele15_LW_L1R = cms.PSet(
+	        src = cms.InputTag("TriggerResults","","HLT"),
+	        method = cms.string('HLTBitVariable')
+	        ),
+	HLT_Ele15_SC10_LW_L1R = cms.PSet(
+	        src = cms.InputTag("TriggerResults","","HLT"),
+	        method = cms.string('HLTBitVariable')
+	        ),
+	HLT_Ele15_SiStrip_L1R = cms.PSet(
+	        src = cms.InputTag("TriggerResults","","HLT"),
+	        method = cms.string('HLTBitVariable')
+	        ),
+	HLT_Ele20_LW_L1R = cms.PSet(
+	        src = cms.InputTag("TriggerResults","","HLT"),
+	        method = cms.string('HLTBitVariable')
+	        ),
+	HLT_L1DoubleEG5 = cms.PSet(
+	        src = cms.InputTag("TriggerResults","","HLT"),
+	        method = cms.string('HLTBitVariable')
+	        ),
+	HLT_DoubleEle5_SW_L1R = cms.PSet(
+	        src = cms.InputTag("TriggerResults","","HLT"),
+	        method = cms.string('HLTBitVariable')
+	        ),
+	HLT_DoublePhoton5_eeRes_L1R = cms.PSet(
+	        src = cms.InputTag("TriggerResults","","HLT"),
+	        method = cms.string('HLTBitVariable')
+	        ),
+	HLT_DoublePhoton5_Jpsi_L1R = cms.PSet(
+	        src = cms.InputTag("TriggerResults","","HLT"),
+	        method = cms.string('HLTBitVariable')
+	        ),
+	HLT_DoublePhoton5_Upsilon_L1R = cms.PSet(
+	        src = cms.InputTag("TriggerResults","","HLT"),
+	        method = cms.string('HLTBitVariable')
+	        ),
+	HLT_Photon10_L1R = cms.PSet(
+	        src = cms.InputTag("TriggerResults","","HLT"),
+	        method = cms.string('HLTBitVariable')
+	        ),
+	HLT_Photon15_L1R = cms.PSet(
+	        src = cms.InputTag("TriggerResults","","HLT"),
+	        method = cms.string('HLTBitVariable')
+	        ),
+	HLT_Photon15_TrackIso_L1R = cms.PSet(
+	        src = cms.InputTag("TriggerResults","","HLT"),
+	        method = cms.string('HLTBitVariable')
+	        ),
+	HLT_Photon15_LooseEcalIso_L1R = cms.PSet(
+	        src = cms.InputTag("TriggerResults","","HLT"),
+	        method = cms.string('HLTBitVariable')
+	        ),
+	HLT_Photon20_L1R = cms.PSet(
+	        src = cms.InputTag("TriggerResults","","HLT"),
+	        method = cms.string('HLTBitVariable')
+	        ),
+	HLT_Photon30_L1R_8E29 = cms.PSet(
+	        src = cms.InputTag("TriggerResults","","HLT"),
+	        method = cms.string('HLTBitVariable')
+	        ),
+	HLT_DoublePhoton10_L1R = cms.PSet(
+	        src = cms.InputTag("TriggerResults","","HLT"),
+	        method = cms.string('HLTBitVariable')
+	        ),
+	HLT_SingleLooseIsoTau20 = cms.PSet(
+	        src = cms.InputTag("TriggerResults","","HLT"),
+	        method = cms.string('HLTBitVariable')
+	        ),
+	HLT_DoubleLooseIsoTau15 = cms.PSet(
+	        src = cms.InputTag("TriggerResults","","HLT"),
+	        method = cms.string('HLTBitVariable')
+	        ),
+	HLT_BTagMu_Jet10U = cms.PSet(
+	        src = cms.InputTag("TriggerResults","","HLT"),
+	        method = cms.string('HLTBitVariable')
+	        ),
+	HLT_BTagIP_Jet50U = cms.PSet(
+	        src = cms.InputTag("TriggerResults","","HLT"),
+	        method = cms.string('HLTBitVariable')
+	        ),
+	HLT_StoppedHSCP_8E29 = cms.PSet(
+	        src = cms.InputTag("TriggerResults","","HLT"),
+	        method = cms.string('HLTBitVariable')
+	        ),
+	HLT_L1Mu14_L1SingleEG10 = cms.PSet(
+	        src = cms.InputTag("TriggerResults","","HLT"),
+	        method = cms.string('HLTBitVariable')
+	        ),
+	HLT_L1Mu14_L1SingleJet6U = cms.PSet(
+	        src = cms.InputTag("TriggerResults","","HLT"),
+	        method = cms.string('HLTBitVariable')
+	        ),
+	HLT_L1Mu14_L1ETM30 = cms.PSet(
+	        src = cms.InputTag("TriggerResults","","HLT"),
+	        method = cms.string('HLTBitVariable')
+	        ),
+	HLT_ZeroBias = cms.PSet(
+	        src = cms.InputTag("TriggerResults","","HLT"),
+	        method = cms.string('HLTBitVariable')
+	        ),
+	HLT_MinBiasHcal = cms.PSet(
+	        src = cms.InputTag("TriggerResults","","HLT"),
+	        method = cms.string('HLTBitVariable')
+	        ),
+	HLT_MinBiasEcal = cms.PSet(
+	        src = cms.InputTag("TriggerResults","","HLT"),
+	        method = cms.string('HLTBitVariable')
+	        ),
+	HLT_MinBiasPixel = cms.PSet(
+	        src = cms.InputTag("TriggerResults","","HLT"),
+	        method = cms.string('HLTBitVariable')
+	        ),
+	HLT_MinBiasPixel_Trk5 = cms.PSet(
+	        src = cms.InputTag("TriggerResults","","HLT"),
+	        method = cms.string('HLTBitVariable')
+	        ),
+	HLT_CSCBeamHalo = cms.PSet(
+	        src = cms.InputTag("TriggerResults","","HLT"),
+	        method = cms.string('HLTBitVariable')
+	        ),
+	HLT_CSCBeamHaloOverlapRing1 = cms.PSet(
+	        src = cms.InputTag("TriggerResults","","HLT"),
+	        method = cms.string('HLTBitVariable')
+	        ),
+	HLT_CSCBeamHaloOverlapRing2 = cms.PSet(
+	        src = cms.InputTag("TriggerResults","","HLT"),
+	        method = cms.string('HLTBitVariable')
+	        ),
+	HLT_CSCBeamHaloRing2or3 = cms.PSet(
+	        src = cms.InputTag("TriggerResults","","HLT"),
+	        method = cms.string('HLTBitVariable')
+	        ),
+	HLT_BackwardBSC = cms.PSet(
+	        src = cms.InputTag("TriggerResults","","HLT"),
+	        method = cms.string('HLTBitVariable')
+	        ),
+	HLT_ForwardBSC = cms.PSet(
+	        src = cms.InputTag("TriggerResults","","HLT"),
+	        method = cms.string('HLTBitVariable')
+	        ),
+	HLT_TrackerCosmics = cms.PSet(
+	        src = cms.InputTag("TriggerResults","","HLT"),
+	        method = cms.string('HLTBitVariable')
+	        ),
+	HLT_IsoTrack_8E29 = cms.PSet(
+	        src = cms.InputTag("TriggerResults","","HLT"),
+	        method = cms.string('HLTBitVariable')
+	        ),
+	AlCa_HcalPhiSym = cms.PSet(
+	        src = cms.InputTag("TriggerResults","","HLT"),
+	        method = cms.string('HLTBitVariable')
+	        ),
+	AlCa_EcalPhiSym = cms.PSet(
+	        src = cms.InputTag("TriggerResults","","HLT"),
+	        method = cms.string('HLTBitVariable')
+	        ),
+	AlCa_EcalPi0_8E29 = cms.PSet(
+	        src = cms.InputTag("TriggerResults","","HLT"),
+	        method = cms.string('HLTBitVariable')
+	        ),
+	AlCa_EcalEta_8E29 = cms.PSet(
+	        src = cms.InputTag("TriggerResults","","HLT"),
+	        method = cms.string('HLTBitVariable')
+	        ),
+	AlCa_RPCMuonNoHits = cms.PSet(
+	        src = cms.InputTag("TriggerResults","","HLT"),
+	        method = cms.string('HLTBitVariable')
+	        ),
+	AlCa_RPCMuonNormalisation = cms.PSet(
+	        src = cms.InputTag("TriggerResults","","HLT"),
+	        method = cms.string('HLTBitVariable')
+	        ),
+	HLTriggerFinalPath = cms.PSet(
+	        src = cms.InputTag("TriggerResults","","HLT"),
+	        method = cms.string('HLTBitVariable')
+	        ),
+	HLTAnalyzerEndpath = cms.PSet(
+	        src = cms.InputTag("TriggerResults","","HLT"),
+	        method = cms.string('HLTBitVariable')
+	        ),                                                                                                                                                                                                                                                                                                                                  
 )
 isoAxis = cms.PSet(
     nBins = cms.uint32(100),
@@ -350,7 +345,6 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
         ),
         selections = cms.PSet(
             minSelection = cms.PSet(
-                #                                vstring filterOrder = { "leadingElectron" }
                 filterOrder = cms.vstring(''),
                 makeFinalPlots = cms.bool(True),
                 makeSummaryTable = cms.bool(True),
@@ -381,38 +375,18 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
             src = cms.InputTag("gtDigis"),
             method = cms.string('ComputedVariable'),
             computer = cms.string('L1BitComputer')
-            )#,
-
-     #   csaWeight = cms.PSet(
-     #       src = cms.InputTag("csaweightproducer","weight"),
-     #       method = cms.string('DoubleVar')
-     #   ),
-    #    procIDSplit = cms.PSet(
-    #        weightLabel = cms.string('csaweightproducer'),
-    #        maxID = cms.uint32(70),
-    #        method = cms.string('ProcessIdSplitter'),
-    #        lumi = cms.double(1000.0)
-    #    )
+            )
     ),
     workAsASelector = cms.bool(True),
     flows = cms.vstring('minSelection'),
     InputTags = cms.PSet(
         genParticles = cms.InputTag("genParticles"),
-#        mets = cms.InputTag("selectedLayer1METs"),
         mets = cms.InputTag("layer1METs"),
         genMuons = cms.InputTag("genMuons"),
-#        ccjets = cms.InputTag("patcrosscleaner","ccJets"),
         genElectrons = cms.InputTag("genElectrons"),
-#        electrons = cms.InputTag("cleanLayer1Electrons"),#changed from allLayer1Electrons
         electrons = cms.InputTag("cleanPatElectrons"),#changed from allLayer1Electrons
-#        ccmets = cms.InputTag("patcrosscleaner","ccMETs"),
-#        muons = cms.InputTag("selectedLayer1Muons"),
-#        muons = cms.InputTag("cleanLayer1Muons"),#changed from allLayer1Muons
-        muons = cms.InputTag("cleanPatMuons"),
-#        jets = cms.InputTag("allLayer1JetsIC5"),#changed to line below 
+				muons = cms.InputTag("cleanPatMuons"),
         jets = cms.InputTag("cleanPatJetsSC5Calo"),
-#        ccmuons = cms.InputTag("patcrosscleaner","ccMuons"),
-#        ccelectrons = cms.InputTag("patcrosscleaner","ccElectrons"),
         genJets = cms.InputTag("iterativeCone5GenJetsNoNuBSM")
     ),
     Ntupler = cms.PSet(
@@ -431,8 +405,10 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
                           'zErr:zError',
                           'chi2:chi2',
                           'ndof:ndof',
+                          'isFake:isFake',               
                           'tracksSize:tracksSize'
-                           ),
+											 
+               		),
                ),
                Class = cms.string('reco::Vertex'),
            ),
@@ -826,7 +802,6 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
                         'numOfMothers:numberOfMothers'
                                        )
                 ),
-#                selection = cms.string('status = 3&&numberOfMothers!=0'),
                 selection = cms.string('status=3'),
                 Class = cms.string('reco::GenParticle')
             ),
@@ -855,7 +830,6 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
                         'numOfDaughters:numberOfDaughters')
                 ),
                 selection = cms.string('status!=3 & (pdgId=13 | pdgId=-13) & pt>10'),
-#                selection = cms.string('status!=3 & (pdgId=13 | pdgId=-13)'),
                 Class = cms.string('reco::GenParticle')
             ),
             mc_electrons = cms.PSet(
@@ -883,7 +857,6 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
                         'numOfDaughters:numberOfDaughters')
                 ),
                 selection = cms.string('status!=3 & (pdgId=11 | pdgId=-11) & pt>10'),
-#                selection = cms.string('status!=3 & (pdgId=11 | pdgId=-11)'),
                 Class = cms.string('reco::GenParticle')
             ),
 
@@ -911,7 +884,6 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
                         'mass:mass', 
                         'numOfDaughters:numberOfDaughters')
                 ),
-#                selection = cms.string('status!=3 & (pdgId=11 | pdgId=-11) & pt>10'),
                 selection = cms.string('status!=3 & (pdgId=15 | pdgId=-15)'),
                 Class = cms.string('reco::GenParticle')
             ),
@@ -940,21 +912,11 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
                         'mass:mass', 
                         'numOfDaughters:numberOfDaughters')
                 ),
-#                selection = cms.string('status!=3 & (pdgId=11 | pdgId=-11) & pt>10'),
                 selection = cms.string('status!=3 & (pdgId=22) & pt>10'),
                 Class = cms.string('reco::GenParticle')
             ),
 
-#            L1Triggerbits = cms.PSet(
-#                src = cms.InputTag("gtDigis"),
-#                leaves = cms.PSet(
-#                    vars = cms.vstring('pass:decision' 
-#                        )
-#                ),
-#                Class = cms.string('L1GlobalTriggerReadoutRecord')
-#            ),
             tracks = cms.PSet(
-#                src = cms.InputTag("ctfWithMaterialTracks"),
                 src = cms.InputTag("generalTracks"),
                 leaves = cms.PSet(
                     vars = cms.vstring('chi2:chi2', 
@@ -1225,337 +1187,218 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
             ),
 
 
+				jets_AK5PF = cms.PSet(
+					src = cms.InputTag("selectedPatJetsPF"),
+					leaves = cms.PSet(
+						basicKinematicLeaves,
+						vars = cms.vstring('parton_Id:genParton.pdgId',
+							'parton_motherId:genParton.mother.pdgId',
+							'parton_pt:genParton.pt',
+							'parton_phi:genParton.phi',
+							'parton_eta:genParton.eta',
+							'parton_Energy:genParton.energy',
+							'parton_mass:genParton.mass',
+							#'parton_motherID:genParton.mother.pdgId',
+							#'parton_grandmotherID:genParton.mother.mother.pdgId',
+							'gen_et:genJet.et',
+							'gen_pt:genJet.pt',
+							'gen_eta:genJet.eta',
+							'gen_phi:genJet.phi',
+							'gen_mass:genJet.mass',
+							'gen_Energy:genJet.energy',
+							'gen_Id:genJet.pdgId',
+							'gen_motherID:genJet.mother.pdgId',
+							'gen_threeCharge:genJet.threeCharge',
+							'partonFlavour:partonFlavour',  #TL add
+							'btag_TC_highPur:bDiscriminator("trackCountingHighPurBJetTags")', # TL add: b-tagging info (9lines)
+							'btag_TC_highEff:bDiscriminator("trackCountingHighEffBJetTags")',
+							'btag_jetProb:bDiscriminator("jetProbabilityBJetTags")',
+							'btag_jetBProb:bDiscriminator("jetBProbabilityBJetTags")',
+							'btag_softEle:bDiscriminator("softElectronByPtBJetTags")',
+							'btag_softMuon:bDiscriminator("softMuonBJetTags")',
+							'btag_secVertexHighPur:bDiscriminator("simpleSecondaryVertexHighPurBJetTags")',
+							#'btag_secVertexHighEff:bDiscriminator("simpleSecondaryVertexHighEffBJetTags")',
+							#'btag_secVertexHighEff:bDiscriminator("simpleSecondaryVertexBJetTags")',
+							secVertexType,
+							'btag_secVertexCombined:bDiscriminator("combinedSecondaryVertexBJetTags")',
+							'jetCharge:jetCharge',
+							'chgEmE:chargedEmEnergy',
+							'chgHadE:chargedHadronEnergy',
+							'chgMuE:chargedMuEnergy',
+							'chg_Mult:chargedMultiplicity',
+							'neutralEmE:neutralEmEnergy',
+							'neutralHadE:neutralHadronEnergy',
+							'neutral_Mult:neutralMultiplicity',
+							'mu_Mult:muonMultiplicity',
+							'emf:emEnergyFraction',
+							'ehf:energyFractionHadronic',
+							'n60:n60',
+							'n90:n90',
+							'etaetaMoment:etaetaMoment',
+							'etaphiMoment:etaphiMoment',
+							'phiphiMoment:phiphiMoment',
+							'n90Hits:jetID.n90Hits',
+							'fHPD:jetID.fHPD',
+							'fRBX:jetID.fRBX',
+							'hitsInN90:jetID.hitsInN90',
+							'nECALTowers:jetID.nECALTowers',
+							'nHCALTowers:jetID.nHCALTowers',
+							'fSubDetector1:jetID.fSubDetector1',
+							'fSubDetector2:jetID.fSubDetector2',
+							'fSubDetector3:jetID.fSubDetector3',
+							'fSubDetector4:jetID.fSubDetector4',
+							'area:towersArea',
+							'corrFactorRaw:corrFactor("raw")',
+							'mass:mass'
+						)
+					),
+					Class = cms.string('pat::Jet')
+				),
 
-
-
-
-            jets_AK5PF = cms.PSet(
-                src = cms.InputTag("selectedPatJetsPF"),
-#                src = cms.string('jets'),
-                leaves = cms.PSet(
-                    basicKinematicLeaves,
-                    vars = cms.vstring('parton_Id:genParton.pdgId',
-                        'parton_motherId:genParton.mother.pdgId', 
-                        'parton_pt:genParton.pt', 
-                        'parton_phi:genParton.phi', 
-                        'parton_eta:genParton.eta', 
-                        'parton_Energy:genParton.energy', 
-                        'parton_mass:genParton.mass',  
-#                        'parton_motherID:genParton.mother.pdgId',
-#                        'parton_grandmotherID:genParton.mother.mother.pdgId',
-                        'gen_et:genJet.et', 
-                        'gen_pt:genJet.pt', 
-                        'gen_eta:genJet.eta', 
-                        'gen_phi:genJet.phi', 
-                        'gen_mass:genJet.mass', 
-                        'gen_Energy:genJet.energy', 
-                        'gen_Id:genJet.pdgId', 
-                        'gen_motherID:genJet.mother.pdgId', 
-                        'gen_threeCharge:genJet.threeCharge',
-                        'partonFlavour:partonFlavour',  #TL add
-                        'btag_TC_highPur:bDiscriminator("trackCountingHighPurBJetTags")', # TL add: b-tagging info (9lines)
-                        'btag_TC_highEff:bDiscriminator("trackCountingHighEffBJetTags")',
-                        'btag_jetProb:bDiscriminator("jetProbabilityBJetTags")',
-                        'btag_jetBProb:bDiscriminator("jetBProbabilityBJetTags")',
-                        'btag_softEle:bDiscriminator("softElectronByPtBJetTags")',
-                        'btag_softMuon:bDiscriminator("softMuonBJetTags")',
-#                        'btag_softMuonNoIP:bDiscriminator("softMuonNoIPBJetTags")',
-#                        'btag_secVertex:bDiscriminator("simpleSecondaryVertexBJetTags")',
-                        'btag_secVertexHighPur:bDiscriminator("simpleSecondaryVertexHighPurBJetTags")',
-                        'btag_secVertexHighEff:bDiscriminator("simpleSecondaryVertexHighEffBJetTags")',
-                        'btag_secVertexCombined:bDiscriminator("combinedSecondaryVertexBJetTags")',
-
-                        #'btag_combinedSV_likelihood:bDiscriminator("combinedSVBJetTags")', #more sophisticated btagging
-                       #'btag_combinedSV_MVA:bDiscriminator("combinedSVMVABJetTags")',
-                                       
-                        'chgEmE:chargedEmEnergy', 
-                        'chgHadE:chargedHadronEnergy', 
-                        'chgMuE:chargedMuEnergy', 
-                        'chg_Mult:chargedMultiplicity', 
-                        'neutralEmE:neutralEmEnergy', 
-                        'neutralHadE:neutralHadronEnergy', 
-                        'neutral_Mult:neutralMultiplicity', 
-                        'mu_Mult:muonMultiplicity', 
-##                        'corr_fctr_def:correctionFactor(1)', 
-##                        'corr_fctr_b:correctionFactor(4)', 
-                        'emf:emEnergyFraction', 
-                        'ehf:energyFractionHadronic', 
-                        'n60:n60', 
-                        'n90:n90', 
-                        'etaetaMoment:etaetaMoment',
-                        'etaphiMoment:etaphiMoment',
-                        'phiphiMoment:phiphiMoment',
-                        'n90Hits:jetID.n90Hits',
-                        'fHPD:jetID.fHPD',
-                        'fRBX:jetID.fRBX',              
-                        'hitsInN90:jetID.hitsInN90',
-                        'nECALTowers:jetID.nECALTowers',
-                        'nHCALTowers:jetID.nHCALTowers',
-                        'fSubDetector1:jetID.fSubDetector1',
-                        'fSubDetector2:jetID.fSubDetector2',
-                        'fSubDetector3:jetID.fSubDetector3',
-                        'fSubDetector4:jetID.fSubDetector4',
-                        'area:towersArea', 
-#                        'max_em:maxEInEmTowers#', 
-#                        'max_had:maxEInHadTowers', 
-#                        'Energy:energy', 
-                        'mass:mass'#,
-#                        'nC_Energy:noCorrJet.energy',
-#			'nC_mass:noCorrJet.mass',
-#			'nC_et:noCorrJet.et',
-#			'nC_pt:noCorrJet.pt',
-#			'nC_px:noCorrJet.px',
-#			'nC_py:noCorrJet.py',	
-#			'nC_pz:noCorrJet.pz',	
-#			'nC_eta:noCorrJet.eta',	
-#			'nC_phi:noCorrJet.phi'#,	
-			#'nC_theta:noCorrJet.theta'
-			#'nC_emf:noCorrJet.emEnergyFraction',
-                        #'nC_ehf:noCorrJet.energyFractionHadronic',
-                        #'nC_n60:noCorrJet.n60',
-                        #'nC_n90:noCorrJet.n90',
-                        #'nC_area:noCorrJet.towersArea',
-                        #'nC_max_em:noCorrJet.maxEInEmTowers',
-                        #'nC_max_had:noCorrJet.maxEInHadTowers'               
-                                       )
-                ),
-                Class = cms.string('pat::Jet')
-            ),
-
-
-            jets_AK5JPT = cms.PSet(
-                src = cms.InputTag("cleanPatJetsAK5JPT"),
-#                src = cms.string('jets'),
-                leaves = cms.PSet(
-                    basicKinematicLeaves,
-                    vars = cms.vstring('parton_Id:genParton.pdgId',
-                        'parton_motherId:genParton.mother.pdgId', 
-                        'parton_pt:genParton.pt', 
-                        'parton_phi:genParton.phi', 
-                        'parton_eta:genParton.eta', 
-                        'parton_Energy:genParton.energy', 
-                        'parton_mass:genParton.mass',  
-#                        'parton_motherID:genParton.mother.pdgId',
-#                        'parton_grandmotherID:genParton.mother.mother.pdgId',
-                        'gen_et:genJet.et', 
-                        'gen_pt:genJet.pt', 
-                        'gen_eta:genJet.eta', 
-                        'gen_phi:genJet.phi', 
-                        'gen_mass:genJet.mass', 
-                        'gen_Energy:genJet.energy', 
-                        'gen_Id:genJet.pdgId', 
-                        'gen_motherID:genJet.mother.pdgId', 
-                        'gen_threeCharge:genJet.threeCharge',
-                        'partonFlavour:partonFlavour',  #TL add
-                        'btag_TC_highPur:bDiscriminator("trackCountingHighPurBJetTags")', # TL add: b-tagging info (9lines)
-                        'btag_TC_highEff:bDiscriminator("trackCountingHighEffBJetTags")',
-                        'btag_jetProb:bDiscriminator("jetProbabilityBJetTags")',
-                        'btag_jetBProb:bDiscriminator("jetBProbabilityBJetTags")',
-                        'btag_softEle:bDiscriminator("softElectronByPtBJetTags")',
-                        'btag_softMuon:bDiscriminator("softMuonBJetTags")',
-#                        'btag_softMuonNoIP:bDiscriminator("softMuonNoIPBJetTags")',
-#                        'btag_secVertex:bDiscriminator("simpleSecondaryVertexBJetTags")',
-                        #'btag_combinedSV_likelihood:bDiscriminator("combinedSVBJetTags")', #more sophisticated btagging
-                       #'btag_combinedSV_MVA:bDiscriminator("combinedSVMVABJetTags")',
-                        'btag_secVertexHighPur:bDiscriminator("simpleSecondaryVertexHighPurBJetTags")',
-                        'btag_secVertexHighEff:bDiscriminator("simpleSecondaryVertexHighEffBJetTags")',
-                        'btag_secVertexCombined:bDiscriminator("combinedSecondaryVertexBJetTags")',
-
-                                       
-                        'chgEmE:chargedEmEnergy', 
-                        'chgHadE:chargedHadronEnergy', 
-                        'chgMuE:chargedMuEnergy', 
-                        'chg_Mult:chargedMultiplicity', 
-                        'neutralEmE:neutralEmEnergy', 
-                        'neutralHadE:neutralHadronEnergy', 
-                        'neutral_Mult:neutralMultiplicity', 
-                        'mu_Mult:muonMultiplicity', 
-##                        'corr_fctr_def:correctionFactor(1)', 
-##                        'corr_fctr_b:correctionFactor(4)', 
-                        'emf:emEnergyFraction', 
-                        'ehf:energyFractionHadronic', 
-                        'n60:n60', 
-                        'n90:n90', 
-                        'etaetaMoment:etaetaMoment',
-                        'etaphiMoment:etaphiMoment',
-                        'phiphiMoment:phiphiMoment',
-                        'n90Hits:jetID.n90Hits',
-                        'fHPD:jetID.fHPD',
-                        'fRBX:jetID.fRBX',              
-                        'hitsInN90:jetID.hitsInN90',
-                        'nECALTowers:jetID.nECALTowers',
-                        'nHCALTowers:jetID.nHCALTowers',
-                        'fSubDetector1:jetID.fSubDetector1',
-                        'fSubDetector2:jetID.fSubDetector2',
-                        'fSubDetector3:jetID.fSubDetector3',
-                        'fSubDetector4:jetID.fSubDetector4',
-                        'area:towersArea', 
-#                        'max_em:maxEInEmTowers#', 
-#                        'max_had:maxEInHadTowers', 
-#                        'Energy:energy', 
-                        'mass:mass'#,
-#                        'nC_Energy:noCorrJet.energy',
-#			'nC_mass:noCorrJet.mass',
-#			'nC_et:noCorrJet.et',
-#			'nC_pt:noCorrJet.pt',
-#			'nC_px:noCorrJet.px',
-#			'nC_py:noCorrJet.py',	
-#			'nC_pz:noCorrJet.pz',	
-#			'nC_eta:noCorrJet.eta',	
-#			'nC_phi:noCorrJet.phi'#,	
-			#'nC_theta:noCorrJet.theta'
-			#'nC_emf:noCorrJet.emEnergyFraction',
-                        #'nC_ehf:noCorrJet.energyFractionHadronic',
-                        #'nC_n60:noCorrJet.n60',
-                        #'nC_n90:noCorrJet.n90',
-                        #'nC_area:noCorrJet.towersArea',
-                        #'nC_max_em:noCorrJet.maxEInEmTowers',
-                        #'nC_max_had:noCorrJet.maxEInHadTowers'               
-                                       )
-                ),
-                Class = cms.string('pat::Jet')
-            ),
-
-
-
-
-
-            jets_AK5 = cms.PSet(
-                src = cms.InputTag("cleanPatJetsAK5Calo"),
-#                src = cms.string('jets'),
-                leaves = cms.PSet(
-                    basicKinematicLeaves,
-                    vars = cms.vstring('parton_Id:genParton.pdgId',
-                        'parton_motherId:genParton.mother.pdgId', 
-                        'parton_pt:genParton.pt', 
-                        'parton_phi:genParton.phi', 
-                        'parton_eta:genParton.eta', 
-                        'parton_Energy:genParton.energy', 
-                        'parton_mass:genParton.mass',  
-#                        'parton_motherID:genParton.mother.pdgId',
-#                        'parton_grandmotherID:genParton.mother.mother.pdgId',
-                        'gen_et:genJet.et', 
-                        'gen_pt:genJet.pt', 
-                        'gen_eta:genJet.eta', 
-                        'gen_phi:genJet.phi', 
-                        'gen_mass:genJet.mass', 
-                        'gen_Energy:genJet.energy', 
-                        'gen_Id:genJet.pdgId', 
-                        'gen_motherID:genJet.mother.pdgId', 
-                        'gen_threeCharge:genJet.threeCharge',
-                        'partonFlavour:partonFlavour',  #TL add
-                        'btag_TC_highPur:bDiscriminator("trackCountingHighPurBJetTags")', # TL add: b-tagging info (9lines)
-                        'btag_TC_highEff:bDiscriminator("trackCountingHighEffBJetTags")',
-                        'btag_jetProb:bDiscriminator("jetProbabilityBJetTags")',
-                        'btag_jetBProb:bDiscriminator("jetBProbabilityBJetTags")',
-                        'btag_softEle:bDiscriminator("softElectronByPtBJetTags")',
-                        'btag_softMuon:bDiscriminator("softMuonBJetTags")',
-#                        'btag_softMuonNoIP:bDiscriminator("softMuonNoIPBJetTags")',
-#                        'btag_secVertex:bDiscriminator("simpleSecondaryVertexBJetTags")',
-                        #'btag_combinedSV_likelihood:bDiscriminator("combinedSVBJetTags")', #more sophisticated btagging
-                       #'btag_combinedSV_MVA:bDiscriminator("combinedSVMVABJetTags")',
-                        'btag_secVertexHighPur:bDiscriminator("simpleSecondaryVertexHighPurBJetTags")',
-                        'btag_secVertexHighEff:bDiscriminator("simpleSecondaryVertexHighEffBJetTags")',
-                        'btag_secVertexCombined:bDiscriminator("combinedSecondaryVertexBJetTags")',
-
-                                       
-                        'chgEmE:chargedEmEnergy', 
-                        'chgHadE:chargedHadronEnergy', 
-                        'chgMuE:chargedMuEnergy', 
-                        'chg_Mult:chargedMultiplicity', 
-                        'neutralEmE:neutralEmEnergy', 
-                        'neutralHadE:neutralHadronEnergy', 
-                        'neutral_Mult:neutralMultiplicity', 
-                        'mu_Mult:muonMultiplicity', 
-##                        'corr_fctr_def:correctionFactor(1)', 
-##                        'corr_fctr_b:correctionFactor(4)', 
-                        'emf:emEnergyFraction', 
-                        'ehf:energyFractionHadronic', 
-                        'n60:n60', 
-                        'n90:n90', 
-                        'etaetaMoment:etaetaMoment',
-                        'etaphiMoment:etaphiMoment',
-                        'phiphiMoment:phiphiMoment',
-                        'n90Hits:jetID.n90Hits',
-                        'fHPD:jetID.fHPD',
-                        'fRBX:jetID.fRBX',              
-                        'hitsInN90:jetID.hitsInN90',
-                        'nECALTowers:jetID.nECALTowers',
-                        'nHCALTowers:jetID.nHCALTowers',
-                        'fSubDetector1:jetID.fSubDetector1',
-                        'fSubDetector2:jetID.fSubDetector2',
-                        'fSubDetector3:jetID.fSubDetector3',
-                        'fSubDetector4:jetID.fSubDetector4',
-                        'area:towersArea', 
-#                        'max_em:maxEInEmTowers#', 
-#                        'max_had:maxEInHadTowers', 
-#                        'Energy:energy', 
-                        'mass:mass'#,
-#                        'nC_Energy:noCorrJet.energy',
-#			'nC_mass:noCorrJet.mass',
-#			'nC_et:noCorrJet.et',
-#			'nC_pt:noCorrJet.pt',
-#			'nC_px:noCorrJet.px',
-#			'nC_py:noCorrJet.py',	
-#			'nC_pz:noCorrJet.pz',	
-#			'nC_eta:noCorrJet.eta',	
-#			'nC_phi:noCorrJet.phi'#,	
-			#'nC_theta:noCorrJet.theta'
-			#'nC_emf:noCorrJet.emEnergyFraction',
-                        #'nC_ehf:noCorrJet.energyFractionHadronic',
-                        #'nC_n60:noCorrJet.n60',
-                        #'nC_n90:noCorrJet.n90',
-                        #'nC_area:noCorrJet.towersArea',
-                        #'nC_max_em:noCorrJet.maxEInEmTowers',
-                        #'nC_max_had:noCorrJet.maxEInHadTowers'               
-                                       )
-                ),
-                Class = cms.string('pat::Jet')
-            )#,
-
-
-#            ccmuons = cms.PSet(
-#                src = cms.string('ccmuons'),
-#                leaves = cms.PSet(
-#                    basicKinematicLeaves
-#                ),
-#                Class = cms.string('pat::Muon')
-#            ),
-#            ccelectrons = cms.PSet(
-#                src = cms.string('ccelectrons'),
-#                leaves = cms.PSet(
-#                    basicKinematicLeaves
-#                ),
-#                Class = cms.string('pat::Electron')
-#            ),
-#            ccmets = cms.PSet(
-#                src = cms.string('ccmets'),
-#                leaves = cms.PSet(
-#                    vars = cms.vstring('et:et', 
-#                        'phi:phi', 
-#                        'px:px', 
-#                        'py:py', 
-#                        'status:status')
-#                ),
-#                Class = cms.string('pat::MET')
-#            )
-         ),
-        ComponentName = cms.string('CompleteNTupler'),
-        useTFileService = cms.bool(True), ## false for EDM; true for non EDM
-
-        #                string treeName="event"
-
-#        AdHocNPSet = cms.PSet(
-#            treeName = cms.string('eventA')
-#            ),
-
-
-        variablesPSet = cms.PSet(
-            #use all the variables from the PSet above
-            allVariables = cms.bool(True),
-            treeName = cms.string('eventV')
-        )
-    )
+				jets_AK5JPT = cms.PSet(
+					src = cms.InputTag("cleanPatJetsAK5JPT"),
+					leaves = cms.PSet(
+						basicKinematicLeaves,
+						vars = cms.vstring('parton_Id:genParton.pdgId',
+							'parton_motherId:genParton.mother.pdgId',
+							'parton_pt:genParton.pt',
+							'parton_phi:genParton.phi',
+							'parton_eta:genParton.eta',
+							'parton_Energy:genParton.energy',
+							'parton_mass:genParton.mass',
+							#'parton_motherID:genParton.mother.pdgId',
+							#'parton_grandmotherID:genParton.mother.mother.pdgId',
+							'gen_et:genJet.et',
+							'gen_pt:genJet.pt',
+							'gen_eta:genJet.eta',
+							'gen_phi:genJet.phi',
+							'gen_mass:genJet.mass',
+							'gen_Energy:genJet.energy',
+							'gen_Id:genJet.pdgId',
+							'gen_motherID:genJet.mother.pdgId',
+							'gen_threeCharge:genJet.threeCharge',
+							'partonFlavour:partonFlavour',  #TL add
+							'btag_TC_highPur:bDiscriminator("trackCountingHighPurBJetTags")', # TL add: b-tagging info (9lines)
+							'btag_TC_highEff:bDiscriminator("trackCountingHighEffBJetTags")',
+							'btag_jetProb:bDiscriminator("jetProbabilityBJetTags")',
+							'btag_jetBProb:bDiscriminator("jetBProbabilityBJetTags")',
+							'btag_softEle:bDiscriminator("softElectronByPtBJetTags")',
+							'btag_softMuon:bDiscriminator("softMuonBJetTags")',
+							'btag_secVertexHighPur:bDiscriminator("simpleSecondaryVertexHighPurBJetTags")',
+							#'btag_secVertexHighEff:bDiscriminator("simpleSecondaryVertexHighEffBJetTags")',
+							#'btag_secVertexHighEff:bDiscriminator("simpleSecondaryVertexBJetTags")',
+							secVertexType,
+							'btag_secVertexCombined:bDiscriminator("combinedSecondaryVertexBJetTags")',
+							'jetCharge:jetCharge',
+							'chgEmE:chargedEmEnergy',
+							'chgHadE:chargedHadronEnergy',
+							'chgMuE:chargedMuEnergy',
+							'chg_Mult:chargedMultiplicity',
+							'neutralEmE:neutralEmEnergy',
+							'neutralHadE:neutralHadronEnergy',
+							'neutral_Mult:neutralMultiplicity',
+							'mu_Mult:muonMultiplicity',
+							'emf:emEnergyFraction',
+							'ehf:energyFractionHadronic',
+							'n60:n60',
+							'n90:n90',
+							'etaetaMoment:etaetaMoment',
+							'etaphiMoment:etaphiMoment',
+							'phiphiMoment:phiphiMoment',
+							'n90Hits:jetID.n90Hits',
+							'fHPD:jetID.fHPD',
+							'fRBX:jetID.fRBX',
+							'hitsInN90:jetID.hitsInN90',
+							'nECALTowers:jetID.nECALTowers',
+							'nHCALTowers:jetID.nHCALTowers',
+							'fSubDetector1:jetID.fSubDetector1',
+							'fSubDetector2:jetID.fSubDetector2',
+							'fSubDetector3:jetID.fSubDetector3',
+							'fSubDetector4:jetID.fSubDetector4',
+							'area:towersArea',
+							'corrFactorRaw:corrFactor("raw")',
+							'mass:mass'
+						)
+					),
+					Class = cms.string('pat::Jet')
+				),
+				
+				jets_AK5 = cms.PSet(
+					src = cms.InputTag("cleanPatJetsAK5Calo"),
+					leaves = cms.PSet(
+						basicKinematicLeaves,
+						vars = cms.vstring('parton_Id:genParton.pdgId',
+							'parton_motherId:genParton.mother.pdgId',
+							'parton_pt:genParton.pt',
+							'parton_phi:genParton.phi',
+							'parton_eta:genParton.eta',
+							'parton_Energy:genParton.energy',
+							'parton_mass:genParton.mass',
+							#'parton_motherID:genParton.mother.pdgId',
+							#'parton_grandmotherID:genParton.mother.mother.pdgId',
+							'gen_et:genJet.et',
+							'gen_pt:genJet.pt',
+							'gen_eta:genJet.eta',
+							'gen_phi:genJet.phi',
+							'gen_mass:genJet.mass',
+							'gen_Energy:genJet.energy',
+							'gen_Id:genJet.pdgId',
+							'gen_motherID:genJet.mother.pdgId',
+							'gen_threeCharge:genJet.threeCharge',
+							'partonFlavour:partonFlavour',  #TL add
+							'btag_TC_highPur:bDiscriminator("trackCountingHighPurBJetTags")', # TL add: b-tagging info (9lines)
+							'btag_TC_highEff:bDiscriminator("trackCountingHighEffBJetTags")',
+							'btag_jetProb:bDiscriminator("jetProbabilityBJetTags")',
+							'btag_jetBProb:bDiscriminator("jetBProbabilityBJetTags")',
+							'btag_softEle:bDiscriminator("softElectronByPtBJetTags")',
+							'btag_softMuon:bDiscriminator("softMuonBJetTags")',
+							'btag_secVertexHighPur:bDiscriminator("simpleSecondaryVertexHighPurBJetTags")',
+							#'btag_secVertexHighEff:bDiscriminator("simpleSecondaryVertexHighEffBJetTags")',
+							#'btag_secVertexHighEff:bDiscriminator("simpleSecondaryVertexBJetTags")',
+							secVertexType,
+							'btag_secVertexCombined:bDiscriminator("combinedSecondaryVertexBJetTags")',
+							'jetCharge:jetCharge',
+							'chgEmE:chargedEmEnergy',
+							'chgHadE:chargedHadronEnergy',
+							'chgMuE:chargedMuEnergy',
+							'chg_Mult:chargedMultiplicity',
+							'neutralEmE:neutralEmEnergy',
+							'neutralHadE:neutralHadronEnergy',
+							'neutral_Mult:neutralMultiplicity',
+							'mu_Mult:muonMultiplicity',
+							'emf:emEnergyFraction',
+							'ehf:energyFractionHadronic',
+							'n60:n60',
+							'n90:n90',
+							'etaetaMoment:etaetaMoment',
+							'etaphiMoment:etaphiMoment',
+							'phiphiMoment:phiphiMoment',
+							'n90Hits:jetID.n90Hits',
+							'fHPD:jetID.fHPD',
+							'fRBX:jetID.fRBX',
+							'hitsInN90:jetID.hitsInN90',
+							'nECALTowers:jetID.nECALTowers',
+							'nHCALTowers:jetID.nHCALTowers',
+							'fSubDetector1:jetID.fSubDetector1',
+							'fSubDetector2:jetID.fSubDetector2',
+							'fSubDetector3:jetID.fSubDetector3',
+							'fSubDetector4:jetID.fSubDetector4',
+							'area:towersArea',
+							'corrFactorRaw:corrFactor("raw")',
+							'mass:mass'
+						)
+					),
+					Class = cms.string('pat::Jet')
+				),
+			),
+			ComponentName = cms.string('CompleteNTupler'),
+			useTFileService = cms.bool(True), ## false for EDM; true for non EDM
+			variablesPSet = cms.PSet(
+			#use all the variables from the PSet above
+			allVariables = cms.bool(True),
+			treeName = cms.string('eventV')
+		)
+	)
 )
 
 
