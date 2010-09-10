@@ -315,6 +315,20 @@ TriggerPSets = cms.PSet(
 	        src = cms.InputTag("TriggerResults","","HLT"),
 	        method = cms.string('HLTBitVariable')
 	        ),                                                                                                                                                                                                                                                                                                                                  
+        HLT_Jet70U = cms.PSet(
+                src = cms.InputTag("TriggerResults","","HLT"),
+                method = cms.string('HLTBitVariable')
+                ),
+        HLT_Jet100U = cms.PSet(
+                src = cms.InputTag("TriggerResults","","HLT"),
+                method = cms.string('HLTBitVariable')
+                ),
+        HLT_DiJetAve50U = cms.PSet(
+                src = cms.InputTag("TriggerResults","","HLT"),
+                method = cms.string('HLTBitVariable')
+                ),
+
+
 )
 isoAxis = cms.PSet(
     nBins = cms.uint32(100),
@@ -473,7 +487,9 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
                      'maxRBXHits:maxRBXHits',
                      'minHPDEMF:minHPDEMF',
                      'minRBXEMF:minRBXEMF',
-                     'numProblematicRBXs:numProblematicRBXs'
+                     'numProblematicRBXs:numProblematicRBXs',
+                     'maxE2Over10TS:maxE2Over10TS',
+                     'maxHPDNoOtherHits:maxHPDNoOtherHits'
                        )
                 ),
             Class = cms.string('HcalNoiseSummary')
@@ -571,6 +587,7 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
                         'cm_vz:combinedMuon.vz', 
                         'cm_numvalhits:combinedMuon.numberOfValidHits', 
                         'cm_numlosthits:combinedMuon.numberOfLostHits', 
+                        'cm_numvalMuonhits:combinedMuon.hitPattern.numberOfValidMuonHits',
                         'cm_d0dumErr:combinedMuon.d0Error', 
                         'cm_dzErr:combinedMuon.dzError', 
                         'cm_ptErr:combinedMuon.ptError', 
@@ -599,6 +616,7 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
                         'tk_ptErr:track.ptError', 
                         'tk_etaErr:track.etaError', 
                         'tk_phiErr:track.phiError', 
+                        'tk_numvalPixelhits:track.hitPattern.numberOfValidPixelHits',
                         'stamu_chi2:standAloneMuon.chi2', 
                         'stamu_ndof:standAloneMuon.ndof', 
                         'stamu_chg:standAloneMuon.charge', 
