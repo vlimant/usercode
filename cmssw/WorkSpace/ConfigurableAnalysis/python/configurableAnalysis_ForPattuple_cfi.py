@@ -428,6 +428,26 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
            ),
 
 
+
+
+           triggerPath = cms.PSet(
+           src = cms.InputTag("patTrigger"),
+             leaves = cms.PSet(
+                 vars = cms.vstring(
+                       'prescale:prescale',
+			#'filterIndices:filterIndices', #vector<unsigned int>   
+	 		#'HLTname:name.c_str()',
+			'index:index',
+			'lastActiveFilterSlot:lastActiveFilterSlot',					
+                        'pass:wasAccept'
+               		),
+               ),
+               Class = cms.string('pat::TriggerPath'),
+           	),
+
+
+
+
            beamSpot = cms.PSet(  
            src = cms.InputTag("offlineBeamSpot"),
             leaves = cms.PSet(
