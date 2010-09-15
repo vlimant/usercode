@@ -25,6 +25,8 @@
 #include <DataFormats/CaloRecHit/interface/CaloCluster.h>
 #include <DataFormats/EgammaCandidates/interface/Conversion.h>
 
+#include <DataFormats/PatCandidates/interface/TriggerPath.h>
+
 //--------------------------------------------------------------------------------
 //just define here a list of objects you would like to be able to have a branch of
 //--------------------------------------------------------------------------------
@@ -55,6 +57,7 @@ TreeBranch::value TreeBranch::branch(const edm::Event& iEvent){
   else ANOTHER_VECTOR_CLASS(reco::BasicJet);
   else ANOTHER_VECTOR_CLASS(reco::CaloJet);
   else ANOTHER_VECTOR_CLASS(reco::GenJet);
+  else ANOTHER_VECTOR_CLASS(pat::TriggerPath);
 	else ANOTHER_VECTOR_CLASS(reco::CaloCluster);
 	else ANOTHER_VECTOR_CLASS(reco::Conversion);
   else {

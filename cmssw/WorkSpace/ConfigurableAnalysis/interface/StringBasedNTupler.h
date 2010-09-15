@@ -27,7 +27,14 @@
 #include "PhysicsTools/UtilAlgos/interface/InputTagDistributor.h"
 #include "PhysicsTools/UtilAlgos/interface/CachingVariable.h"
 
+
+#include "PhysicsTools/PatExamples/plugins/PatTriggerAnalyzer.h"
+
+
 //#define StringBasedNTuplerPrecision float;
+
+std::vector<std::string> *test_vec;
+int hlt_flag; 
 
 class TreeBranch {
  public:
@@ -118,17 +125,32 @@ public:
       //    grab the collection
       edm::Handle<Collection> oH;
       iEvent.getByLabel(B.src(), oH);
+
+      //std::cout<<"\n"<<B.className();
+      if(B.className() == "pat::TriggerPath" && hlt_flag==0) {
+        hlt_flag=1; //flag to make sure names are saved only once per event
+        edm::Handle< pat::TriggerPathCollection > triggerPaths;
+        iEvent.getByLabel( B.src(), triggerPaths );
+        test_vec->clear();
+        for(uint k=0; k<triggerPaths->size(); k++) {
+            test_vec->push_back(triggerPaths->at(k).name()); //Save HLT trigger names as strings
+        }
+      }
+
+
       //empty vector if product not found
       if (oH.failedToGet()){
-	edm::LogError("StringBranchHelper")<<"cannot open: "<<B.src();
-	value_.reset(new std::vector<float>());
+	if(!(iEvent.isRealData() && B.className()=="reco::GenParticle") ) {  //don't output genparticle error in data 
+  	  edm::LogError("StringBranchHelper")<<"cannot open: "<<B.src()<<"  "<<B.className();
+        }
+        value_.reset(new std::vector<float>());
       }
       else{
 	//parser for the object expression
 	StringObjectFunction<Object> expr(B.expr());
 	//allocate enough memory for the data holder
-	value_.reset(new std::vector<float>());
-	value_->reserve(oH->size());
+        value_.reset(new std::vector<float>());
+        value_->reserve(oH->size());
 
 	StringCutObjectSelector<Object> * selection=0;
 	if (B.selection()!="")
@@ -180,7 +202,8 @@ class StringBasedNTupler : public NTupler {
  public:
   StringBasedNTupler(const edm::ParameterSet& iConfig){
 
-    
+    hlt_flag = 0; 
+
     edm::ParameterSet branchesPSet = iConfig.getParameter<edm::ParameterSet>("branchesPSet");
     std::vector<std::string> branches;
     branchesPSet.getParameterSetNames(branches);
@@ -233,6 +256,9 @@ class StringBasedNTupler : public NTupler {
 
     }//loop the provided branches
 
+
+
+
     ev_ = new uint;
     run_ = new uint;
     lumiblock_ = new uint;
@@ -256,6 +282,8 @@ class StringBasedNTupler : public NTupler {
       }
     }
   }
+
+
 
   uint registerleaves(edm::ProducerBase * producer){
     uint nLeaves=0;
@@ -310,6 +338,8 @@ class StringBasedNTupler : public NTupler {
       tree_->Branch("bunchCrossing",bunchCrossing_,"bunchCrossing/i");
       tree_->Branch("orbitNumber",orbitNumber_,"orbitNumber/i");
 
+      tree_->Branch("HLT_name",&test_vec);
+
     }
     else{
       // loop the automated leafer
@@ -358,7 +388,7 @@ class StringBasedNTupler : public NTupler {
 	//assigne the maximum vector size for this collection
 	indexDataHolder_[indexOfIndexInDataHolder]=maxS;
       }
-      
+
       //fill event info.
       *run_ = iEvent.id().run();
       *ev_ = iEvent.id().event();
