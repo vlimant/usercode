@@ -1001,22 +1001,7 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
                 ),
                 Class = cms.string('reco::Track')
             ),
-						multi5x5BBC = cms.PSet(
-            	src = cms.InputTag("multi5x5BasicClusters","multi5x5BarrelBasicClusters"),
-            	leaves = cms.PSet(
-            		vars = cms.vstring(
-									'energy:energy',
-									'x:x',
-									'y:y',
-									'z:z',
-									'rho:position.rho',
-									'phi:phi',							
-									'eta:eta',
-									'theta:position.theta'
-								)
-            	),
-            	Class = cms.string('reco::CaloCluster')
-          	),						
+									
 						multi5x5EBC = cms.PSet(
             	src = cms.InputTag("multi5x5BasicClusters","multi5x5EndcapBasicClusters"),
             	leaves = cms.PSet(
