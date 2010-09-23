@@ -2,7 +2,6 @@
 <use name=FWCore/PluginManager>
 <use name=FWCore/ParameterSet>
 <use name=PhysicsTools/Utilities>
-<use name=CommonTools/UtilAlgos>
 <use name=PhysicsTools/UtilAlgos>
 <use name=PhysicsTools/HepMCCandAlgos>
 <use name=DataFormats/PatCandidates>

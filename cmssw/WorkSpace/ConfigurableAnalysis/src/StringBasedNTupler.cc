@@ -8,6 +8,7 @@
 #include "DataFormats/PatCandidates/interface/Tau.h"
 #include "DataFormats/PatCandidates/interface/Hemisphere.h"
 #include "DataFormats/PatCandidates/interface/GenericParticle.h"
+#include "DataFormats/PatCandidates/interface/TriggerPath.h"
 
 #include "DataFormats/BeamSpot/interface/BeamSpot.h"
 #include "SimDataFormats/Track/interface/SimTrack.h"
@@ -60,6 +61,7 @@ TreeBranch::value TreeBranch::branch(const edm::Event& iEvent){
   else ANOTHER_VECTOR_CLASS(pat::TriggerPath);
 	else ANOTHER_VECTOR_CLASS(reco::CaloCluster);
 	else ANOTHER_VECTOR_CLASS(reco::Conversion);
+	else ANOTHER_VECTOR_CLASS(pat::TriggerPath);
   else {
     edm::LogError("TreeBranch")<<branchName()<<" failed to recognized class type: "<<class_;
     return TreeBranch::value(new std::vector<float>());
