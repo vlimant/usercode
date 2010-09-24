@@ -5,6 +5,7 @@ secVertexType = 'btag_secVertexHighEff:bDiscriminator("simpleSecondaryVertexHigh
 #Secondary Vertex name for events RECO with or before 35X
 #secVertexType = 'btag_secVertexHighEff:bDiscriminator("simpleSecondaryVertexBJetTags")'
 
+
 basicKinematicLeaves = cms.PSet(
 	status = cms.string('status'),
 	phi = cms.string('phi'),
@@ -394,7 +395,7 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
     workAsASelector = cms.bool(True),
     flows = cms.vstring('minSelection'),
     InputTags = cms.PSet(
-        genParticles = cms.InputTag("genParticles"),
+#        genParticles = cms.InputTag("genParticles"),
         mets = cms.InputTag("layer1METs"),
         genMuons = cms.InputTag("genMuons"),
         genElectrons = cms.InputTag("genElectrons"),
@@ -426,24 +427,6 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
                ),
                Class = cms.string('reco::Vertex'),
            ),
-
-
-
-
-           triggerPath = cms.PSet(
-           src = cms.InputTag("patTrigger"),
-             leaves = cms.PSet(
-                 vars = cms.vstring(
-                       'prescale:prescale',
-			#'filterIndices:filterIndices', #vector<unsigned int>   
-	 		#'HLTname:name.c_str()',
-			'index:index',
-			'lastActiveFilterSlot:lastActiveFilterSlot',					
-                        'pass:wasAccept'
-               		),
-               ),
-               Class = cms.string('pat::TriggerPath'),
-           	),
 
 
 
@@ -814,28 +797,29 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
                     
                 Class = cms.string('pat::Photon')
             ),
+
             mc_doc = cms.PSet(
                 src = cms.InputTag("genParticles"),
                 leaves = cms.PSet(
-                    vars = cms.vstring('id:pdgId', 
-                        'pt:pt', 
-                        'px:px', 
-                        'py:py', 
+                    vars = cms.vstring('id:pdgId',
+                        'pt:pt',
+                        'px:px',
+                        'py:py',
                         'pz:pz',
                         'eta:eta',
                         'phi:phi',
-                        'theta:theta', 
+                        'theta:theta',
                         'energy:energy',
-                        'status:status', 
-                        'charge:charge', 
+                        'status:status',
+                        'charge:charge',
                         'mother_id:mother.pdgId',
-                        'grandmother_id:mother.mother.pdgId', 
-                        'ggrandmother_id:mother.mother.mother.pdgId', 
-                        'mother_pt:mother.pt',           
-                        'vertex_x:vertex.x', 
-                        'vertex_y:vertex.y', 
-                        'vertex_z:vertex.z', 
-                        'mass:mass', 
+                        'grandmother_id:mother.mother.pdgId',
+                        'ggrandmother_id:mother.mother.mother.pdgId',
+                        'mother_pt:mother.pt',
+                        'vertex_x:vertex.x',
+                        'vertex_y:vertex.y',
+                        'vertex_z:vertex.z',
+                        'mass:mass',
                         'numOfDaughters:numberOfDaughters',
                         'numOfMothers:numberOfMothers'
                                        )
@@ -846,25 +830,25 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
             mc_mus = cms.PSet(
                 src = cms.InputTag("genParticles"),
                 leaves = cms.PSet(
-                    vars = cms.vstring('id:pdgId', 
-                        'pt:pt', 
-                        'px:px', 
-                        'py:py', 
+                    vars = cms.vstring('id:pdgId',
+                        'pt:pt',
+                        'px:px',
+                        'py:py',
                         'pz:pz',
-                        'eta:eta', 
+                        'eta:eta',
                         'phi:phi',
-                        'theta:theta', 
+                        'theta:theta',
                         'status:status',
                         'energy:energy',
                         'charge:charge',
                         'mother_id:mother.pdgId',
-                        'mother_pt:mother.pt', 
+                        'mother_pt:mother.pt',
                         'grandmother_id:mother.mother.pdgId',
-                        'ggrandmother_id:mother.mother.mother.pdgId',                      
-                        'vertex_x:vertex.x', 
-                        'vertex_y:vertex.y', 
-                        'vertex_z:vertex.z', 
-                        'mass:mass', 
+                        'ggrandmother_id:mother.mother.mother.pdgId',
+                        'vertex_x:vertex.x',
+                        'vertex_y:vertex.y',
+                        'vertex_z:vertex.z',
+                        'mass:mass',
                         'numOfDaughters:numberOfDaughters')
                 ),
                 selection = cms.string('status!=3 & (pdgId=13 | pdgId=-13) & pt>10'),
@@ -873,25 +857,25 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
             mc_electrons = cms.PSet(
                 src = cms.InputTag("genParticles"),
                 leaves = cms.PSet(
-                    vars = cms.vstring('id:pdgId', 
-                        'pt:pt', 
-                        'px:px', 
-                        'py:py', 
-                        'pz:pz', 
+                    vars = cms.vstring('id:pdgId',
+                        'pt:pt',
+                        'px:px',
+                        'py:py',
+                        'pz:pz',
                         'eta:eta',
                         'phi:phi',
                         'theta:theta',
-                        'status:status', 
+                        'status:status',
                         'energy:energy',
                         'charge:charge',
                         'mother_id:mother.pdgId',
-                        'mother_pt:mother.pt', 
+                        'mother_pt:mother.pt',
                         'grandmother_id:mother.mother.pdgId',
-                        'ggrandmother_id:mother.mother.mother.pdgId',                                        
-                        'vertex_x:vertex.x', 
-                        'vertex_y:vertex.y', 
-                        'vertex_z:vertex.z', 
-                        'mass:mass', 
+                        'ggrandmother_id:mother.mother.mother.pdgId',
+                        'vertex_x:vertex.x',
+                        'vertex_y:vertex.y',
+                        'vertex_z:vertex.z',
+                        'mass:mass',
                         'numOfDaughters:numberOfDaughters')
                 ),
                 selection = cms.string('status!=3 & (pdgId=11 | pdgId=-11) & pt>10'),
@@ -901,25 +885,25 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
             mc_taus = cms.PSet(
                 src = cms.InputTag("genParticles"),
                 leaves = cms.PSet(
-                    vars = cms.vstring('id:pdgId', 
-                        'pt:pt', 
-                        'px:px', 
-                        'py:py', 
-                        'pz:pz', 
+                    vars = cms.vstring('id:pdgId',
+                        'pt:pt',
+                        'px:px',
+                        'py:py',
+                        'pz:pz',
                         'eta:eta',
                         'phi:phi',
                         'theta:theta',
-                        'status:status', 
+                        'status:status',
                         'energy:energy',
                         'charge:charge',
                         'mother_id:mother.pdgId',
-                        'mother_pt:mother.pt', 
+                        'mother_pt:mother.pt',
                         'grandmother_id:mother.mother.pdgId',
-                        'ggrandmother_id:mother.mother.mother.pdgId',                                        
-                        'vertex_x:vertex.x', 
-                        'vertex_y:vertex.y', 
-                        'vertex_z:vertex.z', 
-                        'mass:mass', 
+                        'ggrandmother_id:mother.mother.mother.pdgId',
+                        'vertex_x:vertex.x',
+                        'vertex_y:vertex.y',
+                        'vertex_z:vertex.z',
+                        'mass:mass',
                         'numOfDaughters:numberOfDaughters')
                 ),
                 selection = cms.string('status!=3 & (pdgId=15 | pdgId=-15)'),
@@ -929,25 +913,25 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
             mc_photons = cms.PSet(
                 src = cms.InputTag("genParticles"),
                 leaves = cms.PSet(
-                    vars = cms.vstring('id:pdgId', 
-                        'pt:pt', 
-                        'px:px', 
-                        'py:py', 
-                        'pz:pz', 
+                    vars = cms.vstring('id:pdgId',
+                        'pt:pt',
+                        'px:px',
+                        'py:py',
+                        'pz:pz',
                         'eta:eta',
                         'phi:phi',
                         'theta:theta',
-                        'status:status', 
+                        'status:status',
                         'energy:energy',
                         'charge:charge',
                         'mother_id:mother.pdgId',
-                        'mother_pt:mother.pt', 
+                        'mother_pt:mother.pt',
                         'grandmother_id:mother.mother.pdgId',
-                        'ggrandmother_id:mother.mother.mother.pdgId',                                        
-                        'vertex_x:vertex.x', 
-                        'vertex_y:vertex.y', 
-                        'vertex_z:vertex.z', 
-                        'mass:mass', 
+                        'ggrandmother_id:mother.mother.mother.pdgId',
+                        'vertex_x:vertex.x',
+                        'vertex_y:vertex.y',
+                        'vertex_z:vertex.z',
+                        'mass:mass',
                         'numOfDaughters:numberOfDaughters')
                 ),
                 selection = cms.string('status!=3 & (pdgId=22) & pt>10'),
@@ -1001,23 +985,6 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
                 ),
                 Class = cms.string('reco::Track')
             ),
-									
-						multi5x5EBC = cms.PSet(
-            	src = cms.InputTag("multi5x5BasicClusters","multi5x5EndcapBasicClusters"),
-            	leaves = cms.PSet(
-            		vars = cms.vstring(
-									'energy:energy',
-									'x:x',
-									'y:y',
-									'z:z',
-									'rho:position.rho',
-									'phi:phi',							
-									'eta:eta',
-									'theta:position.theta'
-								)
-            	),
-            	Class = cms.string('reco::CaloCluster')
-          	),
 						hybridBBC = cms.PSet(
             	src = cms.InputTag("hybridSuperClusters","hybridBarrelBasicClusters"),
             	leaves = cms.PSet(
@@ -1448,11 +1415,17 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
 			),
 			ComponentName = cms.string('CompleteNTupler'),
 			useTFileService = cms.bool(True), ## false for EDM; true for non EDM
-			variablesPSet = cms.PSet(
-			#use all the variables from the PSet above
-			allVariables = cms.bool(True),
-			treeName = cms.string('eventV')
-		)
+			
+                        AdHocNPSet = cms.PSet(
+                          #AdHoc ntupler for trigger variables
+                          treeName = cms.string('eventA')
+                        ),
+
+                        variablesPSet = cms.PSet(
+			  #use all the variables from the PSet above
+			  allVariables = cms.bool(True),
+			  treeName = cms.string('eventV')
+		        )
 	)
 )
 

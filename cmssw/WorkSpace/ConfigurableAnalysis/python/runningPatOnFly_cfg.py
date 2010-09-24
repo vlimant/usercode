@@ -37,10 +37,15 @@ process.load("Configuration.StandardSequences.MagneticField_cff")
 ## Standard PAT Configuration File
 process.load("PhysicsTools.PatAlgos.patSequences_cff")
 
+#Need this for L1 triggers with CMSSW >= 381
+process.load("PhysicsTools.PatAlgos.triggerLayer1.triggerProducer_cff")
+process.patTrigger.addL1Algos = cms.bool( True )
+
 ## Output Module Configuration (expects a path 'p')
 from PhysicsTools.PatAlgos.patEventContent_cff import patEventContent
 process.out = cms.OutputModule("PoolOutputModule",
-                               fileName = cms.untracked.string('PATLayer1_Output.fromAOD_full.root'),
+     			       fileName = cms.untracked.string('patTuple.root'),
+                               #fileName = cms.untracked.string('PATLayer1_Output.fromAOD_full.root'),
                                # save only events passing the full path
                                SelectEvents   = cms.untracked.PSet( SelectEvents = cms.vstring('p') ),
                                # save PAT Layer 1 output; you need a '*' to
@@ -53,8 +58,8 @@ process.out = cms.OutputModule("PoolOutputModule",
 
 #-- Meta data to be logged in DBS ---------------------------------------------
 process.configurationMetadata = cms.untracked.PSet(
-    version = cms.untracked.string('$Revision: 1.4 $'),
-    name = cms.untracked.string('$Source: /local/projects/CMSSW/rep/UserCode/JRVlimant/cmssw/WorkSpace/ConfigurableAnalysis/python/runningPatOnFly_cfg.py,v $'),
+    version = cms.untracked.string('$Revision: 1.29 $'),
+    name = cms.untracked.string('$Source: /cvs_server/repositories/CMSSW/UserCode/JRVlimant/cmssw/WorkSpace/ConfigurableAnalysis/python/runningPatOnFly_cfg.py,v $'),
     annotation = cms.untracked.string('SUSY pattuple definition')
 )
 
@@ -72,21 +77,35 @@ process.source.fileNames = [
      #'/store/mc/Spring10/MinBias/GEN-SIM-RECO/START3X_V25B_356ReReco-v1/0007/FE90A396-233C-DF11-8106-002618943898.root'
      #'/store/data/Commissioning10/MinimumBias/RAW-RECO/Apr1Skim_GOODCOLL-v1/0140/E27B88D1-8040-DF11-B3FC-00261894391B.root'
      #'file:/tmp/nmohr/356ReRecoMC.root'
-		 
-	'file:/DataE/wto/Reco/Commissioning10-SD_JetMETTau-Jun9thSkim_v1RECO.root'
+     #'file:/DataE/wto/Reco/Commissioning10-SD_JetMETTau-Jun9thSkim_v1RECO.root'
+     #'/store/data/Run2010A/JetMETTau/RECO/v4/000/141/881/EEBB59C6-FF9A-DF11-930C-001617C3B6DC.root'
+     #'/store/relval/CMSSW_3_8_2/MinimumBias/RECO/GR_R_38X_V9_RelVal_col_10-v1/0018/D422279F-98AF-DF11-8875-0018F3D096E0.root'
+     #'file:/DataC/pbgeff/temp_38Xntuple/A68EE48A-22A8-DF11-A429-0017A4770C34.root'
+     '/store/relval/CMSSW_3_8_2/RelValZmumuJets_Pt_20_300_GEN/GEN-SIM-RECO/MC_38Y_V9_PU_E7TeV_AVE_2_BX2808-v1/0019/EE6557E2-07B1-DF11-B5A9-0026189438D3.root'
+     #'/store/data/Run2010B/Jet/RECO/PromptReco-v2/000/146/331/16DFEFAD-DEC5-DF11-9E29-0030487CD6DA.root'
+     #'file:/DataE/wto/Reco/Mu_Run2010B-PromptReco-v2_RECO/D47EAE08-ADC6-DF11-B1D8-0030487CD6D8.root'
     ]
-process.maxEvents.input = 10
+process.maxEvents.input = 200
 # Due to problem in production of LM samples: same event number appears multiple times
 process.source.duplicateCheckMode = cms.untracked.string('noDuplicateCheck')
 
 #-- Calibration tag -----------------------------------------------------------
 # Should match input file's tag
-process.GlobalTag.globaltag = 'START38_V8::All'
+#process.GlobalTag.globaltag = 'START38_V9::All'
+#process.GlobalTag.globaltag = 'START38_V10::All'
+#process.GlobalTag.globaltag = 'GR10_P_V7::All'
+#process.GlobalTag.globaltag = 'GR_R_38X_V9::All'
+#process.GlobalTag.globaltag = 'GR_R_37X_V6A::All' #for Wing's file
+#process.GlobalTag.globaltag = 'GR_R_38X_V11::All'
+#process.GlobalTag.globaltag = 'GR10_P_V9::All'
+#process.GlobalTag.globaltag = 'GR10_P_V10::All'
+process.GlobalTag.globaltag = 'MC_38Y_V9::All'
 
 ############################# START SUSYPAT specifics ####################################
 from PhysicsTools.Configuration.SUSY_pattuple_cff import addDefaultSUSYPAT, getSUSY_pattuple_outputCommands
 #Apply SUSYPAT, parameters are: mcInfo, HLT menu, Jet energy corrections, mcVersion ('35x' for 35x samples, empty string for 36X samples),JetCollections
 addDefaultSUSYPAT(process,False,'HLT','Spring10','',['IC5Calo','AK5JPT']) 
+#addDefaultSUSYPAT(process,True,'HLT','Spring10','',['IC5Calo','AK5JPT'])
 SUSY_pattuple_outputCommands = getSUSY_pattuple_outputCommands( process )
 ############################## END SUSYPAT specifics ####################################
 
