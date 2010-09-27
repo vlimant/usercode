@@ -28,13 +28,8 @@
 #include "PhysicsTools/UtilAlgos/interface/CachingVariable.h"
 
 
-#include "PhysicsTools/PatExamples/plugins/PatTriggerAnalyzer.h"
-
-
 //#define StringBasedNTuplerPrecision float;
 
-std::vector<std::string> *test_vec;
-int hlt_flag; 
 
 class TreeBranch {
  public:
@@ -122,20 +117,10 @@ public:
   StringBranchHelper(const TreeBranch & B, const edm::Event& iEvent)
     {
       const float defaultValue = 0.;
+
       //    grab the collection
       edm::Handle<Collection> oH;
       iEvent.getByLabel(B.src(), oH);
-
-      //std::cout<<"\n"<<B.className();
-      if(B.className() == "pat::TriggerPath" && hlt_flag==0) {
-        hlt_flag=1; //flag to make sure names are saved only once per event
-        edm::Handle< pat::TriggerPathCollection > triggerPaths;
-        iEvent.getByLabel( B.src(), triggerPaths );
-        test_vec->clear();
-        for(uint k=0; k<triggerPaths->size(); k++) {
-            test_vec->push_back(triggerPaths->at(k).name()); //Save HLT trigger names as strings
-        }
-      }
 
 
       //empty vector if product not found
@@ -199,10 +184,12 @@ public:
 
 
 class StringBasedNTupler : public NTupler {
+
+
  public:
   StringBasedNTupler(const edm::ParameterSet& iConfig){
 
-    hlt_flag = 0; 
+
 
     edm::ParameterSet branchesPSet = iConfig.getParameter<edm::ParameterSet>("branchesPSet");
     std::vector<std::string> branches;
@@ -338,7 +325,6 @@ class StringBasedNTupler : public NTupler {
       tree_->Branch("bunchCrossing",bunchCrossing_,"bunchCrossing/i");
       tree_->Branch("orbitNumber",orbitNumber_,"orbitNumber/i");
 
-      tree_->Branch("HLT_name",&test_vec);
 
     }
     else{
