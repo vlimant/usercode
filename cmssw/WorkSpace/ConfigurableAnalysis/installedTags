@@ -1,14 +1,9 @@
-Test Release based on: CMSSW_3_8_2
-Base Release in: /afs/cern.ch/cms/slc5_ia32_gcc434/cms/cmssw/CMSSW_3_8_2
-Your Test release in: /home/wto/current/cmssw/CMSSW_3_8_2
---- Tag ---    -------- Package --------                        
-V06-01-00      DataFormats/PatCandidates                        
-V03-00-05      JetMETCorrections/Configuration                  
-V04-03-09      JetMETCorrections/Type1MET                       
-V00-08-02      PhysicsTools/Configuration                       
-V08-00-25      PhysicsTools/PatAlgos                            
-V00-04-06      PhysicsTools/PatExamples                         
-V00-02-13      PhysicsTools/SelectorUtils                       
-NoTag          Workspace/ConfigurableAnalysis                   
+Test Release based on: CMSSW_3_8_3
+Base Release in: /afs/cern.ch/cms/slc5_ia32_gcc434/cms/cmssw/CMSSW_3_8_3
+Your Test release in: /home/pbgeff/CMSSW_3_8_3
+--- Tag ---    -------- Package --------
+V00-08-02      PhysicsTools/Configuration
+NoTag          Workspace/ConfigurableAnalysis
+NoTag          Workspace/Dictionaries
 ---------------------------------------
-total packages: 8 (8 displayed)
+total packages: 3 (3 displayed)
