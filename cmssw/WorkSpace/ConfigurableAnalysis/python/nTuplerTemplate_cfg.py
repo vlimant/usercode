@@ -4,7 +4,7 @@ process = cms.Process("NTUP")
 
 ## MessageLogger
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = 10
+process.MessageLogger.cerr.FwkReport.reportEvery = 100000
 
 ## Geometry and Detector Conditions (needed for a few patTuple production steps)
 process.load("Configuration.StandardSequences.Geometry_cff")
@@ -13,6 +13,9 @@ process.load("Configuration.StandardSequences.MagneticField_cff")
 
 ## PAT and cfA ntuple configurations.
 process.load("PhysicsTools.PatAlgos.patSequences_cff")
+#Need this for L1 triggers with CMSSW >= 381
+process.load("PhysicsTools.PatAlgos.triggerLayer1.triggerProducer_cff")
+process.patTrigger.addL1Algos = cms.bool( True )
 from PhysicsTools.PatAlgos.patEventContent_cff import patEventContent
 from PhysicsTools.Configuration.SUSY_pattuple_cff import addDefaultSUSYPAT, getSUSY_pattuple_outputCommands
 process.load("Workspace.ConfigurableAnalysis.configurableAnalysis_ForPattuple_cff")
