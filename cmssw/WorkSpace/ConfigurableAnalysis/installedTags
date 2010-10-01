@@ -3,7 +3,8 @@ Base Release in: /afs/cern.ch/cms/slc5_ia32_gcc434/cms/cmssw/CMSSW_3_8_3
 Your Test release in: /home/pbgeff/CMSSW_3_8_3
 --- Tag ---    -------- Package --------
 V00-08-02      PhysicsTools/Configuration
-NoTag          Workspace/ConfigurableAnalysis
+UCSBv30_0      Workspace/ConfigurableAnalysis
 NoTag          Workspace/Dictionaries
+
 ---------------------------------------
 total packages: 3 (3 displayed)
