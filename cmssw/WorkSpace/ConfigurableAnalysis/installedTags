@@ -4,7 +4,7 @@ Your Test release in: /home/pbgeff/CMSSW_3_8_3
 --- Tag ---    -------- Package --------
 V00-08-02      PhysicsTools/Configuration
 UCSBv30_0      Workspace/ConfigurableAnalysis
-NoTag          Workspace/Dictionaries
+UCSBv30_0      Workspace/Dictionaries
 
 ---------------------------------------
 total packages: 3 (3 displayed)
