@@ -1434,13 +1434,13 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
                         AdHocNPSet = cms.PSet(
                           #AdHoc ntupler for trigger variables
                           treeName = cms.string('eventA')
-                        ),
+                        ) # ,
 
-                        variablesPSet = cms.PSet(
-			  #use all the variables from the PSet above
-			  allVariables = cms.bool(True),
-			  treeName = cms.string('eventV')
-		        )
+#                        variablesPSet = cms.PSet(
+#			  #use all the variables from the PSet above
+#			  allVariables = cms.bool(True),
+#			  treeName = cms.string('eventV')
+#		        )
 	)
 )
 

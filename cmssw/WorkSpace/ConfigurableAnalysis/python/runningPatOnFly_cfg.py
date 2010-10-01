@@ -58,7 +58,7 @@ process.out = cms.OutputModule("PoolOutputModule",
 
 #-- Meta data to be logged in DBS ---------------------------------------------
 process.configurationMetadata = cms.untracked.PSet(
-    version = cms.untracked.string('$Revision: 1.29 $'),
+    version = cms.untracked.string('$Revision: 1.6 $'),
     name = cms.untracked.string('$Source: /cvs_server/repositories/CMSSW/UserCode/JRVlimant/cmssw/WorkSpace/ConfigurableAnalysis/python/runningPatOnFly_cfg.py,v $'),
     annotation = cms.untracked.string('SUSY pattuple definition')
 )
@@ -73,15 +73,8 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 100
 
 #-- Input Source --------------------------------------------------------------
 process.source.fileNames = [
-     #'/store/relval/CMSSW_3_6_0_pre6/RelValProdTTbar/GEN-SIM-RECO/MC_36Y_V4-v1/0011/82DAA1BE-B344-DF11-A116-00304867C0C4.root'
-     #'/store/mc/Spring10/MinBias/GEN-SIM-RECO/START3X_V25B_356ReReco-v1/0007/FE90A396-233C-DF11-8106-002618943898.root'
-     #'/store/data/Commissioning10/MinimumBias/RAW-RECO/Apr1Skim_GOODCOLL-v1/0140/E27B88D1-8040-DF11-B3FC-00261894391B.root'
-     #'file:/tmp/nmohr/356ReRecoMC.root'
-     #'file:/DataE/wto/Reco/Commissioning10-SD_JetMETTau-Jun9thSkim_v1RECO.root'
-     #'/store/data/Run2010A/JetMETTau/RECO/v4/000/141/881/EEBB59C6-FF9A-DF11-930C-001617C3B6DC.root'
-     #'/store/relval/CMSSW_3_8_2/MinimumBias/RECO/GR_R_38X_V9_RelVal_col_10-v1/0018/D422279F-98AF-DF11-8875-0018F3D096E0.root'
-     #'file:/DataC/pbgeff/temp_38Xntuple/A68EE48A-22A8-DF11-A429-0017A4770C34.root'
-     '/store/relval/CMSSW_3_8_2/RelValZmumuJets_Pt_20_300_GEN/GEN-SIM-RECO/MC_38Y_V9_PU_E7TeV_AVE_2_BX2808-v1/0019/EE6557E2-07B1-DF11-B5A9-0026189438D3.root'
+     #'/store/relval/CMSSW_3_8_2/RelValZmumuJets_Pt_20_300_GEN/GEN-SIM-RECO/MC_38Y_V9_PU_E7TeV_AVE_2_BX2808-v1/0019/EE6557E2-07B1-DF11-B5A9-0026189438D3.root'
+     '/store/relval/CMSSW_3_8_3/RelValTTbar/GEN-SIM-RECO/START38_V9-v1/0022/CA9763E0-EFBF-DF11-81C5-002618943845.root'
      #'/store/data/Run2010B/Jet/RECO/PromptReco-v2/000/146/331/16DFEFAD-DEC5-DF11-9E29-0030487CD6DA.root'
      #'file:/DataE/wto/Reco/Mu_Run2010B-PromptReco-v2_RECO/D47EAE08-ADC6-DF11-B1D8-0030487CD6D8.root'
     ]
@@ -93,13 +86,11 @@ process.source.duplicateCheckMode = cms.untracked.string('noDuplicateCheck')
 # Should match input file's tag
 #process.GlobalTag.globaltag = 'START38_V9::All'
 #process.GlobalTag.globaltag = 'START38_V10::All'
-#process.GlobalTag.globaltag = 'GR10_P_V7::All'
 #process.GlobalTag.globaltag = 'GR_R_38X_V9::All'
-#process.GlobalTag.globaltag = 'GR_R_37X_V6A::All' #for Wing's file
 #process.GlobalTag.globaltag = 'GR_R_38X_V11::All'
 #process.GlobalTag.globaltag = 'GR10_P_V9::All'
-#process.GlobalTag.globaltag = 'GR10_P_V10::All'
-process.GlobalTag.globaltag = 'MC_38Y_V9::All'
+process.GlobalTag.globaltag = 'GR10_P_V10::All'
+#process.GlobalTag.globaltag = 'MC_38Y_V9::All'
 
 ############################# START SUSYPAT specifics ####################################
 from PhysicsTools.Configuration.SUSY_pattuple_cff import addDefaultSUSYPAT, getSUSY_pattuple_outputCommands
