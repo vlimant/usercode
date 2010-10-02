@@ -8,7 +8,12 @@ class CompleteNTupler : public NTupler {
  public:
   CompleteNTupler(const edm::ParameterSet& iConfig){
     sN = new StringBasedNTupler(iConfig);
-    vN = new VariableNTupler(iConfig);
+    if (iConfig.exists("variablesPSet"))
+      if (!iConfig.getParameter<edm::ParameterSet>("variablesPSet").empty())
+	vN = new VariableNTupler(iConfig);
+      else vN=0;
+    else
+      vN=0;
     if (iConfig.exists("AdHocNPSet"))
       if (!iConfig.getParameter<edm::ParameterSet>("AdHocNPSet").empty())
 	aN = new AdHocNTupler(iConfig);
@@ -20,19 +25,22 @@ class CompleteNTupler : public NTupler {
   uint registerleaves(edm::ProducerBase * producer){
     uint nLeaves=0;
     nLeaves+=sN->registerleaves(producer);
-    nLeaves+=vN->registerleaves(producer);
+    if (vN)
+      nLeaves+=vN->registerleaves(producer);
     if (aN)
       nLeaves+=aN->registerleaves(producer);
     return nLeaves;
   }
   void fill(edm::Event& iEvent){
     sN->fill(iEvent);
-    vN->fill(iEvent);
+    if (vN)
+      vN->fill(iEvent);
     if (aN)
       aN->fill(iEvent);
 
     sN->callBack();
-    vN->callBack();
+    if (vN)
+      vN->callBack();
     if (aN)
       aN->callBack();
   }
