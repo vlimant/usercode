@@ -3,6 +3,14 @@
 #include "DataFormats/PatCandidates/interface/TriggerEvent.h"
 #include "DataFormats/PatCandidates/interface/TriggerAlgorithm.h"
 
+#include "RecoEgamma/EgammaTools/interface/ConversionFinder.h"
+#include "MagneticField/Records/interface/IdealMagneticFieldRecord.h"
+#include "MagneticField/Engine/interface/MagneticField.h"
+#include "DataFormats/TrackReco/interface/Track.h"
+#include "DataFormats/TrackReco/interface/TrackExtra.h"
+#include "DataFormats/Scalers/interface/DcsStatus.h"
+#include "FWCore/Framework/interface/ESHandle.h"
+
 using namespace std;
 
 class AdHocNTupler : public NTupler {
@@ -46,6 +54,9 @@ class AdHocNTupler : public NTupler {
     L1trigger_alias = new std::vector<std::string>;
     L1trigger_decision = new std::vector<float>;
     L1trigger_decision_nomask = new std::vector<float>;
+    els_conversion_dist = new std::vector<float>;
+    els_conversion_dcot = new std::vector<float>;
+
   }
 
   ~AdHocNTupler(){
@@ -69,6 +80,8 @@ class AdHocNTupler : public NTupler {
     delete L1trigger_alias;
     delete L1trigger_decision;
     delete L1trigger_decision_nomask;
+    delete els_conversion_dist;
+    delete els_conversion_dcot;
 
   }
 
@@ -113,7 +126,8 @@ class AdHocNTupler : public NTupler {
       tree_->Branch("L1trigger_alias",&L1trigger_alias);
       tree_->Branch("L1trigger_decision",&L1trigger_decision);
       tree_->Branch("L1trigger_decision_nomask",&L1trigger_decision_nomask);
-
+      tree_->Branch("els_conversion_dist",&els_conversion_dist);
+      tree_->Branch("els_conversion_dcot",&els_conversion_dcot);
     }
 
     else{
@@ -249,6 +263,65 @@ class AdHocNTupler : public NTupler {
     }
 
 
+    edm::Handle< std::vector<pat::Electron> > electrons;
+    iEvent.getByLabel("cleanPatElectrons",electrons);
+
+    edm::Handle<reco::TrackCollection> tracks_h;
+    iEvent.getByLabel("generalTracks", tracks_h);
+
+    edm::Handle<DcsStatusCollection> dcsHandle;
+    iEvent.getByLabel("scalersRawToDigi", dcsHandle);
+    //iEvent.getByLabel(dcsTag_, dcsHandle);
+
+    double evt_bField;
+    // need the magnetic field
+    //
+    // if isData then derive bfield using the
+    // magnet current from DcsStatus
+    // otherwise take it from the IdealMagneticFieldRecord
+    if (iEvent.isRealData()) {
+         // scale factor = 3.801/18166.0 which are
+         // average values taken over a stable two
+         // week period
+         float currentToBFieldScaleFactor = 2.09237036221512717e-04;
+         float current = (*dcsHandle)[0].magnetCurrent();
+         evt_bField = current*currentToBFieldScaleFactor;
+        }
+    else {
+        
+        //edm::ESHandle<MagneticField> magneticField;
+        //iSetup.get<IdealMagneticFieldRecord>().get(magneticField);        
+        //evt_bField = magneticField->inTesla(GlobalPoint(0.,0.,0.)).z();
+       
+       //****Temporary solution*******
+       //Must fix before running on MC
+       evt_bField = 3.8;
+
+    }
+
+
+    for(std::vector<pat::Electron>::const_iterator elec=electrons->begin(); elec!=electrons->end(); ++elec) {
+
+        //Get Gsf electron
+        reco::GsfElectron* el = (reco::GsfElectron*) elec->originalObject(); 
+	if(el == NULL) {	
+	throw cms::Exception("GsfElectron")<<"No GsfElectron matched to pat::Electron.\n";
+        }
+
+        //cout << "Found and electron" << endl;
+	//if(!el->closestCtfTrackRef().isNonnull())
+	//cout<< "Could not find an electron ctf track" << endl;	         
+
+        ConversionFinder convFinder;
+        ConversionInfo convInfo = convFinder.getConversionInfo(*el, tracks_h, evt_bField);
+   
+        (*els_conversion_dist).push_back(convInfo.dist());
+        (*els_conversion_dcot).push_back(convInfo.dcot());
+        //double convradius = convInfo.radiusOfConversion();
+        //math::XYZPoint convPoint = convInfo.pointOfConversion();
+    }
+
+
 
     //fill the tree    
     if (ownTheTree_){ tree_->Fill(); }
@@ -272,6 +345,8 @@ class AdHocNTupler : public NTupler {
     (*L1trigger_alias).clear();
     (*L1trigger_decision).clear();
     (*L1trigger_decision_nomask).clear();
+    (*els_conversion_dist).clear();
+    (*els_conversion_dcot).clear();
 
   }
 
@@ -304,5 +379,7 @@ class AdHocNTupler : public NTupler {
   std::vector<std::string> * L1trigger_alias;
   std::vector<float> * L1trigger_decision;
   std::vector<float> * L1trigger_decision_nomask;
+  std::vector<float> * els_conversion_dist;
+  std::vector<float> * els_conversion_dcot;
 
 };

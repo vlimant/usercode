@@ -10,6 +10,7 @@
 <use name=DataFormats/JetReco>
 <use name=Workspace/Dictionaries>
 <use name=root>
+<use name=RecoEgamma/EgammaTools>
 
 <export>
    <lib name=WorkspaceConfigurableAnalysis>
@@ -25,4 +26,5 @@
    <use name=DataFormats/JetReco>
    <use name=Workspace/Dictionaries>
    <use name=root>
+   <use name=RecoEgamma/EgammaTools>
 </export>
