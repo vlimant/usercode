@@ -37,6 +37,9 @@ process.load("Configuration.StandardSequences.MagneticField_cff")
 ## Standard PAT Configuration File
 process.load("PhysicsTools.PatAlgos.patSequences_cff")
 
+process.BFieldColl = cms.EDProducer('BFieldProducer')
+
+
 ##Need this for L1 triggers with CMSSW >= 381
 process.load("PhysicsTools.PatAlgos.triggerLayer1.triggerProducer_cff")
 process.patTrigger.addL1Algos = cms.bool( True )
@@ -76,7 +79,7 @@ process.out = cms.OutputModule("PoolOutputModule",
                                SelectEvents   = cms.untracked.PSet( SelectEvents = cms.vstring('p') ),
                                # save PAT Layer 1 output; you need a '*' to
                                # unpack the list of commands 'patEventContent'
-                               outputCommands = cms.untracked.vstring('drop *', *patEventContent ) 
+                               outputCommands = cms.untracked.vstring('drop *', "keep *_BFieldColl_*_*_",*patEventContent ) 
                                )
 #process.outpath = cms.EndPath(process.out)
 
@@ -84,10 +87,12 @@ process.out = cms.OutputModule("PoolOutputModule",
 
 #-- Meta data to be logged in DBS ---------------------------------------------
 process.configurationMetadata = cms.untracked.PSet(
-    version = cms.untracked.string('$Revision: 1.7 $'),
+    version = cms.untracked.string('$Revision: 1.8 $'),
     name = cms.untracked.string('$Source: /cvs_server/repositories/CMSSW/UserCode/JRVlimant/cmssw/WorkSpace/ConfigurableAnalysis/python/runningPatOnFly_cfg.py,v $'),
     annotation = cms.untracked.string('SUSY pattuple definition')
 )
+
+process.load('CommonTools/RecoAlgos/HBHENoiseFilter_cfi')
 
 #-- Message Logger ------------------------------------------------------------
 process.MessageLogger.categories.append('PATSummaryTables')
@@ -103,7 +108,8 @@ process.source.fileNames = [
      #'/store/relval/CMSSW_3_8_3/RelValTTbar/GEN-SIM-RECO/START38_V9-v1/0022/CA9763E0-EFBF-DF11-81C5-002618943845.root'
      #'/store/data/Run2010B/Jet/RECO/PromptReco-v2/000/146/331/16DFEFAD-DEC5-DF11-9E29-0030487CD6DA.root'
      #'file:/DataE/wto/Reco/Mu_Run2010B-PromptReco-v2_RECO/D47EAE08-ADC6-DF11-B1D8-0030487CD6D8.root'
-     '/store/data/Run2010B/Electron/RECO/PromptReco-v2/000/146/511/52C66503-9EC7-DF11-B04C-001D09F2A465.root'
+     #'/store/data/Run2010B/Electron/RECO/PromptReco-v2/000/146/511/52C66503-9EC7-DF11-B04C-001D09F2A465.root'
+     'file:/tmp/rebassoo/F0A0A6E9-96E3-DF11-8D4F-00215E21D8E2.root'
     ]
 process.maxEvents.input = 200
 # Due to problem in production of LM samples: same event number appears multiple times
@@ -111,18 +117,14 @@ process.source.duplicateCheckMode = cms.untracked.string('noDuplicateCheck')
 
 #-- Calibration tag -----------------------------------------------------------
 # Should match input file's tag
-#process.GlobalTag.globaltag = 'START38_V9::All'
-#process.GlobalTag.globaltag = 'START38_V10::All'
-#process.GlobalTag.globaltag = 'GR_R_38X_V9::All'
-#process.GlobalTag.globaltag = 'GR_R_38X_V11::All'
-#process.GlobalTag.globaltag = 'GR10_P_V9::All'
-process.GlobalTag.globaltag = 'GR10_P_V10::All'
-#process.GlobalTag.globaltag = 'MC_38Y_V9::All'
+#process.GlobalTag.globaltag = 'GR10_P_V11::All'
+process.GlobalTag.globaltag = 'START38_V12::All'
 
 ############################# START SUSYPAT specifics ####################################
 from PhysicsTools.Configuration.SUSY_pattuple_cff import addDefaultSUSYPAT, getSUSY_pattuple_outputCommands
 #Apply SUSYPAT, parameters are: mcInfo, HLT menu, Jet energy corrections, mcVersion ('35x' for 35x samples, empty string for 36X samples),JetCollections
-addDefaultSUSYPAT(process,False,'HLT','Spring10','',['IC5Calo','AK5JPT']) 
+addDefaultSUSYPAT(process,True,'HLT','Spring10','',['IC5Calo','AK5JPT'])
+#addDefaultSUSYPAT(process,True,'REDIGI38X','Spring10','',['IC5Calo','AK5JPT']) 
 #addDefaultSUSYPAT(process,True,'HLT','Spring10','',['IC5Calo','AK5JPT'])
 SUSY_pattuple_outputCommands = getSUSY_pattuple_outputCommands( process )
 ############################## END SUSYPAT specifics ####################################
@@ -138,11 +140,16 @@ process.out.fileName = 'SUSYPAT.root'       # <-- CHANGE THIS TO SUIT YOUR NEEDS
 process.out.splitLevel = cms.untracked.int32(99)  # Turn on split level (smaller files???)
 process.out.overrideInputFileSplitLevels = cms.untracked.bool(True)
 process.out.dropMetaData = cms.untracked.string('DROPPED')   # Get rid of metadata related to dropped collections
-process.out.outputCommands = cms.untracked.vstring('drop *', *SUSY_pattuple_outputCommands )
+#process.out.outputCommands = cms.untracked.vstring('drop *', *SUSY_pattuple_outputCommands )
+process.out.outputCommands = cms.untracked.vstring('drop *',"keep *_BFieldColl_*_*", *SUSY_pattuple_outputCommands )
 
 #-- Execution path ------------------------------------------------------------
 # Full path
-process.p = cms.Path( process.susyPatDefaultSequence +process.configurableAnalysis)
+process.filterSequence = cms.Sequence(
+    process.HBHENoiseFilter
+)
+#process.p = cms.Path( process.BFieldColl + process.susyPatDefaultSequence +process.configurableAnalysis)
+process.p = cms.Path( process.filterSequence*(process.BFieldColl + process.susyPatDefaultSequence +process.configurableAnalysis))
 #-- Dump config ------------------------------------------------------------
 file = open('SusyPAT_cfg.py','w')
 file.write(str(process.dumpPython()))
