@@ -273,6 +273,12 @@ class AdHocNTupler : public NTupler {
     iEvent.getByLabel("scalersRawToDigi", dcsHandle);
     //iEvent.getByLabel(dcsTag_, dcsHandle);
 
+
+    //       edm::Handle<BFieldCollection> bfield_;
+    edm::Handle< std::vector<double> > bfield_;
+    iEvent.getByLabel("BFieldColl","BField", bfield_);
+    //iEvent.getByLabel(dcsTag_, dcsHandle);
+    
     double evt_bField;
     // need the magnetic field
     //
@@ -295,7 +301,8 @@ class AdHocNTupler : public NTupler {
        
        //****Temporary solution*******
        //Must fix before running on MC
-       evt_bField = 3.8;
+      //       evt_bField = 3.8;
+      evt_bField = (*bfield_)[0];
 
     }
 
