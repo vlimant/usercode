@@ -87,12 +87,10 @@ process.out = cms.OutputModule("PoolOutputModule",
 
 #-- Meta data to be logged in DBS ---------------------------------------------
 process.configurationMetadata = cms.untracked.PSet(
-    version = cms.untracked.string('$Revision: 1.8 $'),
+    version = cms.untracked.string('$Revision: 1.9 $'),
     name = cms.untracked.string('$Source: /cvs_server/repositories/CMSSW/UserCode/JRVlimant/cmssw/WorkSpace/ConfigurableAnalysis/python/runningPatOnFly_cfg.py,v $'),
     annotation = cms.untracked.string('SUSY pattuple definition')
 )
-
-process.load('CommonTools/RecoAlgos/HBHENoiseFilter_cfi')
 
 #-- Message Logger ------------------------------------------------------------
 process.MessageLogger.categories.append('PATSummaryTables')
@@ -111,7 +109,7 @@ process.source.fileNames = [
      #'/store/data/Run2010B/Electron/RECO/PromptReco-v2/000/146/511/52C66503-9EC7-DF11-B04C-001D09F2A465.root'
      'file:/tmp/rebassoo/F0A0A6E9-96E3-DF11-8D4F-00215E21D8E2.root'
     ]
-process.maxEvents.input = 200
+process.maxEvents.input = 20
 # Due to problem in production of LM samples: same event number appears multiple times
 process.source.duplicateCheckMode = cms.untracked.string('noDuplicateCheck')
 
@@ -133,6 +131,8 @@ SUSY_pattuple_outputCommands = getSUSY_pattuple_outputCommands( process )
 #-- configurableAnalysis stuff -------------------------------------------------------
 process.load("Workspace.ConfigurableAnalysis.configurableAnalysis_ForPattuple_cff")
 
+process.load('CommonTools/RecoAlgos/HBHENoiseFilterResultProducer_cfi')
+
 #-- Output module configuration -----------------------------------------------
 process.out.fileName = 'SUSYPAT.root'       # <-- CHANGE THIS TO SUIT YOUR NEEDS
 
@@ -141,15 +141,15 @@ process.out.splitLevel = cms.untracked.int32(99)  # Turn on split level (smaller
 process.out.overrideInputFileSplitLevels = cms.untracked.bool(True)
 process.out.dropMetaData = cms.untracked.string('DROPPED')   # Get rid of metadata related to dropped collections
 #process.out.outputCommands = cms.untracked.vstring('drop *', *SUSY_pattuple_outputCommands )
-process.out.outputCommands = cms.untracked.vstring('drop *',"keep *_BFieldColl_*_*", *SUSY_pattuple_outputCommands )
+process.out.outputCommands = cms.untracked.vstring('drop *',"keep *_HBHENoiseFilterResultProducer_*_*","keep *_BFieldColl_*_*", *SUSY_pattuple_outputCommands )
 
 #-- Execution path ------------------------------------------------------------
 # Full path
-process.filterSequence = cms.Sequence(
-    process.HBHENoiseFilter
-)
+#This is to run on full sim or data
+process.p = cms.Path(process.HBHENoiseFilterResultProducer + process.BFieldColl + process.susyPatDefaultSequence +process.configurableAnalysis)
+#This is to run on FastSim
 #process.p = cms.Path( process.BFieldColl + process.susyPatDefaultSequence +process.configurableAnalysis)
-process.p = cms.Path( process.filterSequence*(process.BFieldColl + process.susyPatDefaultSequence +process.configurableAnalysis))
+
 #-- Dump config ------------------------------------------------------------
 file = open('SusyPAT_cfg.py','w')
 file.write(str(process.dumpPython()))
