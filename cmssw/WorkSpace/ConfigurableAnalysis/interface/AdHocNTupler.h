@@ -56,7 +56,7 @@ class AdHocNTupler : public NTupler {
     L1trigger_decision_nomask = new std::vector<float>;
     els_conversion_dist = new std::vector<float>;
     els_conversion_dcot = new std::vector<float>;
-
+    hbhefilter_decision_ = new int;
   }
 
   ~AdHocNTupler(){
@@ -82,7 +82,7 @@ class AdHocNTupler : public NTupler {
     delete L1trigger_decision_nomask;
     delete els_conversion_dist;
     delete els_conversion_dcot;
-
+    delete hbhefilter_decision_;
   }
 
   uint registerleaves(edm::ProducerBase * producer){
@@ -128,6 +128,7 @@ class AdHocNTupler : public NTupler {
       tree_->Branch("L1trigger_decision_nomask",&L1trigger_decision_nomask);
       tree_->Branch("els_conversion_dist",&els_conversion_dist);
       tree_->Branch("els_conversion_dcot",&els_conversion_dcot);
+      tree_->Branch("hbhefilter_decision",hbhefilter_decision_,"hbhefilter_decision/I");
     }
 
     else{
@@ -261,8 +262,19 @@ class AdHocNTupler : public NTupler {
       (*L1trigger_decision).push_back(decision);
       (*L1trigger_decision_nomask).push_back(decision_nomask);
     }
-
-
+    edm::Handle<bool> filter_h;
+    if(iEvent.getByLabel("HBHENoiseFilterResultProducer","HBHENoiseFilterResult",filter_h)) { 
+      
+      iEvent.getByLabel("HBHENoiseFilterResultProducer","HBHENoiseFilterResult", filter_h);
+      //      cout<<"The filter decision is :"<<*filter_h<<endl;
+      if(*filter_h){*hbhefilter_decision_ = 1;}
+      if(!(*filter_h)){*hbhefilter_decision_ = 0;}
+    }
+    else{
+      *hbhefilter_decision_ = -1;
+      //      cout<<"The hbheflag is not present, is this FastSim?"<<endl;
+    }
+    
     edm::Handle< std::vector<pat::Electron> > electrons;
     iEvent.getByLabel("cleanPatElectrons",electrons);
 
@@ -388,5 +400,6 @@ class AdHocNTupler : public NTupler {
   std::vector<float> * L1trigger_decision_nomask;
   std::vector<float> * els_conversion_dist;
   std::vector<float> * els_conversion_dcot;
+  int * hbhefilter_decision_;
 
 };
