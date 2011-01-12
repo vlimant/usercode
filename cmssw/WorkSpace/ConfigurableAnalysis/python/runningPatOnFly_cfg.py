@@ -44,7 +44,7 @@ process.BFieldColl = cms.EDProducer('BFieldProducer')
 process.load("PhysicsTools.PatAlgos.triggerLayer1.triggerProducer_cff")
 process.patTrigger.addL1Algos = cms.bool( True )
 
-##For electron ID
+#For electron ID
 process.patElectrons.addElectronID = cms.bool(True)
 process.patElectrons.electronIDSources = cms.PSet(
     simpleEleId95relIso= cms.InputTag("simpleEleId95relIso"),
@@ -73,6 +73,7 @@ process.makePatElectrons = cms.Sequence(process.patElectronIDs*process.electronM
 ## Output Module Configuration (expects a path 'p')
 from PhysicsTools.PatAlgos.patEventContent_cff import patEventContent
 process.out = cms.OutputModule("PoolOutputModule",
+     verbose = cms.untracked.bool(True),
      			       fileName = cms.untracked.string('patTuple.root'),
                                #fileName = cms.untracked.string('PATLayer1_Output.fromAOD_full.root'),
                                # save only events passing the full path
@@ -87,7 +88,7 @@ process.out = cms.OutputModule("PoolOutputModule",
 
 #-- Meta data to be logged in DBS ---------------------------------------------
 process.configurationMetadata = cms.untracked.PSet(
-    version = cms.untracked.string('$Revision: 1.9 $'),
+    version = cms.untracked.string('$Revision: 1.10 $'),
     name = cms.untracked.string('$Source: /cvs_server/repositories/CMSSW/UserCode/JRVlimant/cmssw/WorkSpace/ConfigurableAnalysis/python/runningPatOnFly_cfg.py,v $'),
     annotation = cms.untracked.string('SUSY pattuple definition')
 )
@@ -107,7 +108,8 @@ process.source.fileNames = [
      #'/store/data/Run2010B/Jet/RECO/PromptReco-v2/000/146/331/16DFEFAD-DEC5-DF11-9E29-0030487CD6DA.root'
      #'file:/DataE/wto/Reco/Mu_Run2010B-PromptReco-v2_RECO/D47EAE08-ADC6-DF11-B1D8-0030487CD6D8.root'
      #'/store/data/Run2010B/Electron/RECO/PromptReco-v2/000/146/511/52C66503-9EC7-DF11-B04C-001D09F2A465.root'
-     'file:/tmp/rebassoo/F0A0A6E9-96E3-DF11-8D4F-00215E21D8E2.root'
+     #'file:/DataF/pbgeff/temp_385_ntuple/LM0_SUSY_sftsht_7TeV-pythia6_Fall10-START38_V12-v1.root'
+     'file:/DataF/pbgeff/temp_387_ntuple/Jet_Nov4ReReco_06C7ADF6-60EC-DF11-A937-003048D436C6.root'
     ]
 process.maxEvents.input = 20
 # Due to problem in production of LM samples: same event number appears multiple times
@@ -116,14 +118,15 @@ process.source.duplicateCheckMode = cms.untracked.string('noDuplicateCheck')
 #-- Calibration tag -----------------------------------------------------------
 # Should match input file's tag
 #process.GlobalTag.globaltag = 'GR10_P_V11::All'
-process.GlobalTag.globaltag = 'START38_V12::All'
+#process.GlobalTag.globaltag = 'START38_V12::All'
+process.GlobalTag.globaltag = 'GR_R_38X_V15::All' #for Nov4 rereco
 
 ############################# START SUSYPAT specifics ####################################
 from PhysicsTools.Configuration.SUSY_pattuple_cff import addDefaultSUSYPAT, getSUSY_pattuple_outputCommands
 #Apply SUSYPAT, parameters are: mcInfo, HLT menu, Jet energy corrections, mcVersion ('35x' for 35x samples, empty string for 36X samples),JetCollections
-addDefaultSUSYPAT(process,True,'HLT','Spring10','',['IC5Calo','AK5JPT'])
-#addDefaultSUSYPAT(process,True,'REDIGI38X','Spring10','',['IC5Calo','AK5JPT']) 
-#addDefaultSUSYPAT(process,True,'HLT','Spring10','',['IC5Calo','AK5JPT'])
+#addDefaultSUSYPAT(process,True,'HLT',['L2Relative','L3Absolute'],'',['AK5PF','AK5JPT'])
+addDefaultSUSYPAT(process,False,'HLT',['L2Relative','L3Absolute'],'',['AK5PF','AK5JPT'])
+#addDefaultSUSYPAT(process,True,'REDIGI38X',['L2Relative','L3Absolute'],'',['AK5PF','AK5JPT']) 
 SUSY_pattuple_outputCommands = getSUSY_pattuple_outputCommands( process )
 ############################## END SUSYPAT specifics ####################################
 
@@ -146,9 +149,10 @@ process.out.outputCommands = cms.untracked.vstring('drop *',"keep *_HBHENoiseFil
 #-- Execution path ------------------------------------------------------------
 # Full path
 #This is to run on full sim or data
-process.p = cms.Path(process.HBHENoiseFilterResultProducer + process.BFieldColl + process.susyPatDefaultSequence +process.configurableAnalysis)
+process.p = cms.Path(process.HBHENoiseFilterResultProducer + process.BFieldColl + process.susyPatDefaultSequence + process.configurableAnalysis)
 #This is to run on FastSim
 #process.p = cms.Path( process.BFieldColl + process.susyPatDefaultSequence +process.configurableAnalysis)
+
 
 #-- Dump config ------------------------------------------------------------
 file = open('SusyPAT_cfg.py','w')

@@ -620,6 +620,7 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
                         'tk_etaErr:track.etaError', 
                         'tk_phiErr:track.phiError', 
                         'tk_numvalPixelhits:track.hitPattern.numberOfValidPixelHits',
+                        'tk_numpixelWthMeasr:track.hitPattern.pixelLayersWithMeasurement',
                         'stamu_chi2:standAloneMuon.chi2', 
                         'stamu_ndof:standAloneMuon.ndof', 
                         'stamu_chg:standAloneMuon.charge', 
@@ -709,6 +710,23 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
                 Class = cms.string('pat::MET')
             ),
 
+
+                 pfTypeImets = cms.PSet(
+                  src = cms.InputTag("patMETsTypeIPF"),
+                   leaves = cms.PSet(
+                    vars = cms.vstring('et:et',
+                        'phi:phi',
+                        'ex:px',
+                        'ey:py',
+                        'gen_et:genMET.et',
+                        'gen_phi:genMET.phi',
+                        'sign:metSignificance',
+                        'sumEt:sumEt',
+                        'unCPhi:uncorrectedPhi',
+                        'unCPt:uncorrectedPt')
+                ),
+                Class = cms.string('pat::MET')
+            ),
 
 
             tcmets = cms.PSet(
@@ -1300,12 +1318,83 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
 							'fSubDetector3:jetID.fSubDetector3',
 							'fSubDetector4:jetID.fSubDetector4',
 							'area:towersArea',
-							'corrFactorRaw:corrFactor("raw")',
+							#'corrFactorRaw:corrFactor("raw")',
+                                                        'corrFactorRaw:jecFactor(0)',
 							'mass:mass'
 						)
 					),
 					Class = cms.string('pat::Jet')
 				),
+
+                                jets_AK5PFclean = cms.PSet(
+                                        src = cms.InputTag("cleanPatJetsAK5PF"),
+                                        leaves = cms.PSet(
+                                                basicKinematicLeaves,
+                                                vars = cms.vstring('parton_Id:genParton.pdgId',
+                                                        'parton_motherId:genParton.mother.pdgId',
+                                                        'parton_pt:genParton.pt',
+                                                        'parton_phi:genParton.phi',
+                                                        'parton_eta:genParton.eta',
+                                                        'parton_Energy:genParton.energy',
+                                                        'parton_mass:genParton.mass',
+                                                        #'parton_motherID:genParton.mother.pdgId',
+                                                        #'parton_grandmotherID:genParton.mother.mother.pdgId',
+                                                        'gen_et:genJet.et',
+                                                        'gen_pt:genJet.pt',
+                                                        'gen_eta:genJet.eta',
+                                                        'gen_phi:genJet.phi',
+                                                        'gen_mass:genJet.mass',
+                                                        'gen_Energy:genJet.energy',
+                                                        'gen_Id:genJet.pdgId',
+                                                        'gen_motherID:genJet.mother.pdgId',
+                                                        'gen_threeCharge:genJet.threeCharge',
+                                                        'partonFlavour:partonFlavour',  #TL add
+                                                        'btag_TC_highPur:bDiscriminator("trackCountingHighPurBJetTags")', # TL add: b-tagging info (9lines)
+                                                        'btag_TC_highEff:bDiscriminator("trackCountingHighEffBJetTags")',
+                                                        'btag_jetProb:bDiscriminator("jetProbabilityBJetTags")',
+                                                        'btag_jetBProb:bDiscriminator("jetBProbabilityBJetTags")',
+                                                        'btag_softEle:bDiscriminator("softElectronByPtBJetTags")',
+                                                        'btag_softMuon:bDiscriminator("softMuonBJetTags")',
+                                                        'btag_secVertexHighPur:bDiscriminator("simpleSecondaryVertexHighPurBJetTags")',
+                                                        #'btag_secVertexHighEff:bDiscriminator("simpleSecondaryVertexHighEffBJetTags")',
+                                                        #'btag_secVertexHighEff:bDiscriminator("simpleSecondaryVertexBJetTags")',
+                                                        secVertexType,
+                                                        'btag_secVertexCombined:bDiscriminator("combinedSecondaryVertexBJetTags")',
+                                                        'jetCharge:jetCharge',
+                                                        'chgEmE:chargedEmEnergy',
+                                                        'chgHadE:chargedHadronEnergy',
+                                                        'chgMuE:chargedMuEnergy',
+                                                        'chg_Mult:chargedMultiplicity',
+                                                        'neutralEmE:neutralEmEnergy',
+                                                        'neutralHadE:neutralHadronEnergy',
+                                                        'neutral_Mult:neutralMultiplicity',
+                                                        'mu_Mult:muonMultiplicity',
+                                                        'emf:emEnergyFraction',
+                                                        'ehf:energyFractionHadronic',
+                                                        'n60:n60',
+                                                        'n90:n90',
+                                                        'etaetaMoment:etaetaMoment',
+                                                        'etaphiMoment:etaphiMoment',
+                                                        'phiphiMoment:phiphiMoment',
+                                                        'n90Hits:jetID.n90Hits',
+                                                        'fHPD:jetID.fHPD',
+                                                        'fRBX:jetID.fRBX',
+                                                        'hitsInN90:jetID.hitsInN90',
+                                                        'nECALTowers:jetID.nECALTowers',
+                                                        'nHCALTowers:jetID.nHCALTowers',
+                                                        'fSubDetector1:jetID.fSubDetector1',
+                                                        'fSubDetector2:jetID.fSubDetector2',
+                                                        'fSubDetector3:jetID.fSubDetector3',
+                                                        'fSubDetector4:jetID.fSubDetector4',
+                                                        'area:towersArea',
+                                                        #'corrFactorRaw:corrFactor("raw")',
+                                                        'corrFactorRaw:jecFactor(0)',
+                                                        'mass:mass'
+                                                )
+                                        ),
+                                        Class = cms.string('pat::Jet')
+                                ),
+
 
 				jets_AK5JPT = cms.PSet(
 					src = cms.InputTag("cleanPatJetsAK5JPT"),
@@ -1368,7 +1457,8 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
 							'fSubDetector3:jetID.fSubDetector3',
 							'fSubDetector4:jetID.fSubDetector4',
 							'area:towersArea',
-							'corrFactorRaw:corrFactor("raw")',
+							#'corrFactorRaw:corrFactor("raw")',
+                                                        'corrFactorRaw:jecFactor(0)',
 							'mass:mass'
 						)
 					),
@@ -1436,7 +1526,8 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
 							'fSubDetector3:jetID.fSubDetector3',
 							'fSubDetector4:jetID.fSubDetector4',
 							'area:towersArea',
-							'corrFactorRaw:corrFactor("raw")',
+							#'corrFactorRaw:corrFactor("raw")',
+ 							'corrFactorRaw:jecFactor(0)',
 							'mass:mass'
 						)
 					),
