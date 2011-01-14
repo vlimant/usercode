@@ -84,11 +84,12 @@ process.out = cms.OutputModule("PoolOutputModule",
                                )
 #process.outpath = cms.EndPath(process.out)
 
-
+#Only run this for data
+process.metJESCorAK5PFTypeI.corrector = cms.string('ak5PFL2L3Residual')
 
 #-- Meta data to be logged in DBS ---------------------------------------------
 process.configurationMetadata = cms.untracked.PSet(
-    version = cms.untracked.string('$Revision: 1.10 $'),
+    version = cms.untracked.string('$Revision: 1.11 $'),
     name = cms.untracked.string('$Source: /cvs_server/repositories/CMSSW/UserCode/JRVlimant/cmssw/WorkSpace/ConfigurableAnalysis/python/runningPatOnFly_cfg.py,v $'),
     annotation = cms.untracked.string('SUSY pattuple definition')
 )
@@ -109,7 +110,7 @@ process.source.fileNames = [
      #'file:/DataE/wto/Reco/Mu_Run2010B-PromptReco-v2_RECO/D47EAE08-ADC6-DF11-B1D8-0030487CD6D8.root'
      #'/store/data/Run2010B/Electron/RECO/PromptReco-v2/000/146/511/52C66503-9EC7-DF11-B04C-001D09F2A465.root'
      #'file:/DataF/pbgeff/temp_385_ntuple/LM0_SUSY_sftsht_7TeV-pythia6_Fall10-START38_V12-v1.root'
-     'file:/DataF/pbgeff/temp_387_ntuple/Jet_Nov4ReReco_06C7ADF6-60EC-DF11-A937-003048D436C6.root'
+     'file:/LVM/SATA/pbgeff/temp_387_ntuple/Jet_Nov4ReReco_06C7ADF6-60EC-DF11-A937-003048D436C6.root'
     ]
 process.maxEvents.input = 20
 # Due to problem in production of LM samples: same event number appears multiple times
@@ -117,15 +118,14 @@ process.source.duplicateCheckMode = cms.untracked.string('noDuplicateCheck')
 
 #-- Calibration tag -----------------------------------------------------------
 # Should match input file's tag
-#process.GlobalTag.globaltag = 'GR10_P_V11::All'
-#process.GlobalTag.globaltag = 'START38_V12::All'
+#process.GlobalTag.globaltag = 'START38_V14::All' # for MC
 process.GlobalTag.globaltag = 'GR_R_38X_V15::All' #for Nov4 rereco
 
 ############################# START SUSYPAT specifics ####################################
 from PhysicsTools.Configuration.SUSY_pattuple_cff import addDefaultSUSYPAT, getSUSY_pattuple_outputCommands
 #Apply SUSYPAT, parameters are: mcInfo, HLT menu, Jet energy corrections, mcVersion ('35x' for 35x samples, empty string for 36X samples),JetCollections
+addDefaultSUSYPAT(process,False,'HLT',['L2Relative','L3Absolute','L2L3Residual'],'',['AK5PF','AK5JPT'])
 #addDefaultSUSYPAT(process,True,'HLT',['L2Relative','L3Absolute'],'',['AK5PF','AK5JPT'])
-addDefaultSUSYPAT(process,False,'HLT',['L2Relative','L3Absolute'],'',['AK5PF','AK5JPT'])
 #addDefaultSUSYPAT(process,True,'REDIGI38X',['L2Relative','L3Absolute'],'',['AK5PF','AK5JPT']) 
 SUSY_pattuple_outputCommands = getSUSY_pattuple_outputCommands( process )
 ############################## END SUSYPAT specifics ####################################
