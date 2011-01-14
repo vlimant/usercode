@@ -84,12 +84,10 @@ process.out = cms.OutputModule("PoolOutputModule",
                                )
 #process.outpath = cms.EndPath(process.out)
 
-#Only run this for data
-process.metJESCorAK5PFTypeI.corrector = cms.string('ak5PFL2L3Residual')
 
 #-- Meta data to be logged in DBS ---------------------------------------------
 process.configurationMetadata = cms.untracked.PSet(
-    version = cms.untracked.string('$Revision: 1.11 $'),
+    version = cms.untracked.string('$Revision: 1.12 $'),
     name = cms.untracked.string('$Source: /cvs_server/repositories/CMSSW/UserCode/JRVlimant/cmssw/WorkSpace/ConfigurableAnalysis/python/runningPatOnFly_cfg.py,v $'),
     annotation = cms.untracked.string('SUSY pattuple definition')
 )
@@ -135,6 +133,9 @@ SUSY_pattuple_outputCommands = getSUSY_pattuple_outputCommands( process )
 process.load("Workspace.ConfigurableAnalysis.configurableAnalysis_ForPattuple_cff")
 
 process.load('CommonTools/RecoAlgos/HBHENoiseFilterResultProducer_cfi')
+
+#Only run this for data
+process.metJESCorAK5PFTypeI.corrector = cms.string('ak5PFL2L3Residual')
 
 #-- Output module configuration -----------------------------------------------
 process.out.fileName = 'SUSYPAT.root'       # <-- CHANGE THIS TO SUIT YOUR NEEDS
