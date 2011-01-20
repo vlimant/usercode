@@ -11,6 +11,10 @@
 #include "DataFormats/Scalers/interface/DcsStatus.h"
 #include "FWCore/Framework/interface/ESHandle.h"
 
+#include "DataFormats/Common/interface/ConditionsInEdm.h"
+#include "FWCore/Framework/interface/Run.h"
+
+
 using namespace std;
 
 class AdHocNTupler : public NTupler {
@@ -285,6 +289,11 @@ class AdHocNTupler : public NTupler {
     iEvent.getByLabel("scalersRawToDigi", dcsHandle);
     //iEvent.getByLabel(dcsTag_, dcsHandle);
 
+    const edm::Run& iRun = iEvent.getRun();
+    // get ConditionsInRunBlock
+    edm::Handle<edm::ConditionsInRunBlock> condInRunBlock;
+    iRun.getByLabel("conditionsInEdm", condInRunBlock);
+
 
     //       edm::Handle<BFieldCollection> bfield_;
     edm::Handle< std::vector<double> > bfield_;
@@ -302,8 +311,11 @@ class AdHocNTupler : public NTupler {
          // average values taken over a stable two
          // week period
          float currentToBFieldScaleFactor = 2.09237036221512717e-04;
-         float current = (*dcsHandle)[0].magnetCurrent();
+         float current;
+         if(dcsHandle->size()>0) current = (*dcsHandle)[0].magnetCurrent();
+	 else current = condInRunBlock->BAvgCurrent;
          evt_bField = current*currentToBFieldScaleFactor;
+         //cout<<"\n"<<evt_bField;
         }
     else {
         
