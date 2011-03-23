@@ -27,7 +27,6 @@
 #include "PhysicsTools/UtilAlgos/interface/InputTagDistributor.h"
 #include "PhysicsTools/UtilAlgos/interface/CachingVariable.h"
 
-
 //#define StringBasedNTuplerPrecision float;
 
 
@@ -226,8 +225,8 @@ class StringBasedNTupler : public NTupler {
 	  uint sep=leavesS[l].find(separator);
 	  std::string name=leavesS[l].substr(0,sep);
 	  //removes spaces from the variable name
-	  uint space = name.find(" ");
-	  while (space!=std::string::npos){
+	  /*uint*/int space = name.find(" ");
+	  while (space!=-1/*std::string::npos*/){
 	    std::string first = name.substr(0,space);
 	    std::string second = name.substr(space+1);
 	    name = first+second;
@@ -252,12 +251,6 @@ class StringBasedNTupler : public NTupler {
     experimentType_ = new uint;
     bunchCrossing_ = new uint;
     orbitNumber_ = new uint;
-    m0_ = new float;
-    m12_ = new float;
-    xsection_ = new float;
-    tanbeta_ = new float;
-
-
 
     if (branchesPSet.exists("useTFileService"))
       useTFileService_=branchesPSet.getParameter<bool>("useTFileService");         
@@ -330,10 +323,8 @@ class StringBasedNTupler : public NTupler {
       tree_->Branch("experimentType",experimentType_,"experimentType/i");
       tree_->Branch("bunchCrossing",bunchCrossing_,"bunchCrossing/i");
       tree_->Branch("orbitNumber",orbitNumber_,"orbitNumber/i");
-      tree_->Branch("m0",m0_,"m0/f");
-      tree_->Branch("m12",m12_,"m12/f");
-      tree_->Branch("xsection",xsection_,"xsection/f");
-      tree_->Branch("tanbeta",tanbeta_,"tanbeta/f");
+
+
     }
     else{
       // loop the automated leafer
@@ -383,17 +374,6 @@ class StringBasedNTupler : public NTupler {
 	indexDataHolder_[indexOfIndexInDataHolder]=maxS;
       }
 
-
-    edm::Handle< double >  cross_section;
-    iEvent.getByLabel("susyScanCrossSection",cross_section);
-    edm::Handle< double >  m0;
-    iEvent.getByLabel("susyScanM0",m0);
-    edm::Handle< double >  m12;
-    iEvent.getByLabel("susyScanM12",m12);
-    edm::Handle< double >  tanbeta;
-    iEvent.getByLabel("susyScantanbeta",tanbeta);
-
-
       //fill event info.
       *run_ = iEvent.id().run();
       *ev_ = iEvent.id().event();
@@ -402,10 +382,6 @@ class StringBasedNTupler : public NTupler {
       *experimentType_ = iEvent.experimentType();
       *bunchCrossing_ = iEvent.bunchCrossing();
       *orbitNumber_ = iEvent.orbitNumber();
-      *m0_ = *m0;
-      *m12_ = *m12;
-      *xsection_ = *cross_section;
-      *tanbeta_ = *tanbeta;
 
       if (ownTheTree_){	tree_->Fill(); }
     }else{
@@ -454,10 +430,6 @@ class StringBasedNTupler : public NTupler {
     delete experimentType_;
     delete bunchCrossing_;
     delete orbitNumber_;
-    delete m0_;
-    delete m12_;
-    delete xsection_;
-    delete tanbeta_;
   }
     
  protected:
@@ -475,10 +447,6 @@ class StringBasedNTupler : public NTupler {
   uint * experimentType_;
   uint * bunchCrossing_;
   uint * orbitNumber_;
-  float * m0_;
-  float * m12_;
-  float * xsection_;
-  float * tanbeta_;
 };
 
 
