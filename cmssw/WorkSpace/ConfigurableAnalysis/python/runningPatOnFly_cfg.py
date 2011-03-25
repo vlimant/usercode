@@ -52,7 +52,7 @@ process.patTrigger.addL1Algos = cms.bool( True )
 ## Output Module Configuration (expects a path 'p')
 from PhysicsTools.PatAlgos.patEventContent_cff import patEventContent
 process.out = cms.OutputModule("PoolOutputModule",
-     #verbose = cms.untracked.bool(True),
+     verbose = cms.untracked.bool(True),
                                fileName = cms.untracked.string('patTuple.root'),
                                #fileName = cms.untracked.string('PATLayer1_Output.fromAOD_full.root'),
                                # save only events passing the full path
@@ -62,14 +62,14 @@ process.out = cms.OutputModule("PoolOutputModule",
                                outputCommands = cms.untracked.vstring('drop *', "keep *_BFieldColl_*_*_",*patEventContent )
                                #outputCommands = cms.untracked.vstring('drop *', *patEventContent )
                                )
-process.outpath = cms.EndPath(process.out)
+#process.outpath = cms.EndPath(process.out)
 
 
 
 #-- Meta data to be logged in DBS ---------------------------------------------
 process.configurationMetadata = cms.untracked.PSet(
-    version = cms.untracked.string('$Revision: 1.36 $'),
-    name = cms.untracked.string('$Source: /cvs/CMSSW/CMSSW/PhysicsTools/Configuration/test/SUSY_pattuple_cfg.py,v $'),
+    version = cms.untracked.string('$Revision: 1.15 $'),
+    name = cms.untracked.string('$Source: /cvs/CMSSW/UserCode/JRVlimant/cmssw/WorkSpace/ConfigurableAnalysis/python/runningPatOnFly_cfg.py,v $'),
     annotation = cms.untracked.string('SUSY pattuple definition')
 )
 
