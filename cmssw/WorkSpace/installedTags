@@ -1,3 +1,5 @@
+#instructions for v40_0 of cfA
+
 setenv SCRAM_ARCH slc5_amd64_gcc434
 cmsrel CMSSW_4_1_3
 cd CMSSW_4_1_3/src
@@ -10,7 +12,7 @@ addpkg PhysicsTools/PatAlgos                                 V08-06-01-09
 addpkg PhysicsTools/PatExamples                          V00-05-06
 addpkg PhysicsTools/Configuration                         V00-10-03
 
-cvs co -r test_0_413 -d Workspace/ConfigurableAnalysis UserCode/JRVlimant/cmssw/WorkSpace/ConfigurableAnalysis
+cvs co -r UCSBv40_0 -d Workspace/ConfigurableAnalysis UserCode/JRVlimant/cmssw/WorkSpace/ConfigurableAnalysis
 
 cvs co -r UCSBv33_0 -d Workspace/Dictionaries UserCode/JRVlimant/cmssw/WorkSpace/Dictionaries
 
