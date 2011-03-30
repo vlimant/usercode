@@ -23,7 +23,6 @@
 #include "DataFormats/JetReco/interface/CaloJet.h"
 #include "DataFormats/JetReco/interface/GenJet.h"
 #include <DataFormats/CaloRecHit/interface/CaloCluster.h>
-#include <DataFormats/EgammaCandidates/interface/Conversion.h>
 
 #include <DataFormats/PatCandidates/interface/TriggerPath.h>
 
@@ -59,7 +58,6 @@ TreeBranch::value TreeBranch::branch(const edm::Event& iEvent){
   else ANOTHER_VECTOR_CLASS(reco::GenJet);
   else ANOTHER_VECTOR_CLASS(pat::TriggerPath);
 	else ANOTHER_VECTOR_CLASS(reco::CaloCluster);
-	else ANOTHER_VECTOR_CLASS(reco::Conversion);
   else {
     edm::LogError("TreeBranch")<<branchName()<<" failed to recognized class type: "<<class_;
     return TreeBranch::value(new std::vector<float>());
