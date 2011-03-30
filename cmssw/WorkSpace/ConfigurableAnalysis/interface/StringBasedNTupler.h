@@ -27,6 +27,8 @@
 #include "PhysicsTools/UtilAlgos/interface/InputTagDistributor.h"
 #include "PhysicsTools/UtilAlgos/interface/CachingVariable.h"
 
+#include "DataFormats/PatCandidates/interface/PFParticle.h"
+
 //#define StringBasedNTuplerPrecision float;
 
 

@@ -8,7 +8,7 @@ addpkg CommonTools/CandAlgos                           V00-01-01
 addpkg PhysicsTools/PFCandProducer                   V04-07-01-00
 addpkg PhysicsTools/PatAlgos                                 V08-06-01-09
 addpkg PhysicsTools/PatExamples                          V00-05-06
-addpkg PhysicsTools/Configuration                         V00-10-02
+addpkg PhysicsTools/Configuration                         V00-10-03
 
 cvs co -r test_0_413 -d Workspace/ConfigurableAnalysis UserCode/JRVlimant/cmssw/WorkSpace/ConfigurableAnalysis
 
@@ -17,19 +17,4 @@ cvs co -r UCSBv33_0 -d Workspace/Dictionaries UserCode/JRVlimant/cmssw/WorkSpace
 cvs co -r UCSBv33_0 -d Workspace/BFieldProducer UserCode/JRVlimant/cmssw/WorkSpace/BFieldProducer
 
 scram b -j9
-
-
-# Tags for CMSSW_3_9_9
-cmsrel CMSSW_3_9_9
-cd CMSSW_3_9_9/src
-cmsenv
-addpkg ElectroWeakAnalysis/WENu V00-03-00      
-addpkg JetMETCorrections/Type1MET V04-04-01      
-addpkg MuonAnalysis/MuonAssociators V01-11-00             
-addpkg RecoEgamma/ElectronIdentification V00-03-19
-addpkg PhysicsTools/Configuration V00-09-00
-cvs co -r Wing_3_9_9 -d Workspace/ConfigurableAnalysis UserCode/JRVlimant/cmssw/WorkSpace/ConfigurableAnalysis
-cvs co -r UCSBv33_0 -d Workspace/Dictionaries UserCode/JRVlimant/cmssw/WorkSpace/Dictionaries
-cvs co -r UCSBv33_0 -d Workspace/BFieldProducer UserCode/JRVlimant/cmssw/WorkSpace/BFieldProducer
-scram b -rj4
 
