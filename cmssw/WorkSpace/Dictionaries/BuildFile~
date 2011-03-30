@@ -1,6 +1,0 @@
-<use name=rootrflx>
-<use name=boost>
-<use name=DataFormats/Common>
-<export>
-   <lib name=WorkspaceDictionaries>
-</export>
