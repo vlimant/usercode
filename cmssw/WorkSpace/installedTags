@@ -18,5 +18,7 @@ cvs co -r UCSBv33_0 -d Workspace/Dictionaries UserCode/JRVlimant/cmssw/WorkSpace
 
 cvs co -r UCSBv33_0 -d Workspace/BFieldProducer UserCode/JRVlimant/cmssw/WorkSpace/BFieldProducer
 
+scram b -c
+
 scram b -j9
 
