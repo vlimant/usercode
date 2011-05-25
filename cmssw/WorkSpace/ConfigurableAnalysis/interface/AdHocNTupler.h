@@ -14,6 +14,9 @@
 #include "DataFormats/Common/interface/ConditionsInEdm.h"
 #include "FWCore/Framework/interface/Run.h"
 
+#include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
+#include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
+#include "CondFormats/JetMETObjects/interface/JetCorrectionUncertainty.h"
 
 using namespace std;
 
@@ -38,6 +41,7 @@ class AdHocNTupler : public NTupler {
       }
     }
     
+
     trigger_prescalevalue = new std::vector<float>;
     trigger_name = new std::vector<std::string>;
     trigger_decision = new std::vector<float>;
@@ -61,6 +65,19 @@ class AdHocNTupler : public NTupler {
     els_conversion_dist = new std::vector<float>;
     els_conversion_dcot = new std::vector<float>;
     hbhefilter_decision_ = new int;
+    MPT_ = new float;
+    jets_AK5PFclean_corrL2L3_ = new std::vector<float>; 
+    jets_AK5PFclean_corrL2L3Residual_ = new std::vector<float>;
+    jets_AK5PFclean_corrL1FastL2L3_ = new std::vector<float>;
+    jets_AK5PFclean_corrL1L2L3_ = new std::vector<float>;
+    jets_AK5PFclean_corrL1FastL2L3Residual_ = new std::vector<float>;
+    jets_AK5PFclean_corrL1L2L3Residual_ = new std::vector<float>;
+    jets_AK5clean_corrL2L3_ = new std::vector<float>;
+    jets_AK5clean_corrL2L3Residual_ = new std::vector<float>;
+    jets_AK5clean_corrL1FastL2L3_ = new std::vector<float>;
+    jets_AK5clean_corrL1L2L3_ = new std::vector<float>;
+    jets_AK5clean_corrL1FastL2L3Residual_ = new std::vector<float>;
+    jets_AK5clean_corrL1L2L3Residual_ = new std::vector<float>;
   }
 
   ~AdHocNTupler(){
@@ -87,6 +104,19 @@ class AdHocNTupler : public NTupler {
     delete els_conversion_dist;
     delete els_conversion_dcot;
     delete hbhefilter_decision_;
+    delete MPT_;
+    delete jets_AK5PFclean_corrL2L3_;
+    delete jets_AK5PFclean_corrL2L3Residual_;
+    delete jets_AK5PFclean_corrL1FastL2L3_;
+    delete jets_AK5PFclean_corrL1L2L3_;
+    delete jets_AK5PFclean_corrL1FastL2L3Residual_;
+    delete jets_AK5PFclean_corrL1L2L3Residual_;
+    delete jets_AK5clean_corrL2L3_;
+    delete jets_AK5clean_corrL2L3Residual_;
+    delete jets_AK5clean_corrL1FastL2L3_;
+    delete jets_AK5clean_corrL1L2L3_;
+    delete jets_AK5clean_corrL1FastL2L3Residual_;
+    delete jets_AK5clean_corrL1L2L3Residual_;
   }
 
   uint registerleaves(edm::ProducerBase * producer){
@@ -133,6 +163,19 @@ class AdHocNTupler : public NTupler {
       tree_->Branch("els_conversion_dist",&els_conversion_dist);
       tree_->Branch("els_conversion_dcot",&els_conversion_dcot);
       tree_->Branch("hbhefilter_decision",hbhefilter_decision_,"hbhefilter_decision/I");
+      tree_->Branch("MPT",MPT_,"MPT/F");
+      tree_->Branch("jets_AK5PFclean_corrL2L3",&jets_AK5PFclean_corrL2L3_);
+      tree_->Branch("jets_AK5PFclean_corrL2L3Residual",&jets_AK5PFclean_corrL2L3Residual_);
+      tree_->Branch("jets_AK5PFclean_corrL1FastL2L3",&jets_AK5PFclean_corrL1FastL2L3_);
+      tree_->Branch("jets_AK5PFclean_corrL1L2L3",&jets_AK5PFclean_corrL1L2L3_);
+      tree_->Branch("jets_AK5PFclean_corrL1FastL2L3Residual",&jets_AK5PFclean_corrL1FastL2L3Residual_);
+      tree_->Branch("jets_AK5PFclean_corrL1L2L3Residual",&jets_AK5PFclean_corrL1L2L3Residual_);
+      tree_->Branch("jets_AK5_corrL2L3",&jets_AK5clean_corrL2L3_);
+      tree_->Branch("jets_AK5_corrL2L3Residual",&jets_AK5clean_corrL2L3Residual_);
+      tree_->Branch("jets_AK5_corrL1FastL2L3",&jets_AK5clean_corrL1FastL2L3_);
+      tree_->Branch("jets_AK5_corrL1L2L3",&jets_AK5clean_corrL1L2L3_);
+      tree_->Branch("jets_AK5_corrL1FastL2L3Residual",&jets_AK5clean_corrL1FastL2L3Residual_);
+      tree_->Branch("jets_AK5_corrL1L2L3Residual",&jets_AK5clean_corrL1L2L3Residual_);
     }
 
     else{
@@ -278,7 +321,9 @@ class AdHocNTupler : public NTupler {
       *hbhefilter_decision_ = -1;
       //      cout<<"The hbheflag is not present, is this FastSim?"<<endl;
     }
-    
+   
+    *MPT_ = -1; 
+
     edm::Handle< std::vector<pat::Electron> > electrons;
     iEvent.getByLabel("cleanPatElectrons",electrons);
 
@@ -299,6 +344,7 @@ class AdHocNTupler : public NTupler {
     edm::Handle< std::vector<double> > bfield_;
     iEvent.getByLabel("BFieldColl","BField", bfield_);
     //iEvent.getByLabel(dcsTag_, dcsHandle);
+
     
     double evt_bField;
     // need the magnetic field
@@ -354,6 +400,51 @@ class AdHocNTupler : public NTupler {
 
 
 
+    edm::Handle< std::vector<double> > ak5PFL2L3_;
+    iEvent.getByLabel("JetCorrColl","ak5PFL2L3", ak5PFL2L3_);
+    edm::Handle< std::vector<double> > ak5PFL2L3Residual_;
+    iEvent.getByLabel("JetCorrColl","ak5PFL2L3Residual", ak5PFL2L3Residual_);
+    edm::Handle< std::vector<double> > ak5PFL1FastL2L3_;
+    iEvent.getByLabel("JetCorrColl","ak5PFL1FastL2L3", ak5PFL1FastL2L3_);
+    edm::Handle< std::vector<double> > ak5PFL1L2L3_;
+    iEvent.getByLabel("JetCorrColl","ak5PFL1L2L3", ak5PFL1L2L3_);
+    edm::Handle< std::vector<double> > ak5PFL1FastL2L3Residual_;
+    iEvent.getByLabel("JetCorrColl","ak5PFL1FastL2L3Residual", ak5PFL1FastL2L3Residual_);
+    edm::Handle< std::vector<double> > ak5PFL1L2L3Residual_;
+    iEvent.getByLabel("JetCorrColl","ak5PFL1L2L3Residual", ak5PFL1L2L3Residual_);
+    edm::Handle< std::vector<double> > ak5CaloL2L3_;
+    iEvent.getByLabel("JetCorrColl","ak5CaloL2L3", ak5CaloL2L3_);
+    edm::Handle< std::vector<double> > ak5CaloL2L3Residual_;
+    iEvent.getByLabel("JetCorrColl","ak5CaloL2L3Residual", ak5CaloL2L3Residual_);
+    edm::Handle< std::vector<double> > ak5CaloL1FastL2L3_;
+    iEvent.getByLabel("JetCorrColl","ak5CaloL1FastL2L3", ak5CaloL1FastL2L3_);
+    edm::Handle< std::vector<double> > ak5CaloL1L2L3_;
+    iEvent.getByLabel("JetCorrColl","ak5CaloL1L2L3", ak5CaloL1L2L3_);
+    edm::Handle< std::vector<double> > ak5CaloL1FastL2L3Residual_;
+    iEvent.getByLabel("JetCorrColl","ak5CaloL1FastL2L3Residual", ak5CaloL1FastL2L3Residual_);
+    edm::Handle< std::vector<double> > ak5CaloL1L2L3Residual_;
+    iEvent.getByLabel("JetCorrColl","ak5CaloL1L2L3Residual", ak5CaloL1L2L3Residual_);
+
+    for(uint it=0; it<(*ak5PFL2L3_).size(); it++){
+      (*jets_AK5PFclean_corrL2L3_).push_back((*ak5PFL2L3_)[it]);
+      (*jets_AK5PFclean_corrL2L3Residual_).push_back((*ak5PFL2L3Residual_)[it]);
+      (*jets_AK5PFclean_corrL1FastL2L3_).push_back((*ak5PFL1FastL2L3_)[it]);
+      (*jets_AK5PFclean_corrL1L2L3_).push_back((*ak5PFL1L2L3_)[it]);
+      (*jets_AK5PFclean_corrL1FastL2L3Residual_).push_back((*ak5PFL1FastL2L3Residual_)[it]);
+      (*jets_AK5PFclean_corrL1L2L3Residual_).push_back((*ak5PFL1L2L3Residual_)[it]);
+    }
+
+    for(uint it=0; it<(*ak5CaloL2L3_).size(); it++){
+      (*jets_AK5clean_corrL2L3_).push_back((*ak5CaloL2L3_)[it]);
+      (*jets_AK5clean_corrL2L3Residual_).push_back((*ak5CaloL2L3Residual_)[it]);
+      (*jets_AK5clean_corrL1FastL2L3_).push_back((*ak5CaloL1FastL2L3_)[it]);
+      (*jets_AK5clean_corrL1L2L3_).push_back((*ak5CaloL1L2L3_)[it]);
+      (*jets_AK5clean_corrL1FastL2L3Residual_).push_back((*ak5CaloL1FastL2L3Residual_)[it]);
+      (*jets_AK5clean_corrL1L2L3Residual_).push_back((*ak5CaloL1L2L3Residual_)[it]);
+    }
+
+
+
     //fill the tree    
     if (ownTheTree_){ tree_->Fill(); }
     (*trigger_prescalevalue).clear();
@@ -378,6 +469,18 @@ class AdHocNTupler : public NTupler {
     (*L1trigger_decision_nomask).clear();
     (*els_conversion_dist).clear();
     (*els_conversion_dcot).clear();
+    (*jets_AK5PFclean_corrL2L3_).clear();
+    (*jets_AK5PFclean_corrL2L3Residual_).clear();
+    (*jets_AK5PFclean_corrL1FastL2L3_).clear();
+    (*jets_AK5PFclean_corrL1L2L3_).clear();
+    (*jets_AK5PFclean_corrL1FastL2L3Residual_).clear();
+    (*jets_AK5PFclean_corrL1L2L3Residual_).clear();
+    (*jets_AK5clean_corrL2L3_).clear();
+    (*jets_AK5clean_corrL2L3Residual_).clear();
+    (*jets_AK5clean_corrL1FastL2L3_).clear();
+    (*jets_AK5clean_corrL1L2L3_).clear();
+    (*jets_AK5clean_corrL1FastL2L3Residual_).clear();
+    (*jets_AK5clean_corrL1L2L3Residual_).clear();
 
   }
 
@@ -413,5 +516,18 @@ class AdHocNTupler : public NTupler {
   std::vector<float> * els_conversion_dist;
   std::vector<float> * els_conversion_dcot;
   int * hbhefilter_decision_;
+  float * MPT_;
+  std::vector<float> * jets_AK5PFclean_corrL2L3_;
+  std::vector<float> * jets_AK5PFclean_corrL2L3Residual_;
+  std::vector<float> * jets_AK5PFclean_corrL1FastL2L3_;
+  std::vector<float> * jets_AK5PFclean_corrL1L2L3_;
+  std::vector<float> * jets_AK5PFclean_corrL1FastL2L3Residual_;
+  std::vector<float> * jets_AK5PFclean_corrL1L2L3Residual_;
+  std::vector<float> * jets_AK5clean_corrL2L3_;
+  std::vector<float> * jets_AK5clean_corrL2L3Residual_;
+  std::vector<float> * jets_AK5clean_corrL1FastL2L3_;
+  std::vector<float> * jets_AK5clean_corrL1L2L3_;
+  std::vector<float> * jets_AK5clean_corrL1FastL2L3Residual_;
+  std::vector<float> * jets_AK5clean_corrL1L2L3Residual_;
 
 };

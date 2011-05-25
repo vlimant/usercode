@@ -27,6 +27,7 @@
 #include <DataFormats/PatCandidates/interface/TriggerPath.h>
 
 #include <DataFormats/PatCandidates/interface/PFParticle.h>
+#include <SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h>
 
 
 //--------------------------------------------------------------------------------
@@ -55,6 +56,7 @@ TreeBranch::value TreeBranch::branch(const edm::Event& iEvent){
   else ANOTHER_CLASS(edm::HepMCProduct);
   else ANOTHER_CLASS(reco::BeamSpot);
   else ANOTHER_CLASS(HcalNoiseSummary);
+  else ANOTHER_CLASS(GenEventInfoProduct);
   else ANOTHER_VECTOR_CLASS(reco::HcalNoiseRBX);
   else ANOTHER_VECTOR_CLASS(reco::BasicJet);
   else ANOTHER_VECTOR_CLASS(reco::CaloJet);

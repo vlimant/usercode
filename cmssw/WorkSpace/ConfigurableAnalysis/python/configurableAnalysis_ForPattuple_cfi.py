@@ -408,6 +408,7 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
         branchesPSet = cms.PSet(
             treeName = cms.string('eventB'),
 
+
             pv = cms.PSet(
                 src = cms.InputTag("offlinePrimaryVertices"),
                  leaves = cms.PSet(
@@ -421,13 +422,13 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
                           'chi2:chi2',
                           'ndof:ndof',
                           'isFake:isFake',               
+                          'isValid:isValid',
                           'tracksSize:tracksSize'
 											 
                		),
                ),
                Class = cms.string('reco::Vertex'),
            ),
-
 
 
 
@@ -1292,7 +1293,8 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
                         'dz:dz', 
                         'vx:vx', 
                         'vy:vy', 
-                        'vz:vz', 
+                        'vz:vz',
+			'validFraction:validFraction', 
                         'numvalhits:numberOfValidHits', 
                         'numlosthits:numberOfLostHits', 
                         'd0dumErr:d0Error', 
@@ -1580,7 +1582,8 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
 							'fSubDetector4:jetID.fSubDetector4',
 							'area:towersArea',
 							#'corrFactorRaw:corrFactor("raw")',
-                                                        'corrFactorRaw:jecFactor(0)',
+                                                        #'corrFactorRaw:jecFactor(0)',
+'corrFactorRaw:jecFactor(0)',
 							'mass:mass'
 						)
 					),
@@ -1799,7 +1802,6 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
 			useTFileService = cms.bool(True), ## false for EDM; true for non EDM
 			
                         AdHocNPSet = cms.PSet(
-                          #AdHoc ntupler for trigger variables
                           treeName = cms.string('eventA')
                         ) # ,
 

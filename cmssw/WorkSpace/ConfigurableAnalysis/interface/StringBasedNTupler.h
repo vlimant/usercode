@@ -28,6 +28,7 @@
 #include "PhysicsTools/UtilAlgos/interface/CachingVariable.h"
 
 #include "DataFormats/PatCandidates/interface/PFParticle.h"
+#include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
 
 //#define StringBasedNTuplerPrecision float;
 
@@ -253,6 +254,8 @@ class StringBasedNTupler : public NTupler {
     experimentType_ = new uint;
     bunchCrossing_ = new uint;
     orbitNumber_ = new uint;
+    weight_ = new float;
+
 
     if (branchesPSet.exists("useTFileService"))
       useTFileService_=branchesPSet.getParameter<bool>("useTFileService");         
@@ -325,7 +328,7 @@ class StringBasedNTupler : public NTupler {
       tree_->Branch("experimentType",experimentType_,"experimentType/i");
       tree_->Branch("bunchCrossing",bunchCrossing_,"bunchCrossing/i");
       tree_->Branch("orbitNumber",orbitNumber_,"orbitNumber/i");
-
+      tree_->Branch("weight",weight_,"weight/f");
 
     }
     else{
@@ -385,6 +388,13 @@ class StringBasedNTupler : public NTupler {
       *bunchCrossing_ = iEvent.bunchCrossing();
       *orbitNumber_ = iEvent.orbitNumber();
 
+      *weight_ = 1;
+      if(!iEvent.isRealData()) { 
+        edm::Handle<GenEventInfoProduct> wgeneventinfo;
+        iEvent.getByLabel("generator", wgeneventinfo);
+        *weight_ = wgeneventinfo->weight();
+      }
+
       if (ownTheTree_){	tree_->Fill(); }
     }else{
       // loop the automated leafer
@@ -432,6 +442,7 @@ class StringBasedNTupler : public NTupler {
     delete experimentType_;
     delete bunchCrossing_;
     delete orbitNumber_;
+    delete weight_;
   }
     
  protected:
@@ -449,6 +460,7 @@ class StringBasedNTupler : public NTupler {
   uint * experimentType_;
   uint * bunchCrossing_;
   uint * orbitNumber_;
+  float * weight_;
 };
 
 

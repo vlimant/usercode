@@ -34,7 +34,7 @@ process.load("Configuration.StandardSequences.Geometry_cff")
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 #process.GlobalTag.globaltag = cms.string('START36_V4::All')
 from Configuration.PyReleaseValidation.autoCond import autoCond
-process.GlobalTag.globaltag = cms.string( autoCond[ 'startup' ] )
+#process.GlobalTag.globaltag = cms.string( autoCond[ 'startup' ] )
 #print autoCond[ 'startup' ]
 process.load("Configuration.StandardSequences.MagneticField_cff")
 
@@ -42,6 +42,8 @@ process.load("Configuration.StandardSequences.MagneticField_cff")
 process.load("PhysicsTools.PatAlgos.patSequences_cff")
 
 process.BFieldColl = cms.EDProducer('BFieldProducer')
+
+process.JetCorrColl = cms.EDProducer('JetCorrProducer')
 
 #Need this for L1 triggers with CMSSW >= 381
 process.load("PhysicsTools.PatAlgos.triggerLayer1.triggerProducer_cff")
@@ -59,7 +61,7 @@ process.out = cms.OutputModule("PoolOutputModule",
                                SelectEvents   = cms.untracked.PSet( SelectEvents = cms.vstring('p') ),
                                # save PAT Layer 1 output; you need a '*' to
                                # unpack the list of commands 'patEventContent'
-                               outputCommands = cms.untracked.vstring('drop *', "keep *_BFieldColl_*_*_",*patEventContent )
+                               outputCommands = cms.untracked.vstring('drop *', "keep *_BFieldColl_*_*_","keep *_JetCorrColl_*_*_",*patEventContent )
                                #outputCommands = cms.untracked.vstring('drop *', *patEventContent )
                                )
 #process.outpath = cms.EndPath(process.out)
@@ -68,7 +70,7 @@ process.out = cms.OutputModule("PoolOutputModule",
 
 #-- Meta data to be logged in DBS ---------------------------------------------
 process.configurationMetadata = cms.untracked.PSet(
-    version = cms.untracked.string('$Revision: 1.16 $'),
+    version = cms.untracked.string('$Revision: 1.18 $'),
     name = cms.untracked.string('$Source: /cvs/CMSSW/UserCode/JRVlimant/cmssw/WorkSpace/ConfigurableAnalysis/python/runningPatOnFly_cfg.py,v $'),
     annotation = cms.untracked.string('SUSY pattuple definition')
 )
@@ -84,27 +86,29 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 100
 
 #-- Input Source --------------------------------------------------------------
 process.source.fileNames = [
-      'file:/LVM/SATA/pbgeff/temp_412_ntuple/DoubleMu_AOD_PromptReco-v1_06B7C0E5-D84F-E011-BB79-003048F01E88.root'
-      #'/store/data/Run2011A/HT/AOD/PromptReco-v2/000/162/827/622A0117-F169-E011-9C8E-0030487D1BCC.root'
+      'file:/LVM/SATA/pbgeff/temp_423_ntuple/DoubleMu_AOD_May10ReReco-v1_BEE13469-5E7C-E011-A3A6-00261894391B.root'
+      #'file:/LVM/SATA/wto/RECO/Electron_Run2010B-Apr21ReReco-v1_AOD.root'
+      #'file:/LVM/SATA/wto/RECO/RelValTTbar_Tauola_GEN-SIM-RECO_START42_V12_PU_E7TeV_FlatDist10_2011EarlyData_inTimeOnly-v1.root'
     ]
 
-process.maxEvents.input = 10 
+process.maxEvents.input = 1 
 # Due to problem in production of LM samples: same event number appears multiple times
 process.source.duplicateCheckMode = cms.untracked.string('noDuplicateCheck')
 
 #-- Calibration tag -----------------------------------------------------------
-#process.GlobalTag.globaltag = 'GR_P_V14::All'
-process.GlobalTag.globaltag = 'GR_R_311_V2::All' 
-#process.GlobalTag.globaltag = 'START311_V2::All'
+#process.GlobalTag.globaltag = 'GR_R_42_V12::All' 
+process.GlobalTag.globaltag = 'GR_R_41_V0::All'
+#process.GlobalTag.globaltag = 'START42_V12::All'
 
 ############################# START SUSYPAT specifics ####################################
 from PhysicsTools.Configuration.SUSY_pattuple_cff import addDefaultSUSYPAT, getSUSY_pattuple_outputCommands
 #Apply SUSYPAT, parameters are: mcInfo, HLT menu, Jet energy corrections, mcVersion ('35x' for 35x samples, empty string for 36X samples),JetCollections
-addDefaultSUSYPAT(process,False,'HLT',['L1Offset','L2Relative','L3Absolute','L2L3Residual'],'',['AK5PF','AK5JPT'])
-#addDefaultSUSYPAT(process,True,'HLT',['L2Relative','L3Absolute'],'',['AK5PF','AK5JPT'])
-#addDefaultSUSYPAT(process,True,'REDIGI311X',['L2Relative','L3Absolute'],'',['AK5PF','AK5JPT']) 
+addDefaultSUSYPAT(process,False,'HLT',['L1FastJet','L2Relative','L3Absolute','L2L3Residual'],'',['AK5PF','AK5JPT'])
+#addDefaultSUSYPAT(process,False,'HLT',['L1Offset','L2Relative','L3Absolute','L2L3Residual'],'',['AK5PF','AK5JPT'])
+#addDefaultSUSYPAT(process,True,'HLT',['L1FastJet','L2Relative','L3Absolute'],'',['AK5PF','AK5JPT'])
 SUSY_pattuple_outputCommands = getSUSY_pattuple_outputCommands( process )
 ############################## END SUSYPAT specifics ####################################
+
 
 #Turn on trigger info
 from PhysicsTools.PatAlgos.tools.trigTools import switchOnTrigger
@@ -128,15 +132,15 @@ process.out.dropMetaData = cms.untracked.string('DROPPED')   # Get rid of metada
 
 
 #process.out.outputCommands = cms.untracked.vstring('drop *', *SUSY_pattuple_outputCommands )
-process.out.outputCommands = cms.untracked.vstring('drop *',"keep *_HBHENoiseFilterResultProducer_*_*","keep *_BFieldColl_*_*", *SUSY_pattuple_outputCommands )
+process.out.outputCommands = cms.untracked.vstring('drop *',"keep *_HBHENoiseFilterResultProducer_*_*","keep *_BFieldColl_*_*","keep *_JetCorrectionColl_*_*", *SUSY_pattuple_outputCommands )
 
 
 #-- Execution path ------------------------------------------------------------
 # Full path
 #This is to run on full sim or data
-process.p = cms.Path(process.HBHENoiseFilterResultProducer + process.BFieldColl + process.susyPatDefaultSequence + process.configurableAnalysis)
+process.p = cms.Path(process.HBHENoiseFilterResultProducer + process.BFieldColl + process.susyPatDefaultSequence + process.JetCorrColl + process.configurableAnalysis)
 #This is to run on FastSim
-#process.p = cms.Path( process.BFieldColl + process.susyPatDefaultSequence +process.configurableAnalysis)
+#process.p = cms.Path( process.BFieldColl + process.susyPatDefaultSequence + process.JetCorrColl +process.configurableAnalysis)
 
 
 #-- Execution path ------------------------------------------------------------
