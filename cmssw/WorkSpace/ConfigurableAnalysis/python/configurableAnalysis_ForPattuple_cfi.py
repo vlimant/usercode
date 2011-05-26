@@ -871,7 +871,7 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
                         'mass:mass',
                         'numOfDaughters:numberOfDaughters')
                 ),
-                selection = cms.string('status!=3 & (pdgId=13 | pdgId=-13) & pt>10'),
+                selection = cms.string('status!=3 & (pdgId=13 | pdgId=-13)'),
                 Class = cms.string('reco::GenParticle')
             ),
             mc_electrons = cms.PSet(
@@ -898,7 +898,7 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
                         'mass:mass',
                         'numOfDaughters:numberOfDaughters')
                 ),
-                selection = cms.string('status!=3 & (pdgId=11 | pdgId=-11) & pt>10'),
+                selection = cms.string('status!=3 & (pdgId=11 | pdgId=-11)'),
                 Class = cms.string('reco::GenParticle')
             ),
 
@@ -955,6 +955,88 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
                         'numOfDaughters:numberOfDaughters')
                 ),
                 selection = cms.string('status!=3 & (pdgId=22) & pt>10'),
+                Class = cms.string('reco::GenParticle')
+            ),
+
+            mc_nutaus = cms.PSet(
+                src = cms.InputTag("genParticles"),
+                leaves = cms.PSet(
+                    vars = cms.vstring('id:pdgId',
+                        'pt:pt',
+                        'px:px',
+                        'py:py',
+                        'pz:pz',
+                        'eta:eta',
+                        'phi:phi',
+                        'theta:theta',
+                        'status:status',
+                        'energy:energy',
+                        'charge:charge',
+                        'mother_id:mother.pdgId',
+                        'mother_pt:mother.pt',
+                        'grandmother_id:mother.mother.pdgId',
+                        'ggrandmother_id:mother.mother.mother.pdgId',
+                        'vertex_x:vertex.x',
+                        'vertex_y:vertex.y',
+                        'vertex_z:vertex.z',
+                        'mass:mass',
+                        'numOfDaughters:numberOfDaughters')
+                ),
+                selection = cms.string('status!=3 & (pdgId=16 | pdgId=-16)'),
+                Class = cms.string('reco::GenParticle')
+            ),
+            mc_nues = cms.PSet(
+                src = cms.InputTag("genParticles"),
+                leaves = cms.PSet(
+                    vars = cms.vstring('id:pdgId',
+                        'pt:pt',
+                        'px:px',
+                        'py:py',
+                        'pz:pz',
+                        'eta:eta',
+                        'phi:phi',
+                        'theta:theta',
+                        'status:status',
+                        'energy:energy',
+                        'charge:charge',
+                        'mother_id:mother.pdgId',
+                        'mother_pt:mother.pt',
+                        'grandmother_id:mother.mother.pdgId',
+                        'ggrandmother_id:mother.mother.mother.pdgId',
+                        'vertex_x:vertex.x',
+                        'vertex_y:vertex.y',
+                        'vertex_z:vertex.z',
+                        'mass:mass',
+                        'numOfDaughters:numberOfDaughters')
+                ),
+                selection = cms.string('status!=3 & (pdgId=12 | pdgId=-12)'),
+                Class = cms.string('reco::GenParticle')
+            ),
+            mc_numus = cms.PSet(
+                src = cms.InputTag("genParticles"),
+                leaves = cms.PSet(
+                    vars = cms.vstring('id:pdgId',
+                        'pt:pt',
+                        'px:px',
+                        'py:py',
+                        'pz:pz',
+                        'eta:eta',
+                        'phi:phi',
+                        'theta:theta',
+                        'status:status',
+                        'energy:energy',
+                        'charge:charge',
+                        'mother_id:mother.pdgId',
+                        'mother_pt:mother.pt',
+                        'grandmother_id:mother.mother.pdgId',
+                        'ggrandmother_id:mother.mother.mother.pdgId',
+                        'vertex_x:vertex.x',
+                        'vertex_y:vertex.y',
+                        'vertex_z:vertex.z',
+                        'mass:mass',
+                        'numOfDaughters:numberOfDaughters')
+                ),
+                selection = cms.string('status!=3 & (pdgId=14 | pdgId=-14)'),
                 Class = cms.string('reco::GenParticle')
             ),
 
