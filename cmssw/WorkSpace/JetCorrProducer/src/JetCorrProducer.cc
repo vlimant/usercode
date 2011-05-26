@@ -123,21 +123,31 @@ JetCorrProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
    auto_ptr<JetCorrCollection> ak5CaloL1L2L3Residuals( new JetCorrCollection );
 
 
+   std::string dummy = "ak5PFL2L3";
+   std::string name1 = "ak5PFL2L3Residual"; 
+   std::string name2 = "ak5PFL1FastL2L3Residual";
+   std::string name3 = "ak5PFL1L2L3Residual";
+   std::string name4 = "ak5CaloL2L3Residual";
+   std::string name5 = "ak5CaloL1FastL2L3Residual";
+   std::string name6 = "ak5CaloL1L2L3Residual";
+   if(!iEvent.isRealData()) {//No residual corrections in data
+     name1 = name2 = name3 = name4 = name5 = name6 = dummy;
+   }
 
 
    const JetCorrector& ak5PFL2L3Corrector_ = * JetCorrector::getJetCorrector ("ak5PFL2L3", iSetup);
-   const JetCorrector& ak5PFL2L3ResidualCorrector_ = * JetCorrector::getJetCorrector ("ak5PFL2L3Residual", iSetup);
    const JetCorrector& ak5PFL1FastL2L3Corrector_ = * JetCorrector::getJetCorrector ("ak5PFL1FastL2L3", iSetup);
    const JetCorrector& ak5PFL1L2L3Corrector_ = * JetCorrector::getJetCorrector ("ak5PFL1L2L3", iSetup);
-   const JetCorrector& ak5PFL1FastL2L3ResidualCorrector_ = * JetCorrector::getJetCorrector ("ak5PFL1FastL2L3Residual", iSetup);
-   const JetCorrector& ak5PFL1L2L3ResidualCorrector_ = * JetCorrector::getJetCorrector ("ak5PFL1L2L3Residual", iSetup);
+   const JetCorrector& ak5PFL2L3ResidualCorrector_ = * JetCorrector::getJetCorrector (name1, iSetup);
+   const JetCorrector& ak5PFL1FastL2L3ResidualCorrector_ = * JetCorrector::getJetCorrector (name2, iSetup);
+   const JetCorrector& ak5PFL1L2L3ResidualCorrector_ = * JetCorrector::getJetCorrector (name3, iSetup);
 
    const JetCorrector& ak5CaloL2L3Corrector_ = * JetCorrector::getJetCorrector ("ak5CaloL2L3", iSetup);
-   const JetCorrector& ak5CaloL2L3ResidualCorrector_ = * JetCorrector::getJetCorrector ("ak5CaloL2L3Residual", iSetup);
    const JetCorrector& ak5CaloL1FastL2L3Corrector_ = * JetCorrector::getJetCorrector ("ak5CaloL1FastL2L3", iSetup);
    const JetCorrector& ak5CaloL1L2L3Corrector_ = * JetCorrector::getJetCorrector ("ak5CaloL1L2L3", iSetup);
-   const JetCorrector& ak5CaloL1FastL2L3ResidualCorrector_ = * JetCorrector::getJetCorrector ("ak5CaloL1FastL2L3Residual", iSetup);
-   const JetCorrector& ak5CaloL1L2L3ResidualCorrector_ = * JetCorrector::getJetCorrector ("ak5CaloL1L2L3Residual", iSetup);
+   const JetCorrector& ak5CaloL2L3ResidualCorrector_ = * JetCorrector::getJetCorrector (name4, iSetup);
+   const JetCorrector& ak5CaloL1FastL2L3ResidualCorrector_ = * JetCorrector::getJetCorrector (name5, iSetup);
+   const JetCorrector& ak5CaloL1L2L3ResidualCorrector_ = * JetCorrector::getJetCorrector (name6, iSetup);
 
 
    //Get PF jet corrections---------------------------
@@ -164,12 +174,18 @@ JetCorrProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
       const edm::RefToBase<reco::Jet> uncorjetRef(edm::Ref<std::vector<pat::Jet> >(&uncorJets,index));
 
       ak5PFL2L3s->push_back( ak5PFL2L3Corrector_.correction( *iuncorrjet, uncorjetRef, iEvent,iSetup ) );
-      ak5PFL2L3Residuals->push_back( ak5PFL2L3ResidualCorrector_.correction( *iuncorrjet, uncorjetRef, iEvent,iSetup ) );
       ak5PFL1FastL2L3s->push_back( ak5PFL1FastL2L3Corrector_.correction( *iuncorrjet, uncorjetRef, iEvent,iSetup ) );
       ak5PFL1L2L3s->push_back( ak5PFL1L2L3Corrector_.correction( *iuncorrjet, uncorjetRef, iEvent,iSetup ) );
-      ak5PFL1FastL2L3Residuals->push_back( ak5PFL1FastL2L3ResidualCorrector_.correction( *iuncorrjet, uncorjetRef, iEvent,iSetup ) );
-      ak5PFL1L2L3Residuals->push_back( ak5PFL1L2L3ResidualCorrector_.correction( *iuncorrjet, uncorjetRef, iEvent,iSetup ) );
-
+      if(iEvent.isRealData()) {
+	ak5PFL2L3Residuals->push_back( ak5PFL2L3ResidualCorrector_.correction( *iuncorrjet, uncorjetRef, iEvent,iSetup ) );
+	ak5PFL1FastL2L3Residuals->push_back( ak5PFL1FastL2L3ResidualCorrector_.correction( *iuncorrjet, uncorjetRef, iEvent,iSetup ) );
+	ak5PFL1L2L3Residuals->push_back( ak5PFL1L2L3ResidualCorrector_.correction( *iuncorrjet, uncorjetRef, iEvent,iSetup ) );
+      }
+      else {
+	ak5PFL2L3Residuals->push_back(0);
+	ak5PFL1FastL2L3Residuals->push_back(0);
+	ak5PFL1L2L3Residuals->push_back(0);
+      }
    }
 
    iEvent.put( ak5PFL2L3s, "ak5PFL2L3" );
@@ -204,12 +220,18 @@ JetCorrProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
       const edm::RefToBase<reco::Jet> uncorjetRef(edm::Ref<std::vector<pat::Jet> >(&uncorCaloJets,index));
 
       ak5CaloL2L3s->push_back( ak5CaloL2L3Corrector_.correction( *iuncorrCalojet, uncorjetRef, iEvent,iSetup ) );
-      ak5CaloL2L3Residuals->push_back( ak5CaloL2L3ResidualCorrector_.correction( *iuncorrCalojet, uncorjetRef, iEvent,iSetup ) );
       ak5CaloL1FastL2L3s->push_back( ak5CaloL1FastL2L3Corrector_.correction( *iuncorrCalojet, uncorjetRef, iEvent,iSetup ) );
       ak5CaloL1L2L3s->push_back( ak5CaloL1L2L3Corrector_.correction( *iuncorrCalojet, uncorjetRef, iEvent,iSetup ) );
-      ak5CaloL1FastL2L3Residuals->push_back( ak5CaloL1FastL2L3ResidualCorrector_.correction( *iuncorrCalojet, uncorjetRef, iEvent,iSetup ) );
-      ak5CaloL1L2L3Residuals->push_back( ak5CaloL1L2L3ResidualCorrector_.correction( *iuncorrCalojet, uncorjetRef, iEvent,iSetup ) );
-
+      if(iEvent.isRealData()) {
+	ak5CaloL2L3Residuals->push_back( ak5CaloL2L3ResidualCorrector_.correction( *iuncorrCalojet, uncorjetRef, iEvent,iSetup ) );
+	ak5CaloL1FastL2L3Residuals->push_back( ak5CaloL1FastL2L3ResidualCorrector_.correction( *iuncorrCalojet, uncorjetRef, iEvent,iSetup ) );
+	ak5CaloL1L2L3Residuals->push_back( ak5CaloL1L2L3ResidualCorrector_.correction( *iuncorrCalojet, uncorjetRef, iEvent,iSetup ) );
+      }
+      else {
+	ak5CaloL2L3Residuals->push_back(0);
+	ak5CaloL1FastL2L3Residuals->push_back(0);
+	ak5CaloL1L2L3Residuals->push_back(0);
+      }
    }
 
    iEvent.put( ak5CaloL2L3s, "ak5CaloL2L3" );
