@@ -1,29 +1,23 @@
-#instructions for v41_0 of cfA
+#instructions for v45_0 of cfA
 
-setenv SCRAM_ARCH slc5_amd64_gcc434
-cmsrel CMSSW_4_1_4
-cd CMSSW_4_1_4/src
+export SCRAM_ARCH="slc5_amd64_gcc434"
+cmsrel CMSSW_4_2_3
+cd CMSSW_4_2_3/src
 cmsenv
-addpkg ElectroWeakAnalysis/WENu                  V00-04-00
-addpkg MuonAnalysis/MuonAssociators               V01-13-00
-addpkg DataFormats/PatCandidates                  V06-04-01-04
-addpkg PhysicsTools/PatAlgos                       V08-06-01-18
-addpkg PhysicsTools/PatExamples                     V00-05-16
-addpkg PhysicsTools/PatUtils                           V03-09-18
-addpkg FWCore/GuiBrowsers                          V00-00-53
-addpkg PhysicsTools/Configuration                      V00-10-10
+addpkg PhysicsTools/PatAlgos V08-06-24
 
-# fix for track-vertex-association bug
-addpkg PhysicsTools/PFCandProducer V04-07-02
-cvs co -d__temp__ -rV00-01-00 UserCode/DanielSprenger/SusyPATV10/PFCandProducer/PFPileUp.cc
-/bin/mv __temp__/PFPileUp.cc PhysicsTools/PFCandProducer/plugins/
-rm -r __temp__
+# deterministic calculation of FastJet corrections
+addpkg RecoJets/Configuration V02-04-16
+addpkg RecoJets/JetAlgorithms V04-01-00
+addpkg RecoJets/JetProducers V05-05-03
 
-cvs co -r UCSBv41_0 -d Workspace/ConfigurableAnalysis UserCode/JRVlimant/cmssw/WorkSpace/ConfigurableAnalysis
+addpkg MuonAnalysis/MuonAssociators V01-13-00
+addpkg PhysicsTools/Configuration V00-10-10
 
+cvs co -r cfA_45 -d Workspace/ConfigurableAnalysis UserCode/JRVlimant/cmssw/WorkSpace/ConfigurableAnalysis
 cvs co -r UCSBv33_0 -d Workspace/Dictionaries UserCode/JRVlimant/cmssw/WorkSpace/Dictionaries
-
 cvs co -r UCSBv33_0 -d Workspace/BFieldProducer UserCode/JRVlimant/cmssw/WorkSpace/BFieldProducer
+cvs co -r cfA_45 -d Workspace/JetCorrProducer UserCode/JRVlimant/cmssw/WorkSpace/JetCorrProducer
 
 scram b -c
 
