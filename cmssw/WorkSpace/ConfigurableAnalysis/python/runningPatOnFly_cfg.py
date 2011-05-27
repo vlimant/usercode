@@ -70,7 +70,7 @@ process.out = cms.OutputModule("PoolOutputModule",
 
 #-- Meta data to be logged in DBS ---------------------------------------------
 process.configurationMetadata = cms.untracked.PSet(
-    version = cms.untracked.string('$Revision: 1.18 $'),
+    version = cms.untracked.string('$Revision: 1.19 $'),
     name = cms.untracked.string('$Source: /cvs/CMSSW/UserCode/JRVlimant/cmssw/WorkSpace/ConfigurableAnalysis/python/runningPatOnFly_cfg.py,v $'),
     annotation = cms.untracked.string('SUSY pattuple definition')
 )
@@ -96,15 +96,14 @@ process.maxEvents.input = 1
 process.source.duplicateCheckMode = cms.untracked.string('noDuplicateCheck')
 
 #-- Calibration tag -----------------------------------------------------------
-#process.GlobalTag.globaltag = 'GR_R_42_V12::All' 
-process.GlobalTag.globaltag = 'GR_R_41_V0::All'
+process.GlobalTag.globaltag = 'GR_R_42_V12::All' 
+#process.GlobalTag.globaltag = 'GR_R_41_V0::All'
 #process.GlobalTag.globaltag = 'START42_V12::All'
 
 ############################# START SUSYPAT specifics ####################################
 from PhysicsTools.Configuration.SUSY_pattuple_cff import addDefaultSUSYPAT, getSUSY_pattuple_outputCommands
 #Apply SUSYPAT, parameters are: mcInfo, HLT menu, Jet energy corrections, mcVersion ('35x' for 35x samples, empty string for 36X samples),JetCollections
-addDefaultSUSYPAT(process,False,'HLT',['L1FastJet','L2Relative','L3Absolute','L2L3Residual'],'',['AK5PF','AK5JPT'])
-#addDefaultSUSYPAT(process,False,'HLT',['L1Offset','L2Relative','L3Absolute','L2L3Residual'],'',['AK5PF','AK5JPT'])
+addDefaultSUSYPAT(process,False,'HLT',['L1FastJet','L2Relative','L3Absolute'],'',['AK5PF','AK5JPT'])
 #addDefaultSUSYPAT(process,True,'HLT',['L1FastJet','L2Relative','L3Absolute'],'',['AK5PF','AK5JPT'])
 SUSY_pattuple_outputCommands = getSUSY_pattuple_outputCommands( process )
 ############################## END SUSYPAT specifics ####################################
@@ -120,7 +119,8 @@ process.load("Workspace.ConfigurableAnalysis.configurableAnalysis_ForPattuple_cf
 process.load('CommonTools/RecoAlgos/HBHENoiseFilterResultProducer_cfi')
 
 #Only run this for data 
-process.metJESCorAK5PFTypeI.corrector = cms.string('ak5PFL2L3Residual')
+#Should be commented out if Residual corrections are not available
+#process.metJESCorAK5PFTypeI.corrector = cms.string('ak5PFL2L3Residual')
 
 #-- Output module configuration -----------------------------------------------
 process.out.fileName = "SUSYPAT.root" 
