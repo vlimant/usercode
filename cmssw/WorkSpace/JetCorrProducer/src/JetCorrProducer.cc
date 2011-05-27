@@ -44,26 +44,14 @@ class JetCorrProducer : public edm::EDProducer {
       virtual void endJob() ;
       
       // ----------member data ---------------------------
-  std::vector<double> akpf;
   typedef std::vector<double> JetCorrCollection;
 
-  //std::string correctorLabel;
 
 
 };
 
-//
-// constants, enums and typedefs
-//
 
 
-//
-// static data member definitions
-//
-
-//
-// constructors and destructor
-//
 JetCorrProducer::JetCorrProducer(const edm::ParameterSet& iConfig)
 {
 
@@ -122,6 +110,9 @@ JetCorrProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
    auto_ptr<JetCorrCollection> ak5CaloL1FastL2L3Residuals( new JetCorrCollection );
    auto_ptr<JetCorrCollection> ak5CaloL1L2L3Residuals( new JetCorrCollection );
 
+   bool useResiduals = true;
+   if(!iEvent.isRealData()) useResiduals = false; //No residual corrections in MC
+   useResiduals = false; //Current global tag has no residual corrections, even in data***
 
    std::string dummy = "ak5PFL2L3";
    std::string name1 = "ak5PFL2L3Residual"; 
@@ -130,7 +121,7 @@ JetCorrProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
    std::string name4 = "ak5CaloL2L3Residual";
    std::string name5 = "ak5CaloL1FastL2L3Residual";
    std::string name6 = "ak5CaloL1L2L3Residual";
-   if(!iEvent.isRealData()) {//No residual corrections in data
+   if(!useResiduals) {//No residual corrections in MC
      name1 = name2 = name3 = name4 = name5 = name6 = dummy;
    }
 
@@ -176,7 +167,7 @@ JetCorrProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
       ak5PFL2L3s->push_back( ak5PFL2L3Corrector_.correction( *iuncorrjet, uncorjetRef, iEvent,iSetup ) );
       ak5PFL1FastL2L3s->push_back( ak5PFL1FastL2L3Corrector_.correction( *iuncorrjet, uncorjetRef, iEvent,iSetup ) );
       ak5PFL1L2L3s->push_back( ak5PFL1L2L3Corrector_.correction( *iuncorrjet, uncorjetRef, iEvent,iSetup ) );
-      if(iEvent.isRealData()) {
+      if(useResiduals) {
 	ak5PFL2L3Residuals->push_back( ak5PFL2L3ResidualCorrector_.correction( *iuncorrjet, uncorjetRef, iEvent,iSetup ) );
 	ak5PFL1FastL2L3Residuals->push_back( ak5PFL1FastL2L3ResidualCorrector_.correction( *iuncorrjet, uncorjetRef, iEvent,iSetup ) );
 	ak5PFL1L2L3Residuals->push_back( ak5PFL1L2L3ResidualCorrector_.correction( *iuncorrjet, uncorjetRef, iEvent,iSetup ) );
@@ -222,7 +213,7 @@ JetCorrProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
       ak5CaloL2L3s->push_back( ak5CaloL2L3Corrector_.correction( *iuncorrCalojet, uncorjetRef, iEvent,iSetup ) );
       ak5CaloL1FastL2L3s->push_back( ak5CaloL1FastL2L3Corrector_.correction( *iuncorrCalojet, uncorjetRef, iEvent,iSetup ) );
       ak5CaloL1L2L3s->push_back( ak5CaloL1L2L3Corrector_.correction( *iuncorrCalojet, uncorjetRef, iEvent,iSetup ) );
-      if(iEvent.isRealData()) {
+      if(useResiduals) {
 	ak5CaloL2L3Residuals->push_back( ak5CaloL2L3ResidualCorrector_.correction( *iuncorrCalojet, uncorjetRef, iEvent,iSetup ) );
 	ak5CaloL1FastL2L3Residuals->push_back( ak5CaloL1FastL2L3ResidualCorrector_.correction( *iuncorrCalojet, uncorjetRef, iEvent,iSetup ) );
 	ak5CaloL1L2L3Residuals->push_back( ak5CaloL1L2L3ResidualCorrector_.correction( *iuncorrCalojet, uncorjetRef, iEvent,iSetup ) );
