@@ -1,4 +1,0 @@
-
-module saver = DQMRootFile {
-	string DQMRootFileName = "DQM_dqmRootFile.root"
-}
