@@ -461,43 +461,43 @@ configurableAnalysis = cms.EDFilter("ConfigurableAnalysis",
                                                                               
 
 
-           hcalNoiseSummary = cms.PSet(  
-           src = cms.InputTag("hcalnoise"),
-            leaves = cms.PSet(
-                vars = cms.vstring(
-                     'passLooseNoiseFilter:passLooseNoiseFilter',
-                     'passTightNoiseFilter:passTightNoiseFilter',
-                     'passHighLevelNoiseFilter:passHighLevelNoiseFilter',
-                     'noiseFilterStatus:noiseFilterStatus',
-                     'noiseType:noiseType',
-                     'eventEMEnergy:eventEMEnergy',
-                     'eventHadEnergy:eventHadEnergy',
-                     'eventTrackEnergy:eventTrackEnergy',
-                     'eventEMFraction:eventEMFraction',
-                     'eventChargeFraction:eventChargeFraction',
-                     'min10GeVHitTime:min10GeVHitTime',
-                     'max10GeVHitTime:max10GeVHitTime',
-                     'rms10GeVHitTime:rms10GeVHitTime',
-                     'min25GeVHitTime:min25GeVHitTime',
-                     'max25GeVHitTime:max25GeVHitTime',
-                     'rms25GeVHitTime:rms25GeVHitTime',
-                     'num10GeVHits:num10GeVHits',
-                     'num25GeVHits:num25GeVHits',
-                     'minE2TS:minE2TS',
-                     'minE10TS:minE10TS',
-                     'minE2Over10TS:minE2Over10TS',
-                     'maxZeros:maxZeros',
-                     'maxHPDHits:maxHPDHits',
-                     'maxRBXHits:maxRBXHits',
-                     'minHPDEMF:minHPDEMF',
-                     'minRBXEMF:minRBXEMF',
-                     'numProblematicRBXs:numProblematicRBXs',
-                     'maxE2Over10TS:maxE2Over10TS',
-                     'maxHPDNoOtherHits:maxHPDNoOtherHits'
-                       )
-                ),
-            Class = cms.string('HcalNoiseSummary')
-            ),
+#           hcalNoiseSummary = cms.PSet(  
+#           src = cms.InputTag("hcalnoise"),
+#            leaves = cms.PSet(
+#                vars = cms.vstring(
+#                     'passLooseNoiseFilter:passLooseNoiseFilter',
+#                     'passTightNoiseFilter:passTightNoiseFilter',
+#                     'passHighLevelNoiseFilter:passHighLevelNoiseFilter',
+#                     'noiseFilterStatus:noiseFilterStatus',
+#                     'noiseType:noiseType',
+#                     'eventEMEnergy:eventEMEnergy',
+#                     'eventHadEnergy:eventHadEnergy',
+#                     'eventTrackEnergy:eventTrackEnergy',
+#                     'eventEMFraction:eventEMFraction',
+#                     'eventChargeFraction:eventChargeFraction',
+#                     'min10GeVHitTime:min10GeVHitTime',
+#                     'max10GeVHitTime:max10GeVHitTime',
+#                     'rms10GeVHitTime:rms10GeVHitTime',
+#                     'min25GeVHitTime:min25GeVHitTime',
+#                     'max25GeVHitTime:max25GeVHitTime',
+#                     'rms25GeVHitTime:rms25GeVHitTime',
+#                     'num10GeVHits:num10GeVHits',
+#                     'num25GeVHits:num25GeVHits',
+#                     'minE2TS:minE2TS',
+#                     'minE10TS:minE10TS',
+#                     'minE2Over10TS:minE2Over10TS',
+#                     'maxZeros:maxZeros',
+#                     'maxHPDHits:maxHPDHits',
+#                     'maxRBXHits:maxRBXHits',
+#                     'minHPDEMF:minHPDEMF',
+#                     'minRBXEMF:minRBXEMF',
+#                     'numProblematicRBXs:numProblematicRBXs',
+#                     'maxE2Over10TS:maxE2Over10TS',
+#                     'maxHPDNoOtherHits:maxHPDNoOtherHits'
+#                       )
+#                ),
+#            Class = cms.string('HcalNoiseSummary')
+#            ),
 
 
 #           hcalNoiseRBX = cms.PSet(  

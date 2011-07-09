@@ -30,11 +30,26 @@
 #include "DataFormats/PatCandidates/interface/PFParticle.h"
 #include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
 
+#include <memory>
+#include <string>
+#include <sstream>
+
+#include "FWCore/Framework/interface/Frameworkfwd.h"
+#include "FWCore/Framework/interface/EDFilter.h"
+#include "FWCore/Framework/interface/Event.h"
+#include "FWCore/Framework/interface/MakerMacros.h"
+#include "FWCore/ParameterSet/interface/ParameterSet.h"
+
+// LHE Event
+#include "SimDataFormats/GeneratorProducts/interface/LHEEventProduct.h"
+
+
 //#define StringBasedNTuplerPrecision float;
 
 
 class TreeBranch {
  public:
+
   TreeBranch(): class_(""),expr_(""),order_(""),selection_(""),maxIndexName_(""),branchAlias_("") {}
     TreeBranch(std::string C, edm::InputTag S, std::string E, std::string O, std::string SE, std::string Mi, std::string Ba) :
       class_(C),src_(S),expr_(E),order_(O), selection_(SE),maxIndexName_(Mi),branchAlias_(Ba){
@@ -255,6 +270,7 @@ class StringBasedNTupler : public NTupler {
     bunchCrossing_ = new uint;
     orbitNumber_ = new uint;
     weight_ = new float;
+    model_params_ = new std::string;
 
 
     if (branchesPSet.exists("useTFileService"))
@@ -329,7 +345,7 @@ class StringBasedNTupler : public NTupler {
       tree_->Branch("bunchCrossing",bunchCrossing_,"bunchCrossing/i");
       tree_->Branch("orbitNumber",orbitNumber_,"orbitNumber/i");
       tree_->Branch("weight",weight_,"weight/f");
-
+      tree_->Branch("model_params",&model_params_);
     }
     else{
       // loop the automated leafer
@@ -394,6 +410,24 @@ class StringBasedNTupler : public NTupler {
         iEvent.getByLabel("generator", wgeneventinfo);
         *weight_ = wgeneventinfo->weight();
       }
+     
+      typedef std::vector<std::string>::const_iterator comments_const_iterator;
+//      using namespace edm;
+
+      edm::Handle<LHEEventProduct> product;
+      iEvent.getByLabel("source", product);
+
+      comments_const_iterator c_begin = product->comments_begin();
+      comments_const_iterator c_end = product->comments_end();
+
+      for( comments_const_iterator cit=c_begin; cit!=c_end; ++cit) {
+        size_t found = (*cit).find("model");
+        if( found != std::string::npos)   {
+           //std::cout << *cit << std::endl;  
+           *model_params_ = *cit;
+        }
+      }
+
 
       if (ownTheTree_){	tree_->Fill(); }
     }else{
@@ -443,6 +477,8 @@ class StringBasedNTupler : public NTupler {
     delete bunchCrossing_;
     delete orbitNumber_;
     delete weight_;
+    delete model_params_;
+
   }
     
  protected:
@@ -461,6 +497,8 @@ class StringBasedNTupler : public NTupler {
   uint * bunchCrossing_;
   uint * orbitNumber_;
   float * weight_;
+  std::string * model_params_;
+
 };
 
 

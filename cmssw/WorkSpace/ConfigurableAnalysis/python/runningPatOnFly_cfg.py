@@ -70,7 +70,7 @@ process.out = cms.OutputModule("PoolOutputModule",
 
 #-- Meta data to be logged in DBS ---------------------------------------------
 process.configurationMetadata = cms.untracked.PSet(
-    version = cms.untracked.string('$Revision: 1.19 $'),
+    version = cms.untracked.string('$Revision: 1.20 $'),
     name = cms.untracked.string('$Source: /cvs/CMSSW/UserCode/JRVlimant/cmssw/WorkSpace/ConfigurableAnalysis/python/runningPatOnFly_cfg.py,v $'),
     annotation = cms.untracked.string('SUSY pattuple definition')
 )
@@ -86,25 +86,27 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 100
 
 #-- Input Source --------------------------------------------------------------
 process.source.fileNames = [
-      'file:/LVM/SATA/pbgeff/temp_423_ntuple/DoubleMu_AOD_May10ReReco-v1_BEE13469-5E7C-E011-A3A6-00261894391B.root'
+      #'file:/LVM/SATA/pbgeff/temp_423_ntuple/DoubleMu_AOD_May10ReReco-v1_BEE13469-5E7C-E011-A3A6-00261894391B.root'
+      'file:/LVM/SATA/pbgeff/temp_423_ntuple/mSUGRA_scan_tanb10_FA961CB6-C0A3-E011-9F6C-001BFCDBD11E.root'
       #'file:/LVM/SATA/wto/RECO/Electron_Run2010B-Apr21ReReco-v1_AOD.root'
       #'file:/LVM/SATA/wto/RECO/RelValTTbar_Tauola_GEN-SIM-RECO_START42_V12_PU_E7TeV_FlatDist10_2011EarlyData_inTimeOnly-v1.root'
+      #'file:/LVM/SATA/pbgeff/temp_Spring11_ntuple/TTJets_TuneZ2_7TeV-madgraph-tauola_AODSIM_3CDF8681-5F4F-E011-9293-E0CB4E1A118A.root'
     ]
 
-process.maxEvents.input = 1 
+process.maxEvents.input = 10 
 # Due to problem in production of LM samples: same event number appears multiple times
 process.source.duplicateCheckMode = cms.untracked.string('noDuplicateCheck')
 
 #-- Calibration tag -----------------------------------------------------------
-process.GlobalTag.globaltag = 'GR_R_42_V12::All' 
+#process.GlobalTag.globaltag = 'GR_R_42_V12::All' 
 #process.GlobalTag.globaltag = 'GR_R_41_V0::All'
-#process.GlobalTag.globaltag = 'START42_V12::All'
+process.GlobalTag.globaltag = 'START42_V12::All'
 
 ############################# START SUSYPAT specifics ####################################
 from PhysicsTools.Configuration.SUSY_pattuple_cff import addDefaultSUSYPAT, getSUSY_pattuple_outputCommands
 #Apply SUSYPAT, parameters are: mcInfo, HLT menu, Jet energy corrections, mcVersion ('35x' for 35x samples, empty string for 36X samples),JetCollections
-addDefaultSUSYPAT(process,False,'HLT',['L1FastJet','L2Relative','L3Absolute'],'',['AK5PF','AK5JPT'])
-#addDefaultSUSYPAT(process,True,'HLT',['L1FastJet','L2Relative','L3Absolute'],'',['AK5PF','AK5JPT'])
+#addDefaultSUSYPAT(process,False,'HLT',['L1FastJet','L2Relative','L3Absolute'],'',['AK5PF','AK5JPT'])
+addDefaultSUSYPAT(process,True,'HLT',['L1FastJet','L2Relative','L3Absolute'],'',['AK5PF','AK5JPT'])
 SUSY_pattuple_outputCommands = getSUSY_pattuple_outputCommands( process )
 ############################## END SUSYPAT specifics ####################################
 
@@ -114,9 +116,11 @@ from PhysicsTools.PatAlgos.tools.trigTools import switchOnTrigger
 switchOnTrigger(process, triggerProducer='patTrigger', triggerEventProducer='patTriggerEvent', sequence='patDefaultSequence', hltProcess="HLT")
 
 
+
 process.load("Workspace.ConfigurableAnalysis.configurableAnalysis_ForPattuple_cff")
 
 process.load('CommonTools/RecoAlgos/HBHENoiseFilterResultProducer_cfi')
+
 
 #Only run this for data 
 #Should be commented out if Residual corrections are not available
@@ -138,9 +142,9 @@ process.out.outputCommands = cms.untracked.vstring('drop *',"keep *_HBHENoiseFil
 #-- Execution path ------------------------------------------------------------
 # Full path
 #This is to run on full sim or data
-process.p = cms.Path(process.HBHENoiseFilterResultProducer + process.BFieldColl + process.susyPatDefaultSequence + process.JetCorrColl + process.configurableAnalysis)
+#process.p = cms.Path(process.HBHENoiseFilterResultProducer + process.BFieldColl + process.susyPatDefaultSequence + process.JetCorrColl + process.configurableAnalysis)
 #This is to run on FastSim
-#process.p = cms.Path( process.BFieldColl + process.susyPatDefaultSequence + process.JetCorrColl +process.configurableAnalysis)
+process.p = cms.Path( process.BFieldColl + process.susyPatDefaultSequence + process.JetCorrColl +process.configurableAnalysis)
 
 
 #-- Execution path ------------------------------------------------------------
