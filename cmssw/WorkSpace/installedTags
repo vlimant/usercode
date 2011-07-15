@@ -1,5 +1,7 @@
-#instructions for v46_0 of cfA
-#This recipe runs on 423 fastsim susy scans
+#instructions for v45F_0 of cfA
+#This recipe is used to determine the run/event of events passing the certain filters
+#The recipe is basically the same as v45 but only run, event, lumi are saved and a few extra 
+#packages are checked out to facilitate the filtering.
 
 export SCRAM_ARCH="slc5_amd64_gcc434"
 cmsrel CMSSW_4_2_3
@@ -15,12 +17,24 @@ addpkg RecoJets/JetProducers V05-05-03
 addpkg MuonAnalysis/MuonAssociators V01-13-00
 addpkg PhysicsTools/Configuration V00-10-10
 
-cvs co -r cfA_46_0 -d Workspace/ConfigurableAnalysis UserCode/JRVlimant/cmssw/WorkSpace/ConfigurableAnalysis
+cvs co -r cfA_45F_0 -d Workspace/ConfigurableAnalysis UserCode/JRVlimant/cmssw/WorkSpace/ConfigurableAnalysis
 cvs co -r UCSBv33_0 -d Workspace/Dictionaries UserCode/JRVlimant/cmssw/WorkSpace/Dictionaries
 cvs co -r UCSBv33_0 -d Workspace/BFieldProducer UserCode/JRVlimant/cmssw/WorkSpace/BFieldProducer
 cvs co -r cfA_45 -d Workspace/JetCorrProducer UserCode/JRVlimant/cmssw/WorkSpace/JetCorrProducer
 
+#Extra packages from v45
+#Upon compilation, some packages will complain about missing files in a "Sandbox" directory.  Just change the 
+#files to reference the "SandBox" directory
+#Also, I believe there is a file in the SandBox area that references a few cfi files that don't exist.
+cvs co -r Colin_Jan18 -d RecoParticleFlow/PostProcessing UserCode/RecoParticleFlow/PostProcessing
+cvs co -r V110523_BE -d DataFormats/AnomalousEcalDataFormats UserCode/csander/DataFormats/AnomalousEcalDataFormats
+cvs co -r V110523_BE -d PhysicsTools/EcalAnomalousEventFilter UserCode/csander/PhysicsTools/EcalAnomalousEventFilter
+cvs co -r V19MAY2011_v3 JetMETAnalysis/ecalDeadCellTools
+cvs co  Workspace/DeadCellFilterLists UserCode/crohringer/DeadCellFilterLists/
+cvs co -r Seema02June2011 -d SandBox/Skims UserCode/seema/SandBox/Skims
+cvs co -r V00-00-08 RecoMET/METAnalyzers/
+
 scram b -c
 
-scram b -j9
+scram b -j4
 
