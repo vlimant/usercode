@@ -30,26 +30,11 @@
 #include "DataFormats/PatCandidates/interface/PFParticle.h"
 #include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
 
-#include <memory>
-#include <string>
-#include <sstream>
-
-#include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDFilter.h"
-#include "FWCore/Framework/interface/Event.h"
-#include "FWCore/Framework/interface/MakerMacros.h"
-#include "FWCore/ParameterSet/interface/ParameterSet.h"
-
-// LHE Event
-#include "SimDataFormats/GeneratorProducts/interface/LHEEventProduct.h"
-
-
 //#define StringBasedNTuplerPrecision float;
 
 
 class TreeBranch {
  public:
-
   TreeBranch(): class_(""),expr_(""),order_(""),selection_(""),maxIndexName_(""),branchAlias_("") {}
     TreeBranch(std::string C, edm::InputTag S, std::string E, std::string O, std::string SE, std::string Mi, std::string Ba) :
       class_(C),src_(S),expr_(E),order_(O), selection_(SE),maxIndexName_(Mi),branchAlias_(Ba){
@@ -266,11 +251,7 @@ class StringBasedNTupler : public NTupler {
     ev_ = new uint;
     run_ = new uint;
     lumiblock_ = new uint;
-    experimentType_ = new uint;
-    bunchCrossing_ = new uint;
-    orbitNumber_ = new uint;
-    weight_ = new float;
-    model_params_ = new std::string;
+    hbhefilter_decision_ = new int;
 
 
     if (branchesPSet.exists("useTFileService"))
@@ -341,11 +322,8 @@ class StringBasedNTupler : public NTupler {
       tree_->Branch("run",run_,"run/i");
       tree_->Branch("event",ev_,"event/i");
       tree_->Branch("lumiblock",lumiblock_,"lumiblock/i");
-      tree_->Branch("experimentType",experimentType_,"experimentType/i");
-      tree_->Branch("bunchCrossing",bunchCrossing_,"bunchCrossing/i");
-      tree_->Branch("orbitNumber",orbitNumber_,"orbitNumber/i");
-      tree_->Branch("weight",weight_,"weight/f");
-      tree_->Branch("model_params",&model_params_);
+      //tree_->Branch("hbhefilter_decision",hbhefilter_decision_,"hbhefilter_decision/I");
+
     }
     else{
       // loop the automated leafer
@@ -398,36 +376,22 @@ class StringBasedNTupler : public NTupler {
       //fill event info.
       *run_ = iEvent.id().run();
       *ev_ = iEvent.id().event();
-      //      *lumiblock_ = iEvent.id().luminosityBlock();
-      *lumiblock_ = iEvent.luminosityBlock();
-      *experimentType_ = iEvent.experimentType();
-      *bunchCrossing_ = iEvent.bunchCrossing();
-      *orbitNumber_ = iEvent.orbitNumber();
+      *lumiblock_ = iEvent.luminosityBlock();       
 
-      *weight_ = 1;
-      if(!iEvent.isRealData()) { 
-        edm::Handle<GenEventInfoProduct> wgeneventinfo;
-        iEvent.getByLabel("generator", wgeneventinfo);
-        *weight_ = wgeneventinfo->weight();
+/*
+      edm::Handle<bool> filter_h;
+      if(iEvent.getByLabel("HBHENoiseFilterResultProducer","HBHENoiseFilterResult",filter_h)) {
+
+        iEvent.getByLabel("HBHENoiseFilterResultProducer","HBHENoiseFilterResult", filter_h);
+        //      cout<<"The filter decision is :"<<*filter_h<<endl;
+        if(*filter_h){*hbhefilter_decision_ = 1;}
+        if(!(*filter_h)){*hbhefilter_decision_ = 0;}
       }
-     
-      typedef std::vector<std::string>::const_iterator comments_const_iterator;
-//      using namespace edm;
-
-      edm::Handle<LHEEventProduct> product;
-      iEvent.getByLabel("source", product);
-
-      comments_const_iterator c_begin = product->comments_begin();
-      comments_const_iterator c_end = product->comments_end();
-
-      for( comments_const_iterator cit=c_begin; cit!=c_end; ++cit) {
-        size_t found = (*cit).find("model");
-        if( found != std::string::npos)   {
-           //std::cout << *cit << std::endl;  
-           *model_params_ = *cit;
-        }
+      else{
+        *hbhefilter_decision_ = -1;
+        //      cout<<"The hbheflag is not present, is this FastSim?"<<endl;
       }
-
+*/      
 
       if (ownTheTree_){	tree_->Fill(); }
     }else{
@@ -473,12 +437,7 @@ class StringBasedNTupler : public NTupler {
     delete ev_;
     delete run_;
     delete lumiblock_;
-    delete experimentType_;
-    delete bunchCrossing_;
-    delete orbitNumber_;
-    delete weight_;
-    delete model_params_;
-
+    delete hbhefilter_decision_;
   }
     
  protected:
@@ -493,12 +452,7 @@ class StringBasedNTupler : public NTupler {
   uint * ev_;
   uint * run_;
   uint * lumiblock_;
-  uint * experimentType_;
-  uint * bunchCrossing_;
-  uint * orbitNumber_;
-  float * weight_;
-  std::string * model_params_;
-
+  int * hbhefilter_decision_;  
 };
 
 

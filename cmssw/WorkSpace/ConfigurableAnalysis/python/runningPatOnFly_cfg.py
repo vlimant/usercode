@@ -41,15 +41,6 @@ process.load("Configuration.StandardSequences.MagneticField_cff")
 ## Standard PAT Configuration File
 process.load("PhysicsTools.PatAlgos.patSequences_cff")
 
-process.BFieldColl = cms.EDProducer('BFieldProducer')
-
-process.JetCorrColl = cms.EDProducer('JetCorrProducer')
-
-#Need this for L1 triggers with CMSSW >= 381
-process.load("PhysicsTools.PatAlgos.triggerLayer1.triggerProducer_cff")
-process.patTrigger.addL1Algos = cms.bool( True )
-#process.patTrigger.addL1Algos = cms.bool( False )
-
 
 ## Output Module Configuration (expects a path 'p')
 from PhysicsTools.PatAlgos.patEventContent_cff import patEventContent
@@ -61,8 +52,7 @@ process.out = cms.OutputModule("PoolOutputModule",
                                SelectEvents   = cms.untracked.PSet( SelectEvents = cms.vstring('p') ),
                                # save PAT Layer 1 output; you need a '*' to
                                # unpack the list of commands 'patEventContent'
-                               outputCommands = cms.untracked.vstring('drop *', "keep *_BFieldColl_*_*_","keep *_JetCorrColl_*_*_",*patEventContent )
-                               #outputCommands = cms.untracked.vstring('drop *', *patEventContent )
+                               outputCommands = cms.untracked.vstring('drop *',*patEventContent )
                                )
 #process.outpath = cms.EndPath(process.out)
 
@@ -86,27 +76,26 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 100
 
 #-- Input Source --------------------------------------------------------------
 process.source.fileNames = [
-      #'file:/LVM/SATA/pbgeff/temp_423_ntuple/DoubleMu_AOD_May10ReReco-v1_BEE13469-5E7C-E011-A3A6-00261894391B.root'
-      'file:/LVM/SATA/pbgeff/temp_423_ntuple/mSUGRA_scan_tanb10_FA961CB6-C0A3-E011-9F6C-001BFCDBD11E.root'
+      'file:/LVM/SATA/pbgeff/temp_423_ntuple/DoubleMu_AOD_May10ReReco-v1_BEE13469-5E7C-E011-A3A6-00261894391B.root'
       #'file:/LVM/SATA/wto/RECO/Electron_Run2010B-Apr21ReReco-v1_AOD.root'
       #'file:/LVM/SATA/wto/RECO/RelValTTbar_Tauola_GEN-SIM-RECO_START42_V12_PU_E7TeV_FlatDist10_2011EarlyData_inTimeOnly-v1.root'
       #'file:/LVM/SATA/pbgeff/temp_Spring11_ntuple/TTJets_TuneZ2_7TeV-madgraph-tauola_AODSIM_3CDF8681-5F4F-E011-9293-E0CB4E1A118A.root'
     ]
 
-process.maxEvents.input = 10 
+process.maxEvents.input = 100
 # Due to problem in production of LM samples: same event number appears multiple times
 process.source.duplicateCheckMode = cms.untracked.string('noDuplicateCheck')
 
 #-- Calibration tag -----------------------------------------------------------
-#process.GlobalTag.globaltag = 'GR_R_42_V12::All' 
+process.GlobalTag.globaltag = 'GR_R_42_V12::All' 
 #process.GlobalTag.globaltag = 'GR_R_41_V0::All'
-process.GlobalTag.globaltag = 'START42_V12::All'
+#process.GlobalTag.globaltag = 'START42_V12::All'
 
 ############################# START SUSYPAT specifics ####################################
 from PhysicsTools.Configuration.SUSY_pattuple_cff import addDefaultSUSYPAT, getSUSY_pattuple_outputCommands
 #Apply SUSYPAT, parameters are: mcInfo, HLT menu, Jet energy corrections, mcVersion ('35x' for 35x samples, empty string for 36X samples),JetCollections
-#addDefaultSUSYPAT(process,False,'HLT',['L1FastJet','L2Relative','L3Absolute'],'',['AK5PF','AK5JPT'])
-addDefaultSUSYPAT(process,True,'HLT',['L1FastJet','L2Relative','L3Absolute'],'',['AK5PF','AK5JPT'])
+addDefaultSUSYPAT(process,False,'HLT',['L1FastJet','L2Relative','L3Absolute'],'',['AK5PF','AK5JPT'])
+#addDefaultSUSYPAT(process,True,'HLT',['L1FastJet','L2Relative','L3Absolute'],'',['AK5PF','AK5JPT'])
 SUSY_pattuple_outputCommands = getSUSY_pattuple_outputCommands( process )
 ############################## END SUSYPAT specifics ####################################
 
@@ -119,12 +108,49 @@ switchOnTrigger(process, triggerProducer='patTrigger', triggerEventProducer='pat
 
 process.load("Workspace.ConfigurableAnalysis.configurableAnalysis_ForPattuple_cff")
 
-process.load('CommonTools/RecoAlgos/HBHENoiseFilterResultProducer_cfi')
+#Load filters
 
+process.scrapingVeto = cms.EDFilter("FilterOutScraping",   #should be standard
+                                   applyfilter = cms.untracked.bool(True),
+                                   debugOn = cms.untracked.bool(False),
+                                   numtrack = cms.untracked.uint32(10),
+                                   thresh = cms.untracked.double(0.25)
+                                   )
 
-#Only run this for data 
-#Should be commented out if Residual corrections are not available
-#process.metJESCorAK5PFTypeI.corrector = cms.string('ak5PFL2L3Residual')
+process.primaryVertexFilter = cms.EDFilter("GoodVertexFilter",
+#should be standard
+            vertexCollection = cms.InputTag('offlinePrimaryVertices'),
+            minimumNDOF = cms.uint32(4) ,
+            maxAbsZ = cms.double(24),
+            maxd0 = cms.double(2)
+                                          )
+
+process.load('CommonTools/RecoAlgos/HBHENoiseFilter_cfi') 
+
+from Workspace.DeadCellFilterLists.Mu_BEfilter_cfi import *
+loadSequence(process, "Workspace.DeadCellFilterLists")
+
+process.load('SandBox.Skims.trackingFailureFilter_cfi')
+
+process.load('RecoMET.METAnalyzers.CSCHaloFilter_cfi')
+
+process.load('JetMETAnalysis.ecalDeadCellTools.RA2TPfilter_cff')
+
+from Workspace.DeadCellFilterLists.Mu_BEfilter_cfi import * #for Mu & MuHad datasets
+#from Workspace.DeadCellFilterLists.Electron_BEfilter_cfi import * #for Electron & ElectronHad datasets
+loadSequence(process, "Workspace.DeadCellFilterLists")
+
+process.filterSequence= cms.Sequence(
+     process.scrapingVeto *
+     process.primaryVertexFilter*
+     process.HBHENoiseFilter*
+     process.CSCTightHaloFilter*
+     process.ecalDeadCellTPfilter*
+     process.goodVerticesRA4*
+     #process.trackingFailureFilter*
+     process.Mu_BEfilterSequence
+)
+
 
 #-- Output module configuration -----------------------------------------------
 process.out.fileName = "SUSYPAT.root" 
@@ -135,21 +161,14 @@ process.out.overrideInputFileSplitLevels = cms.untracked.bool(True)
 process.out.dropMetaData = cms.untracked.string('DROPPED')   # Get rid of metadata related to dropped collections
 
 
-#process.out.outputCommands = cms.untracked.vstring('drop *', *SUSY_pattuple_outputCommands )
-process.out.outputCommands = cms.untracked.vstring('drop *',"keep *_HBHENoiseFilterResultProducer_*_*","keep *_BFieldColl_*_*","keep *_JetCorrectionColl_*_*", *SUSY_pattuple_outputCommands )
+process.out.outputCommands = cms.untracked.vstring('drop *', *SUSY_pattuple_outputCommands )
 
 
 #-- Execution path ------------------------------------------------------------
 # Full path
 #This is to run on full sim or data
-#process.p = cms.Path(process.HBHENoiseFilterResultProducer + process.BFieldColl + process.susyPatDefaultSequence + process.JetCorrColl + process.configurableAnalysis)
-#This is to run on FastSim
-process.p = cms.Path( process.BFieldColl + process.susyPatDefaultSequence + process.JetCorrColl +process.configurableAnalysis)
+process.p = cms.Path(process.filterSequence +  process.susyPatDefaultSequence + process.trackingFailureFilter + process.configurableAnalysis)
 
-
-#-- Execution path ------------------------------------------------------------
-# Full path
-#process.p = cms.Path( process.susyPatDefaultSequence )
 #-- Dump config ------------------------------------------------------------
 file = open('SusyPAT_cfg.py','w')
 file.write(str(process.dumpPython()))
