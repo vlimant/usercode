@@ -1,7 +1,8 @@
-#instructions for v45F_0 of cfA
+#instructions for v47_0 of cfA
 #This recipe is used to determine the run/event of events passing the certain filters
 #The recipe is basically the same as v45 but only run, event, lumi are saved and a few extra 
 #packages are checked out to facilitate the filtering.
+#This recipe is identical to v45F (the F stands for filter)
 
 export SCRAM_ARCH="slc5_amd64_gcc434"
 cmsrel CMSSW_4_2_3
@@ -17,7 +18,7 @@ addpkg RecoJets/JetProducers V05-05-03
 addpkg MuonAnalysis/MuonAssociators V01-13-00
 addpkg PhysicsTools/Configuration V00-10-10
 
-cvs co -r cfA_45F_0 -d Workspace/ConfigurableAnalysis UserCode/JRVlimant/cmssw/WorkSpace/ConfigurableAnalysis
+cvs co -r cfA_v47_0 -d Workspace/ConfigurableAnalysis UserCode/JRVlimant/cmssw/WorkSpace/ConfigurableAnalysis
 cvs co -r UCSBv33_0 -d Workspace/Dictionaries UserCode/JRVlimant/cmssw/WorkSpace/Dictionaries
 cvs co -r UCSBv33_0 -d Workspace/BFieldProducer UserCode/JRVlimant/cmssw/WorkSpace/BFieldProducer
 cvs co -r cfA_45 -d Workspace/JetCorrProducer UserCode/JRVlimant/cmssw/WorkSpace/JetCorrProducer
