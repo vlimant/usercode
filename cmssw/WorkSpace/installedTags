@@ -1,27 +1,43 @@
+<<<<<<< installedTags
+#instructions for v45_0 of cfA
+=======
 #instructions for v47_0 of cfA
 #This recipe is used to determine the run/event of events passing the certain filters
 #The recipe is basically the same as v45 but only run, event, lumi are saved and a few extra 
 #packages are checked out to facilitate the filtering.
 #This recipe is identical to v45F (the F stands for filter)
 
+>>>>>>> 1.12
 export SCRAM_ARCH="slc5_amd64_gcc434"
-cmsrel CMSSW_4_2_3
-cd CMSSW_4_2_3/src
+cmsrel CMSSW_4_2_5
+cd CMSSW_4_2_5/src
 cmsenv
-addpkg PhysicsTools/PatAlgos V08-06-24
+addpkg DataFormats/PatCandidates  V06-04-18
+addpkg PhysicsTools/PatAlgos      V08-06-38
+addpkg PhysicsTools/PatExamples   V00-05-22
+addpkg PhysicsTools/SelectorUtils V00-03-17
+addpkg CommonTools/RecoAlgos      V00-03-13
+addpkg RecoJets/Configuration     V02-04-17
+addpkg RecoTauTag/Configuration   V01-02-03
+addpkg RecoTauTag/RecoTau         V01-02-07
+addpkg RecoTauTag/TauTagTools     V01-02-00
+addpkg FWCore/GuiBrowsers         V00-00-57
 
-# deterministic calculation of FastJet corrections
-addpkg RecoJets/Configuration V02-04-16
-addpkg RecoJets/JetAlgorithms V04-01-00
-addpkg RecoJets/JetProducers V05-05-03
+addpkg MuonAnalysis/MuonAssociators                  V01-13-00
+addpkg PhysicsTools/Configuration                         V00-10-16
 
-addpkg MuonAnalysis/MuonAssociators V01-13-00
-addpkg PhysicsTools/Configuration V00-10-10
+# bug fix for JEC - jet area not set otherwise
+cvs update -r V08-06-39 PhysicsTools/PatAlgos/python/recoLayer0/jetCorrFactors_cfi.py
 
+
+<<<<<<< installedTags
+cvs co -r cfA_48 -d Workspace/ConfigurableAnalysis UserCode/JRVlimant/cmssw/WorkSpace/ConfigurableAnalysis
+=======
 cvs co -r cfA_v47_0 -d Workspace/ConfigurableAnalysis UserCode/JRVlimant/cmssw/WorkSpace/ConfigurableAnalysis
+>>>>>>> 1.12
 cvs co -r UCSBv33_0 -d Workspace/Dictionaries UserCode/JRVlimant/cmssw/WorkSpace/Dictionaries
 cvs co -r UCSBv33_0 -d Workspace/BFieldProducer UserCode/JRVlimant/cmssw/WorkSpace/BFieldProducer
-cvs co -r cfA_45 -d Workspace/JetCorrProducer UserCode/JRVlimant/cmssw/WorkSpace/JetCorrProducer
+cvs co -r cfA_48 -d Workspace/JetCorrProducer UserCode/JRVlimant/cmssw/WorkSpace/JetCorrProducer
 
 #Extra packages from v45
 #Upon compilation, some packages will complain about missing files in a "Sandbox" directory.  Just change the 
@@ -36,6 +52,10 @@ cvs co -r Seema02June2011 -d SandBox/Skims UserCode/seema/SandBox/Skims
 cvs co -r V00-00-08 RecoMET/METAnalyzers/
 
 scram b -c
+<<<<<<< installedTags
+scram b -j9
+=======
 
 scram b -j4
 
+>>>>>>> 1.12
